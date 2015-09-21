@@ -4,5 +4,5 @@ HPC*
 HPC/*
 *.key
 */fig/*
-*/*.DS_Store
+*.DS_Store
 */*.pdf
