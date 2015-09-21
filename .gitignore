@@ -1,8 +1,7 @@
 Data*
-Data*/
 HPC*
-HPC/*
 *.key
 */fig/*
 *.DS_Store
 */*.pdf
+Analysis*
