@@ -145,10 +145,10 @@ for t = p.dt:p.dt:p.T
     %% Update attention map
     if p.changeAtt == 1 %Full Attention, No endo implemented yet, but exo follow stronger stimulus
         
-        aKernel = [1 -1; -1 1];
+%         aKernel = [1 -1; -1 1];
         inp     = p.r{3}(:,idx-1);
-        aDrive  = abs(aKernel*inp);
-        aSign   = sign(aKernel*inp);
+        aDrive  = abs(p.aKernel*inp);
+        aSign   = sign(p.aKernel*inp);
         attnGain = halfExp(1 + p.aM*aDrive.^p.ap ./ repmat((sum(aDrive.^p.ap) + p.asigma^p.ap),p.ntheta,1) .*aSign,1);
         
         %WTA-inhibitory pool
