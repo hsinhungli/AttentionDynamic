@@ -3,8 +3,10 @@
 % modified from runModel.m
 % 2015-09-28 (RD)
 
+clear all
+
 %% Set conditions/contrasts to simulate
-condnames  =  {'endoT1','endoT2','endoT1T2','no-endo'};
+condnames  =  {'no-endo','endoT1','endoT2','endoT1T2'};
 p          = setParametersTA;
 saveData   = 0;
 plotFig    = 1;
@@ -12,15 +14,15 @@ plotFig    = 1;
 % Pick contrasts to run
 % logspace(-1.699,log10(.5),7)
 % 0.0200    0.0342    0.0585    0.1000    0.1710    0.2924    0.5000
-contrasts = [0.1 1];
-soas = [250 800];
+contrasts = [0.16 0.64];
+soas = 100:50:800;
 
 % Pick conditions to run
 rcond     = 1;   %conditions to run
 ncond     = numel(rcond);
 rcontrast = 2;   %contrast levels to run
 ncontrast = numel(rcontrast);
-rsoa = 1;   %soa levels to run
+rsoa = numel(soas);   %soa levels to run
 nsoa = numel(rsoa);
 p_pool         = cell(ncond*ncontrast*nsoa,1); %data (p) of each simulated condition will be saved here
 
@@ -29,16 +31,19 @@ dataName = sprintf('./Data/cond_%s_%s.mat',condtag,datestr(now,'mmddHHMM'));
 
 %% loop through all conditions to run
 count = 0;
-for cond = rcond
-    
+ev = zeros(2,nsoa,ncond,ncontrast);
+for icond = 1:numel(rcond)
+    cond = rcond(icond);
     condname = condnames{cond};
     
     %% Decide stimuli configuration for this condition
 %     p = setModelParTA(condname, p);
     
     %% Loop through contrast levels
-    for c = rcontrast
-        for s = rsoa
+    for icontrast = 1:numel(rcontrast)
+        c = rcontrast(icontrast);
+        for isoa = 1:numel(rsoa)
+            s = rsoa(isoa);
             p.cond = cond;
             p.contrast = contrasts(:,c);
             p.soa = soas(:,s);
@@ -52,6 +57,7 @@ for cond = rcond
             p.i = p.stim;
             
             % convolve with temporal filter
+            p.e = [];
             for i=1:size(p.i,1)
                 p.e(i,:) = conv(p.i(i,:), p.filter); %%% can this be done inside n_model_TA with a differential eq?
             end
@@ -59,6 +65,10 @@ for cond = rcond
             
             %run the model
             p = n_model_TA(p);
+            
+            %accumulate evidence
+            p = accumulateTA(p);
+            ev(:,isoa,icond,icontrast) = p.evidence(end,:);
             
             %save the p
             if saveData==1
@@ -68,98 +78,18 @@ for cond = rcond
             
             %% Draw time series_1
             if plotFig == 1
-                %% Figure 1
-                % panel 1
-                cpsFigure(1.6,2);
-                set(gcf,'Name',sprintf('%s contrast: %1.2f soa: %d', condname, p.contrast, p.soa));
-
-                subplot(6,2,1)
-                hold on
-                plot(p.tlist/1000,p.i(1,:),'color',[1 0 1]);
-                plot(p.tlist/1000,p.i(2,:),'color',[0 0 1]);
-                ylabel('Input')
-%                 set(gca,'YLim',[0 max(p.i(:))+.1*max(p.i(:))]);
-                
-                subplot(6,2,3)
-                hold on
-                plot(p.tlist/1000,p.e(1,:),'color',[1 0 1]);
-                plot(p.tlist/1000,p.e(2,:),'color',[0 0 1]);
-                ylabel('Temporally filtered')
-%                 set(gca,'YLim',[0 max(p.e(:))+.1*max(p.e(:))]);
-                
-                subplot(6,2,5)
-                hold on
-                plot(p.tlist/1000,p.d(1,:),'color',[1 0 1]);
-                plot(p.tlist/1000,p.d(2,:),'color',[0 0 1]);
-                ylabel('Excitatory drive')
-%                 set(gca,'YLim',[0 max(p.d(:))+.1*max(p.d(:))]);
-                
-                subplot(6,2,7)
-                hold on
-                plot(p.tlist/1000,p.s(1,:),'color',[1 0 1]);
-                plot(p.tlist/1000,p.s(2,:),'color',[0 0 1]);
-                ylabel('Suppressive drive')
-%                 set(gca,'YLim',[0 max(p.s(:))+.1*max(p.s(:))]);
-                
-                subplot(6,2,9)
-                hold on
-                plot(p.tlist/1000,p.f(1,:),'color',[1 0 1]);
-                plot(p.tlist/1000,p.f(2,:),'color',[0 0 1]);
-                ylabel('Steady-state')
-%                 set(gca,'YLim',[0 max(p.f(:))+.1]);
-                
-                subplot(6,2,11)
-                hold on
-                plot(p.tlist/1000,p.r(1,:),'color',[1 0 1]);
-                plot(p.tlist/1000,p.r(2,:),'color',[0 0 1]);
-                ylabel('Firing rate')
-                xlabel('Time (s)')
-                set(gca,'YLim',[0 max(p.r(:))+.1]);
-                   
-                % panel 2
-                subplot(6,2,2)
-                hold on
-                plot(p.tlist/1000,p.stim(1,:),'color',[1 0 1]); 
-                plot(p.tlist/1000,p.stim(2,:),'color',[0 0 1]);
-                ylabel('Stimulus')
-                
-                subplot(6,2,4)
-                hold on
-                plot(p.tlist/1000,p.task(1,:),'color',[1 0 1]); 
-                plot(p.tlist/1000,p.task(2,:),'color',[0 0 1]);
-                ylabel('Task')
-                
-                subplot(6,2,6)
-                hold on
-                plot(p.tlist/1000,p.h(1,:),'color',[1 0 1]); 
-                plot(p.tlist/1000,p.h(2,:),'color',[0 0 1]);
-                ylabel('Inv. suppression (h)')
-                
-                subplot(6,2,8)
-                hold on
-                plot(p.tlist/1000,p.attI(1,:),'color',[1 0 1]); 
-                plot(p.tlist/1000,p.attI(2,:),'color',[0 0 1]);
-                ylabel('Involuntary att')
-                
-                subplot(6,2,10)
-                hold on
-                plot(p.tlist/1000,p.attV(1,:),'color',[1 0 1]); 
-                plot(p.tlist/1000,p.attV(2,:),'color',[0 0 1]);
-                ylabel('Voluntary att')
-                
-                subplot(6,2,12)
-                hold on
-                plot(p.tlist/1000,p.att(1,:),'color',[1 0 1]); 
-                plot(p.tlist/1000,p.att(2,:),'color',[0 0 1]);
-                ylabel('Attention')
-                
-                rd_supertitle(sprintf('%s contrast: %1.2f soa: %d', condname, p.contrast, p.soa));
-%                 tightfig
+                plotTA(condname, p)
             end
         end
     end
 end
 
+%% plot multiple conditions
+for icontrast = 1:numel(rcontrast)
+    plotPerformanceTA(condnames(rcond), soas(rsoa), ev(:,:,:,icontrast))
+end
+
+%% save data
 if saveData==1
     sprintf('Saving file')
     save(dataName,'p_pool');
