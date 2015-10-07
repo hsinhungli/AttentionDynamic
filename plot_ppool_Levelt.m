@@ -1,9 +1,9 @@
 % Plot the simulation of Levelt's Proposition. (The scheme by Moreno-Bote,
 % 2010 JoV)
 
-datafolder = '/Users/hhli/Google Drive/PROJECTS_CURRENT/Pro_BR_Temporal/simRivalry_2nd/Data_Levelt';
-fileIdx    = 09072043;
-fileName   = sprintf('%s/cond_1_%s.mat',datafolder,num2str(fileIdx));
+datafolder = '/Users/hhli/Google Drive/PROJECTS_CURRENT/Pro_BR_RivalryDynamic/Data';
+fileIdx    = '10070021';
+fileName   = sprintf('%s/cond_1_%s.mat',datafolder,fileIdx);
 load(fileName);
 nsim = length(p_pool);
 condnames  =  {'B/A','B/iA','P/A','P/iA','SR/A','SR/iA','R/A','R/iA'};
@@ -11,16 +11,17 @@ layernames =  {'L. Monocular', 'R. Monocular', 'Summation', 'L-R Opponency', 'R-
 subplotlocs    = [4 6 2 1 3]; %on a 2x3 plot
 %% Dominance duration: this is for the experiment that vary contrasts
 
-smooth        = 1;
-filter_std    = 600;
-getrivalryIdx = 0;
-epochlength   = 6000;
+filter_duration = 100;
+threshold_ratio = 2;
+threshold_t =  0;
 
+nsim = length(p_pool);
 for i = 1:nsim
     tempp = p_pool{i};
-    tempp = getIndex(tempp,smooth,epochlength,filter_std,getrivalryIdx);
+    tempp = getIndex(tempp,filter_duration,threshold_t,threshold_ratio);
     p_pool{i} = tempp;
 end
+
 for i = 1:nsim
     domDuration(i,:) = p_pool{i}.Idx_domD;
     contrast(i,:)    = p_pool{i}.contrast;
@@ -34,7 +35,7 @@ plot(fraction, domDuration(:,1), '-o',fraction, domDuration(:,2) ,'-o')
 xlabel('Fraction A','FontSize',14)
 ylabel('Mean duration (s)','FontSize',14)
 legend({'A: varied','B: fixed'},'FontSize',14)
-
+%%
 cpsFigure(.5,.5)
 plot(contrast(:,1), domDuration(:,1), '-o',contrast(:,1), domDuration(:,2) ,'-o')
 ylim([0 10])

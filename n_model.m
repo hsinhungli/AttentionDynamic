@@ -102,6 +102,7 @@ for t = p.dt:p.dt:p.T
         p.d{lay}(:,idx) = halfExp(drive); %Rectification (esp for Opponency layer)
     end
     for lay = 3:p.nLayers
+        
         %defining normalization pool for each layer
         pool = p.d{lay}(:,idx);
         
@@ -150,6 +151,7 @@ for t = p.dt:p.dt:p.T
         aDrive  = abs(aKernel*inp);
         aSign   = sign(aKernel*inp);
         attnGain = halfExp(1 + p.aM*aDrive.^p.ap ./ repmat((sum(aDrive.^p.ap) + p.asigma^p.ap),p.ntheta,1) .*aSign,1);
+        %attnGain = max(attnGain,1);
         
         %WTA-inhibitory pool
         %attnGain = nan(p.ntheta,1);

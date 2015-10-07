@@ -8,6 +8,7 @@ switch cond
         stimR = [0 1]'; %Orientation B
         p.stimL = kron(timeSeriesL, stimL) * p.contrast(1);
         p.stimR = kron(timeSeriesR, stimR) * p.contrast(2);
+        p.stimL(1, p.tlist<10) = p.stimL(1, p.tlist<10);
     case {3,4} %Monocular Plaid
         timeSeriesL = ones([1 p.nt]);
         timeSeriesR = ones([1 p.nt]);
@@ -15,6 +16,7 @@ switch cond
         stimR = [0 0]';
         p.stimL = kron(timeSeriesL, stimL);
         p.stimR = kron(timeSeriesR, stimR);
+        %p.stimL(1, p.tlist<10) = p.stimL(1, p.tlist<10);
     case {5,6} %Stimulus Rivalry
         p.timeSeriesL = ones([1 p.nt]);
         p.timeSeriesR = ones([1 p.nt]);

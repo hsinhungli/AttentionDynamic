@@ -1,3 +1,4 @@
+% Add measurement noise
 mp_pool = p_pool;
 condnames =  {'mnB/A','mnB/iA','mnSR',[],'mnP/A', 'mnP/iA', 'mnR/A', 'mnR/iA'};
 p.m_noisefilter_t = 60;                    %measurement noise

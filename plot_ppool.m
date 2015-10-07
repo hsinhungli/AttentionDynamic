@@ -1,57 +1,70 @@
 % Extract the index from simulated data and plot the index.
-
-clear all;close all;
-datafolder = '/Users/hhli/Google Drive/PROJECTS_CURRENT/Pro_BR_Temporal/simRivalry_2nd/Data';
-fileIdx    = '09151649';
-fileName   = sprintf('%s/cond_1_%s.mat',datafolder,fileIdx);
+% CV: .4-.6; Dominance duration: 1-10 sec (Shpiro et al., 2009)
+clear all;
+%close all;
+datafolder = '/Users/hhli/Google Drive/PROJECTS_CURRENT/Pro_BR_RivalryDynamic/Data';
+condIdx    = '1';
+fileIdx    = '10062341';
+fileName   = sprintf('%s/cond_%s_%s.mat',datafolder,condIdx,fileIdx);
 load(fileName);
-condnames  =  {'B/A','B/iA','P/A','P/iA','SR/A','SR/iA','R/A','R/iA'};
+condnames  =  {'B/A','B/iA','M/A','M/iA','SR/A','SR/iA','R/A','R/iA'};
 layernames =  {'L. Monocular', 'R. Monocular', 'Summation', 'L-R Opponency', 'R-L Opponency'};
 subplotlocs  = [4 6 2 1 3]; %on a 2x3 plot
 
 %% smoothing the curve
 
-smooth        = 0;
-filter_std    = 600;
-getrivalryIdx = 1;
-epochlength   = 4000;
+filter_duration = 100;
+threshold_ratio = 2;
+threshold_t =  0;
 
 nsim = length(p_pool);
 for i = 1:nsim
     tempp = p_pool{i};
-    tempp = getIndex(tempp,smooth,epochlength,filter_std,getrivalryIdx);
+    tempp = getIndex(tempp,filter_duration,threshold_t,threshold_ratio);
     p_pool{i} = tempp;
     contrastlevel(i) = p_pool{i}.contrast(1);
-end
-%% Rivalry Idx curves
-cpsFigure(.6*nsim,.6);
-xa = (1:p_pool{1}.epochlength-1)-p_pool{1}.epochlength/2;
-xa = xa/1000;
-for i = 1:nsim
-    subplot(1,nsim,i)
-    plot(p_pool{i}.aSignal,'LineWidth',1.2);hold on;
-    plot(p_pool{i}.rSignal,'k','LineWidth',1.2);
-    %xlim([min(xa) max(xa)])
 end
 
 %%
 cpsFigure(.6*nsim,.6);
-
-Idx_ptimev = nan(1,nsim);
 for i = 1:nsim
-    Idx_ptimev(i) = p_pool{i}.Idx_ptime_v;
+    subplot(1,nsim,i)
+    hist(p_pool{i}.durationDist_v,50);
+    Xlim = get(gca,'XLim');
+    Ylim = get(gca,'YLim');
+    temp_text = sprintf('domD: %2.2f',mean(p_pool{i}.durationDist_v));
+    text(Xlim(2)*.5,Ylim(2)*.7, temp_text)
+    temp_text = sprintf('CV: %2.2f',p_pool{i}.Idx_cv_v);
+    text(Xlim(2)*.5,Ylim(2)*.6, temp_text)
+    temp_text = sprintf('valid: %2.2f',p_pool{i}.Idx_ptime_v);
+    text(Xlim(2)*.5,Ylim(2)*.5, temp_text)
 end
-subplot(1,6,1)
-bar(Idx_ptimev);
-title('ptimev')
+tightfig;
 
-% Idx_rivalry = nan(1,nsim);
+for i = 1:nsim
+    Idx_domD_p(i) = p_pool{i}.Idx_domD_p;
+    Idx_c(i) = p_pool{i}.contrast(1);
+end
+cpsFigure(.6,.6);
+plot(Idx_c,Idx_domD_p,'-o');
+%%
+cpsFigure(.6*nsim,.6);
+
+% Idx_ptimev = nan(1,nsim);
 % for i = 1:nsim
-%     Idx_noiseamp(i) = p_pool{i}.Idx_noiseamp;
+%     Idx_ptimev(i) = p_pool{i}.Idx_ptime_v;
 % end
 % subplot(1,6,1)
-% bar(Idx_noiseamp);
-% title('Noise amp')
+% bar(Idx_ptimev);
+% title('ptimev')
+
+Idx_rivalry = nan(1,nsim);
+for i = 1:nsim
+    Idx_noiseamp(i) = p_pool{i}.Idx_noiseamp;
+end
+subplot(1,6,1)
+bar(Idx_noiseamp);
+title('Noise amp')
 
 Idx_wta = nan(1,nsim);
 for i = 1:nsim
@@ -94,19 +107,26 @@ bar(Idx_corr);
 title('corr Index')
 tightfig;
 %%
-pIdx  = 1;
-tplot = 1:30000;
+pIdx  = 17;
+tplot = 1:10000;
 
 cpsFigure(2,.8);
 set(gcf,'Name',sprintf('%s contrast: %1.2f %1.2f', condnames{p_pool{pIdx}.cond}, p_pool{pIdx}.contrast(1), p_pool{pIdx}.contrast(2)));
 for lay = 1:p_pool{1}.nLayers
     subplot(2,3,subplotlocs(lay))
     cla; hold on;
-    temp1 = squeeze(p_pool{pIdx}.r{lay}(1,tplot));
-    temp2 = squeeze(p_pool{pIdx}.r{lay}(2,tplot));
-    pL = plot(p_pool{pIdx}.tlist(tplot)/1000,temp1,'color',[1 0 1]);
-    pR = plot(p_pool{pIdx}.tlist(tplot)/1000,temp2,'color',[0 0 1]);
-    
+    if lay==4
+        temp1 = squeeze(p_pool{pIdx}.inh{1}(1,:))*p_pool{pIdx}.w_opp;
+        ptemp = plot(p_pool{pIdx}.tlist(tplot)/1000,temp1(tplot),'color',[0 0 0]);
+    elseif lay==5
+        temp1 = squeeze(p_pool{pIdx}.inh{2}(1,:))*p_pool{pIdx}.w_opp;
+        ptemp = plot(p_pool{pIdx}.tlist(tplot)/1000,temp1(tplot),'color',[0 0 0]);
+    else
+        temp1 = squeeze(p_pool{pIdx}.r{lay}(1,:));
+        temp2 = squeeze(p_pool{pIdx}.r{lay}(2,:));
+        pL = plot(p_pool{pIdx}.tlist(tplot)/1000,temp1(tplot),'color',[1 0 1]);
+        pR = plot(p_pool{pIdx}.tlist(tplot)/1000,temp2(tplot),'color',[0 0 1]);
+    end
     ylabel('Firing rate')
     xlabel('Time (s)')
     title(layernames(lay))
@@ -118,6 +138,7 @@ subplot(2,3,5)
 plot(p_pool{pIdx}.tlist(tplot)/1000,p_pool{pIdx}.att(1,tplot),'color',[1 0 1]); hold on;
 plot(p_pool{pIdx}.tlist(tplot)/1000,p_pool{pIdx}.att(2,tplot),'color',[0 0 1]);
 title('Attention')
+tightfig;
 
 % Draw time sereis_2
 cpsFigure(1,1.5);
@@ -156,5 +177,16 @@ temp2 = squeeze(p_pool{pIdx}.r{lay}(2,tplot));
 plot(p_pool{pIdx}.tlist(tplot)/1000, temp1,'r:','LineWidth',1)
 plot(p_pool{pIdx}.tlist(tplot)/1000, temp2,'b:','LineWidth',1)
 xlabel('Time (sec)', 'FontSize',12)
+tightfig;
 drawnow;
 
+%% Rivalry Idx curves
+% cpsFigure(.6*nsim,.6);
+% xa = (1:p_pool{1}.epochlength-1)-p_pool{1}.epochlength/2;
+% xa = xa/1000;
+% for i = 1:nsim
+%     subplot(1,nsim,i)
+%     plot(p_pool{i}.aSignal,'LineWidth',1.2);hold on;
+%     plot(p_pool{i}.rSignal,'k','LineWidth',1.2);
+%     %xlim([min(xa) max(xa)])
+% end

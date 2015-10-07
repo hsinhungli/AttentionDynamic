@@ -1,135 +1,165 @@
-%close all; drawnow;
-condnames  =  {'B/A','B/iA','P/A','P/iA','SR/A','SR/iA','R/A','R/iA'};
+clear all;close all; drawnow;
+condnames  =  {'B/A','B/iA','M/A','M/iA','SR/A','SR/iA','R/A','R/iA'};
 layernames =  {'L. Monocular', 'R. Monocular', 'Summation', 'L-R Opponency', 'R-L Opponency'};
-p          = setParameters;
-saveData   = 0;
+note = 'Only adaptation. No noise. Run BA condition to test different input range: Levelt 4. Similar to Shpiro 2007';
+saveData   = 1;
 
 %% Set conditions/contrasts to simulate
 % Pick contrasts to run
 % logspace(-1.699,log10(.5),7)
 % 0.0200    0.0342    0.0585    0.1000    0.1710    0.2924    0.5000
 contrasts =...
-    [.1;...
-     .1]; %put fixed variable in the second row
-
+    [.08 .1 .12 .13 .15;...
+     .12 .12 .12 .12 .12]; %put fixed variable in the second row
+%contrasts = [.2;.2];
 % Pick conditions to run
-rcond     = 1;   %conditions to run
-ncond     = numel(rcond);
-rcontrast = 1;   %contrast levels to run
-ncontrast = numel(rcontrast);
-p_pool         = cell(ncond*ncontrast,1); %data (p) of each simulated condition will be saved here
+rstim     = 1;   %conditions to run
+nstim     = length(rstim);
+rcontrast = 1:5;   %contrast levels to run
+ncontrast = length(rcontrast);
+[stimList,contrastList] = ndgrid(rstim,rcontrast);
+ncond = length(stimList);
+
+p_pool    = cell(nstim*ncontrast,1); %data (p) of each simulated condition will be saved here
 
 plotFig   = 1;
-if plotFig 
-    plotduration = 20*1000;
-    pIdx = p.tlist<plotduration;
-    subplotlocs    = [4 6 2 1 3]; %on a 2x3 plot
-end
-condtag  = regexprep(num2str(rcond),'\W','');
+condtag  = regexprep(num2str(rstim),'\W','');
 dataName = sprintf('./Data/cond_%s_%s.mat',condtag,datestr(now,'mmddHHMM'));
+initTime = GetSecs;
 
 %% loop through all conditions to run
-count = 0;
-for cond = rcond
+parfor cond = 1:ncond
     
     %% Decide stimuli configuration for this condition
-    p = setModelPar(cond, p);
+    tempcond = stimList(cond);
+    tempcontrast = contrastList(cond);
+    p        = setParameters;
+    p        = setModelPar(tempcond, p);
+    p.cond       = tempcond;
+    p.contrast   = contrasts(:,tempcontrast);
+    fprintf('cond: %s contrast: %1.2f %1.2f \n\n', condnames{p.cond}, p.contrast(1), p.contrast(2))
+    p = initTimeSeries(p);
+    p = setStim(p.cond,p);
     
-    %% Loop through contrast levels
-    for c = rcontrast
-        
-        p.cond = cond;
-        p.contrast = contrasts(:,c);
-        fprintf('cond: %s contrast: %1.2f %1.2f \n\n', condnames{cond}, p.contrast(1), p.contrast(2))
-        count = count+1;
-        p = initTimeSeries(p);
-        p = setStim(cond,p);
-        stim{cond,c,1} = p.stimL; %This has to change for monocular plaid
-        stim{cond,c,2} = p.stimR; %This has to change for monocular plaid
-        
-        %Stimulus inputs to monocular layers
-        for lay = 1:2
-            p.i{lay} = stim{cond,c,lay};
-        end
-        
-        %run the model
-        %ShowIdx = 1;
-        p       = n_model(p);
-        
-        %% compute WTA index
-        p = getIndex(p,0,1,1,0);
-        
-        %save the p
-        if saveData==1
+    %Stimulus inputs to monocular layers
+    p.i{1} = p.stimL;
+    p.i{2} = p.stimR;
+    
+    %run the model
+    %ShowIdx = 1;
+    p       = n_model(p);
+    
+    %% compute WTA index
+    %p = getIndex(p,0,1,1,0);
+    
+    %save the p
+    if saveData==1
         p = rmfield(p,{'d','s','f','d_n'});
-        end
-        p_pool{count} = p;
-        
-        %% Draw time series_1
-        if plotFig == 1
-            cpsFigure(2,.8);
-            set(gcf,'Name',sprintf('%s contrast: %1.2f %1.2f', condnames{cond}, p.contrast(1), p.contrast(2)));
-            for lay = 1:p.nLayers
-                subplot(2,3,subplotlocs(lay))
-                cla; hold on;
-                temp1 = squeeze(p.r{lay}(1,:));
-                temp2 = squeeze(p.r{lay}(2,:));
-                pL = plot(p.tlist(pIdx)/1000,temp1(pIdx),'color',[1 0 1]);
-                pR = plot(p.tlist(pIdx)/1000,temp2(pIdx),'color',[0 0 1]);
-                
-                ylabel('Firing rate')
-                xlabel('Time (s)')
-                title(layernames(lay))
-                set(gca,'YLim',[0 max([temp1(:)' temp2(:)'])+.1]);
-                drawnow;
-            end
-            subplot(2,3,5)
-            plot(p.tlist(pIdx)/1000,p.att(1,pIdx),'color',[1 0 1]); hold on;
-            plot(p.tlist(pIdx)/1000,p.att(2,pIdx),'color',[0 0 1]);
-            title('Attention')
-            tightfig;
+    end
+    p_pool{cond} = p;
+end
+
+endTime = GetSecs;
+duration = endTime - initTime;
+disp(duration/60);
+%% Draw time series_1
+plotFig = 1;
+if plotFig == 1
+    for cond = 1:ncond
+            
+            p = p_pool{cond};
+            plotduration = 30*1000;
+            pIdx = p.tlist<plotduration;
+%             subplotlocs    = [4 6 2 1 3]; %on a 2x3 plot
+%             cpsFigure(2,.8);
+%             set(gcf,'Name',sprintf('%s contrast: %1.2f %1.2f', condnames{p.cond}, p.contrast(1), p.contrast(2)));
+%             for lay = 1:p.nLayers
+%                 subplot(2,3,subplotlocs(lay))
+%                 cla; hold on;
+%                 if lay==4
+%                     temp1 = squeeze(p.inh{1}(1,:))*p.w_opp;
+%                     ptemp = plot(p.tlist(pIdx)/1000,temp1(pIdx),'color',[0 0 0]);
+%                 elseif lay==5
+%                     temp1 = squeeze(p.inh{2}(1,:))*p.w_opp;
+%                     ptemp = plot(p.tlist(pIdx)/1000,temp1(pIdx),'color',[0 0 0]);
+%                 else
+%                     temp1 = squeeze(p.r{lay}(1,:));
+%                     temp2 = squeeze(p.r{lay}(2,:));
+%                     pL = plot(p.tlist(pIdx)/1000,temp1(pIdx),'color',[1 0 1]);
+%                     pR = plot(p.tlist(pIdx)/1000,temp2(pIdx),'color',[0 0 1]);
+%                 end
+%                 ylabel('Firing rate')
+%                 xlabel('Time (s)')
+%                 title(layernames(lay))
+%                 set(gca,'YLim',[0 max([temp1(:)' temp2(:)'])+.1]);
+%                 drawnow;
+%             end
+%             subplot(2,3,5)
+%             plot(p.tlist(pIdx)/1000,p.att(1,pIdx),'color',[1 0 1]); hold on;
+%             plot(p.tlist(pIdx)/1000,p.att(2,pIdx),'color',[0 0 1]);
+%             title('Attention')
+%             tightfig;
             
             %% Draw time sereis_2
-            cpsFigure(1,1.5);
-            set(gcf,'Name',sprintf('%s contrast: %1.1f %1.1f', condnames{cond}, p.contrast(1), p.contrast(2)));
+%             cpsFigure(1,1.5);
+%             set(gcf,'Name',sprintf('%s contrast: %1.2f %1.2f', condnames{p.cond}, p.contrast(1), p.contrast(2)));
+%             
+%             %To view the two rivarly time series
+%             subplot(4,1,1);hold on
+%             title('Summation Layer')
+%             %imagesc(p.tlist(pIdx)/1000,.5,p.phaseIdx)
+%             colormap([.8 .65 .65;.65 .65 .8;])
+%             lay = 3;
+%             temp1 = squeeze(p.r{lay}(1,:));
+%             temp2 = squeeze(p.r{lay}(2,:));
+%             plot(p.tlist(pIdx)/1000, temp1(pIdx),'r-')
+%             plot(p.tlist(pIdx)/1000, temp2(pIdx),'b-')
+%             xlim([0 max(p.tlist(pIdx)/1000)])
+%             ylim([0 max([temp1(:)' temp2(:)'])+.1])
+%             set(gca,'FontSize',12)
+%             
+%             %Left eye
+%             subplot(4,1,2);hold on
+%             title(sprintf('LE contrast:%2.4f',p_pool{cond}.contrast(1)))
+%             lay=1;
+%             temp1 = squeeze(p.r{lay}(1,:));
+%             temp2 = squeeze(p.r{lay}(2,:));
+%             plot(p.tlist(pIdx)/1000, temp1(pIdx),'r-')
+%             plot(p.tlist(pIdx)/1000, temp2(pIdx),'b-')
+%             xlim([0 max(p.tlist(pIdx)/1000)])
+%             ylim([0 max([temp1(:)' temp2(:)'])+.1])
+%             
+%             %Right eye
+%             subplot(4,1,3);hold on
+%             title(sprintf('RE contrast:%2.4f',p_pool{cond}.contrast(2)))
+%             lay=2;
+%             temp1 = squeeze(p.r{lay}(1,:));
+%             temp2 = squeeze(p.r{lay}(2,:));
+%             plot(p.tlist(pIdx)/1000, temp1(pIdx),'r:','LineWidth',1)
+%             plot(p.tlist(pIdx)/1000, temp2(pIdx),'b:','LineWidth',1)
+%             xlim([0 max(p.tlist(pIdx)/1000)])
+%             ylim([0 max([temp1(:)' temp2(:)'])+.1])
+%             xlabel('Time (sec)', 'FontSize',12)
+%             tightfig;
+%             drawnow;
             
-            %To view the two rivarly time series
-            subplot(4,1,1);hold on
-            title('Summation Layer')
+            cpsFigure(1,.4); hold on;
+            title(sprintf('SummationL contrast:%2.4f',p_pool{cond}.contrast(2)))
             %imagesc(p.tlist(pIdx)/1000,.5,p.phaseIdx)
             colormap([.8 .65 .65;.65 .65 .8;])
-            xlim([1 max(p.tlist(pIdx)/1000)])
             lay = 3;
-            temp1 = squeeze(p.r{lay}(1,:));
-            temp2 = squeeze(p.r{lay}(2,:));
+            temp1 = squeeze(p.r{3}(1,:));
+            temp2 = squeeze(p.r{3}(2,:));
             plot(p.tlist(pIdx)/1000, temp1(pIdx),'r-')
             plot(p.tlist(pIdx)/1000, temp2(pIdx),'b-')
+            xlim([0 max(p.tlist(pIdx)/1000)])
+            ylim([0 max([temp1(:)' temp2(:)'])+.1])
             set(gca,'FontSize',12)
-            
-            %Left eye
-            subplot(4,1,2);hold on
-            title('LE')
-            lay=1;
-            temp1 = squeeze(p.r{lay}(1,:));
-            temp2 = squeeze(p.r{lay}(2,:));
-            plot(p.tlist(pIdx)/1000, temp1(pIdx),'r-')
-            plot(p.tlist(pIdx)/1000, temp2(pIdx),'b-')
-            
-            %Right eye
-            subplot(4,1,3);hold on
-            title('RE')
-            lay=2;
-            temp1 = squeeze(p.r{lay}(1,:));
-            temp2 = squeeze(p.r{lay}(2,:));
-            plot(p.tlist(pIdx)/1000, temp1(pIdx),'r:','LineWidth',1)
-            plot(p.tlist(pIdx)/1000, temp2(pIdx),'b:','LineWidth',1)
-            xlabel('Time (sec)', 'FontSize',12)
-            drawnow;
-        end
     end
 end
 
 if saveData==1
     sprintf('Saving file')
+    p.note = note;
     save(dataName,'p_pool');
 end

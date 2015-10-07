@@ -7,7 +7,7 @@ if quickcheck == 1
 else
     numContrasts = 25;
 end
-cRange = [.01 1];
+cRange = [.01 .4];
 
 % Pick contrasts
 logCRange = log10(cRange);

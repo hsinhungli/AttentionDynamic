@@ -14,5 +14,4 @@ for lay=1:p.nLayers %go through maximum possible layers. This way, if there are 
 end
 
 p.att          = ones(p.ntheta,p.nt);  %Attentional gain factor
-p.WTA          = zeros(p.ntheta,p.nt);
 
