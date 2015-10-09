@@ -50,6 +50,14 @@ ylabel('Firing rate')
 xlabel('Time (s)')
 set(gca,'YLim',[0 max(p.r(:))+.1]);
 
+subplot(nr,nc,13)
+hold on
+plot(p.tlist/1000,p.r2(1,:),'color',[1 0 1]);
+plot(p.tlist/1000,p.r2(2,:),'color',[0 0 1]);
+ylabel('Firing rate filtered')
+xlabel('Time (s)')
+set(gca,'YLim',[0 max(p.r(:))+.1]);
+
 % panel 2
 subplot(nr,nc,2)
 hold on
@@ -87,7 +95,7 @@ plot(p.tlist/1000,p.att(1,:),'color',[1 0 1]);
 plot(p.tlist/1000,p.att(2,:),'color',[0 0 1]);
 ylabel('Attention')
 
-subplot(nr,nc,13)
+subplot(nr,nc,14)
 hold on
 plot(p.tlist/1000, zeros(size(p.tlist)), 'k')
 plot(p.tlist(p.decisionWindows(1,:))/1000,p.evidence(:,1),'color',[1 0 1]);

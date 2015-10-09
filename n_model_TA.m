@@ -48,7 +48,9 @@ for t = p.dt:p.dt:p.T
     
     attnGainI = halfExp(1 + p.aM*aDrive.^p.ap ./ repmat((sum(aDrive.^p.ap) + p.asigma^p.ap),p.ntheta,1) .*aSign,1) ...
         - p.h(:,idx-1)*p.wh;
-    p.attI(:,idx) = p.attI(:,idx-1) + (p.dt/p.tau_attI)*(-p.attI(:,idx-1) + attnGainI);
+%     p.attI(:,idx) = p.attI(:,idx-1) + (p.dt/p.tau_attI)*(-p.attI(:,idx-1) + attnGainI);
+    p.attICascade = cascadeExp(p.attICascade, attnGainI, p.tau_attI, p.dt, idx, p.nAttICascades);
+    p.attI = p.attICascade(:,:,end);
     
     % voluntary
     attnGainV = 1 + p.task(:,idx-1);
@@ -58,7 +60,9 @@ for t = p.dt:p.dt:p.T
     p.att(:,idx) = p.attI(:,idx).*p.attV(:,idx);
 
     % update h
-    p.h(:,idx) = p.h(:,idx-1) + (p.dt/p.tau_h)*(-p.h(:,idx-1) + halfExp(attnGainI-1,1));
+%     p.h(:,idx) = p.h(:,idx-1) + (p.dt/p.tau_h)*(-p.h(:,idx-1) + halfExp(attnGainI-1,1));
+    p.hCascade = cascadeExp(p.hCascade, halfExp(attnGainI-1,1), p.tau_h, p.dt, idx, p.nHCascades);
+    p.h = p.hCascade(:,:,end);
 end
 
     function y = sigmoid(x,theta, k)

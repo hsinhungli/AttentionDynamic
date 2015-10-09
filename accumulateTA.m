@@ -10,7 +10,11 @@ function p = accumulateTA(p)
 decisionWindowDur = p.soa;
 stimStarts = [p.stimOnset p.stimOnset+p.soa];
 nStim = numel(stimStarts);
-evidenceCeiling = 0;
+if isempty(p.ceiling)
+    evidenceCeiling = 0;
+else
+    evidenceCeiling = 1;
+end
 
 %% Accumulate
 decisionWindows = [];
@@ -22,12 +26,12 @@ decisionWindows = unique(decisionWindows','rows')';
 evidence = zeros([size(decisionWindows) nStim]);
 for iStim = 1:nStim
     dw = decisionWindows(iStim,:);
-    evidence(:,:,iStim) = cumsum(p.r(:,dw),2);
+    evidence(:,:,iStim) = cumsum(p.r2(:,dw),2);
 end
 
 % evidence ceiling
 if evidenceCeiling
-    evidence(evidence>ceiling) = ceiling;
+    evidence(evidence>p.ceiling) = p.ceiling;
 end
 
 %% Determine which decision was selected

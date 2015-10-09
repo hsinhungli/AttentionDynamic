@@ -9,7 +9,7 @@ clear all
 condnames  =  {'no-endo','endoT1','endoT2','endoT1T2'};
 p          = setParametersTA;
 saveData   = 0;
-plotFig    = 1;
+plotFig    = 0;
 
 % Pick contrasts to run
 % logspace(-1.699,log10(.5),7)
@@ -18,11 +18,11 @@ contrasts = [0.16 0.64];
 soas = 100:50:800;
 
 % Pick conditions to run
-rcond     = 1;   %conditions to run
+rcond     = 1:4;   %conditions to run
 ncond     = numel(rcond);
 rcontrast = 2;   %contrast levels to run
 ncontrast = numel(rcontrast);
-rsoa = numel(soas);   %soa levels to run
+rsoa = 1:numel(soas);   %soa levels to run
 nsoa = numel(rsoa);
 p_pool         = cell(ncond*ncontrast*nsoa,1); %data (p) of each simulated condition will be saved here
 
@@ -56,15 +56,22 @@ for icond = 1:numel(rcond)
             %Stimulus inputs
             p.i = p.stim;
             
-            % convolve with temporal filter
+            % convolve input with a temporal filter
             p.e = [];
             for i=1:size(p.i,1)
-                p.e(i,:) = conv(p.i(i,:), p.filter); %%% can this be done inside n_model_TA with a differential eq?
+                p.e(i,:) = conv(p.i(i,:), p.filter_e);
             end
             p.e = p.e(:,1:p.nt);
             
             %run the model
             p = n_model_TA(p);
+            
+            % convolve output with a temporal filter
+            p.r2 = [];
+            for i=1:size(p.i,1)
+                p.r2(i,:) = conv(p.r(i,:), p.filter_r2);
+            end
+            p.r2 = p.r2(:,1:p.nt);
             
             %accumulate evidence
             p = accumulateTA(p);

@@ -26,7 +26,7 @@ end
 % sorted by validity
 cueValidityNames = {'valid','invalid','both','none'};
 intervalNames = {'T1','T2'};
-ylims = [0 1.5];
+ylims = [0 15];
 xlims = [soas(1)-100 soas(end)+100];
 colors = get(0,'DefaultAxesColorOrder');
 axTitle = '';
@@ -43,7 +43,7 @@ for iT = 1:numel(perfv)
     ylabel('evidence')
     title(intervalNames{iT})
     xlim(xlims)
-%     ylim(ylims)
+    ylim(ylims)
     
     if iT==1
         legend(p1, cueValidityNames,'location','northeast')
@@ -65,6 +65,6 @@ for iT = 1:numel(perfv)
     ylabel('cuing effect / average performance')
     title(intervalNames{iT})
     xlim(xlims)
-%     ylim(ylims)
+    ylim(ylims)
 end
 legend('cuing effect','average performance')

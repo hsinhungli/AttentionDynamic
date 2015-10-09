@@ -12,5 +12,8 @@ p.attI = ones(p.ntheta,p.nt);  %Involuntary attentional gain factor
 p.attV = ones(p.ntheta,p.nt);  %Voluntary attentional gain factor
 p.h = zeros(p.ntheta,p.nt);    %Involuntary attentional impulse response
 
+p.attICascade = ones(p.ntheta,p.nt,p.nAttICascades);
+p.hCascade = zeros(p.ntheta,p.nt,p.nHCascades);
+
 p.task = zeros(p.ntheta,p.nt); %Task
 
