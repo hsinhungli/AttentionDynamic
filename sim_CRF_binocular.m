@@ -7,7 +7,7 @@ if quickcheck == 1
 else
     numContrasts = 25;
 end
-cRange = [.01 .4];
+cRange = [.1 .9];
 
 % Pick contrasts
 logCRange = log10(cRange);
@@ -25,8 +25,8 @@ sigma_opp = p.sigma(5);
 w_int     = p.w_int;
 attG      = 1;
 
-iA_amp_opts = {[0 0]; [0 1]; [1 1]}; 
-iB_amp_opts = {[1 0]; [1 0]; [1 1]}; 
+iA_amp_opts = {[0 0]; [0 0]; [1 1]}; 
+iB_amp_opts = {[1 0]; [1 1]; [1 1]}; 
 %A and B are two orientation channels
 
 %% Run Monocular Layers First and then Run Summation Layers

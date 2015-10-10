@@ -1,7 +1,7 @@
 function p = initTimeSeries(p)
 
 for lay=1:p.nLayers %go through maximum possible layers. This way, if there are <5 layers, the feedback can be zero.
-    p.d{lay}   = zeros(p.ntheta,p.nt); %Drive
+    p.d{lay}   = zeros(p.ntheta,p.nt); %Excitatory Drive
     p.s{lay}   = zeros(p.ntheta,p.nt); %Suppressive Drive
     p.r{lay}   = zeros(p.ntheta,p.nt); %Firing Rate
     p.f{lay}   = zeros(p.ntheta,p.nt); %Estimated Asy firing rate

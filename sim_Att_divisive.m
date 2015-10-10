@@ -1,8 +1,8 @@
 R1    = -1:.01:2;
 R2    = .25*ones(size(R1));
 R     = [R1;R2];
-sigma = .5;
-n     = 4;
+sigma = .2;
+n     = 2;
 baseline = 1;
 
 aKernel = [1 -1; -1 1];
