@@ -4,17 +4,19 @@ drawnow;
 condnames  =  {'B/A','B/iA','M/A','M/iA'};
 layernames =  {'L. Monocular', 'R. Monocular', 'Summation', 'Inhibition R to L', 'Inhibition L to R'};
 note       = 'new set of sigma, with noise';
-saveData   = 0; %To save the results of simulation in the Data folder or not
+saveData   = 1; %To save the results of simulation in the Data folder or not
 
 %% Set conditions/contrasts to simulate
+%The contrast of the stimuli in each eye (in two rows).
+%Put the fixed contrast stimli in the second row when simulating LeveltII
 contrasts =...
-    [.1:.1:.9;...
-     .1:.1:.9]; %The contrast of the stimuli in each eye (in two rows).
+    [.2:.1:.8;...
+     .2:.1:.8]; 
  
 % Pick conditions to run
 rstim     = 1;   %stimuli/attention conditions to run: 1.B/A 2.B/iA 3.M/A 4.M/iA
 nstim     = length(rstim);
-rcontrast = 1;   %contrast levels to run
+rcontrast = 1:7;   %contrast levels to run
 ncontrast = length(rcontrast);
 [stimList, contrastList] = ndgrid(rstim,rcontrast);
 stimList  = stimList(:);
@@ -24,7 +26,7 @@ ncond        = length(stimList); %total number of condition: nstim x ncontrast
 p_pool    = cell(nstim*ncontrast,1); %data (p) of each simulated condition will be saved here
 plotFig   = 1;
 condtag  = regexprep(num2str(rstim),'\W','');
-dataName = sprintf('./Data/cond_%s_%s.mat',condtag,datestr(now,'mmddHHMM'));
+dataName = sprintf('./ExampleData/cond_%s_%s.mat',condtag,datestr(now,'mmddHHMM'));
 initTime = GetSecs;
 
 %% loop through all conditions to run

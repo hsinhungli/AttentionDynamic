@@ -2,9 +2,9 @@
 % CV: .4-.6; Dominance duration: 1-10 sec (Shpiro et al., 2009)
 clear all;
 %close all;
-datafolder = './Data';
+datafolder = './ExampleData';
 condIdx    = '1';
-fileIdx    = '10101700';
+fileIdx    = '10102358';
 fileName   = sprintf('%s/cond_%s_%s.mat',datafolder,condIdx,fileIdx);
 load(fileName);
 condnames  =  {'B/A','B/iA','M/A','M/iA','SR/A','SR/iA','R/A','R/iA'};
@@ -63,49 +63,49 @@ for cond = 1:ncond
 %     plot(p.tlist(pIdx)/1000,p.att(2,pIdx),'color',[0 0 1]);
 %     title('Attention')
 %     tightfig;
-    
-    %% Draw time sereis_2
-    %             cpsFigure(1,1.5);
-    %             set(gcf,'Name',sprintf('%s contrast: %1.2f %1.2f', condnames{p.cond}, p.contrast(1), p.contrast(2)));
-    %
-    %             %To view the two rivarly time series
-    %             subplot(4,1,1);hold on
-    %             title('Summation Layer')
-    %             %imagesc(p.tlist(pIdx)/1000,.5,p.phaseIdx)
-    %             colormap([.8 .65 .65;.65 .65 .8;])
-    %             lay = 3;
-    %             temp1 = squeeze(p.r{lay}(1,:));
-    %             temp2 = squeeze(p.r{lay}(2,:));
-    %             plot(p.tlist(pIdx)/1000, temp1(pIdx),'r-')
-    %             plot(p.tlist(pIdx)/1000, temp2(pIdx),'b-')
-    %             xlim([0 max(p.tlist(pIdx)/1000)])
-    %             ylim([0 max([temp1(:)' temp2(:)'])+.1])
-    %             set(gca,'FontSize',12)
-    %
-    %             %Left eye
-    %             subplot(4,1,2);hold on
-    %             title(sprintf('LE contrast:%2.4f',p_pool{cond}.contrast(1)))
-    %             lay=1;
-    %             temp1 = squeeze(p.r{lay}(1,:));
-    %             temp2 = squeeze(p.r{lay}(2,:));
-    %             plot(p.tlist(pIdx)/1000, temp1(pIdx),'r-')
-    %             plot(p.tlist(pIdx)/1000, temp2(pIdx),'b-')
-    %             xlim([0 max(p.tlist(pIdx)/1000)])
-    %             ylim([0 max([temp1(:)' temp2(:)'])+.1])
-    %
-    %             %Right eye
-    %             subplot(4,1,3);hold on
-    %             title(sprintf('RE contrast:%2.4f',p_pool{cond}.contrast(2)))
-    %             lay=2;
-    %             temp1 = squeeze(p.r{lay}(1,:));
-    %             temp2 = squeeze(p.r{lay}(2,:));
-    %             plot(p.tlist(pIdx)/1000, temp1(pIdx),'r:','LineWidth',1)
-    %             plot(p.tlist(pIdx)/1000, temp2(pIdx),'b:','LineWidth',1)
-    %             xlim([0 max(p.tlist(pIdx)/1000)])
-    %             ylim([0 max([temp1(:)' temp2(:)'])+.1])
-    %             xlabel('Time (sec)', 'FontSize',12)
-    %             tightfig;
-    %             drawnow;
+%     
+%     % Draw time sereis_2
+%     cpsFigure(1,1.5);
+%     set(gcf,'Name',sprintf('%s contrast: %1.2f %1.2f', condnames{p.cond}, p.contrast(1), p.contrast(2)));
+%     
+%     %To view the two rivarly time series
+%     subplot(4,1,1);hold on
+%     title('Summation Layer')
+%     %imagesc(p.tlist(pIdx)/1000,.5,p.phaseIdx)
+%     colormap([.8 .65 .65;.65 .65 .8;])
+%     lay = 3;
+%     temp1 = squeeze(p.r{lay}(1,:));
+%     temp2 = squeeze(p.r{lay}(2,:));
+%     plot(p.tlist(pIdx)/1000, temp1(pIdx),'r-')
+%     plot(p.tlist(pIdx)/1000, temp2(pIdx),'b-')
+%     xlim([0 max(p.tlist(pIdx)/1000)])
+%     ylim([0 max([temp1(:)' temp2(:)'])+.1])
+%     set(gca,'FontSize',12)
+%     
+%     %Left eye
+%     subplot(4,1,2);hold on
+%     title(sprintf('LE contrast:%2.4f',p_pool{cond}.contrast(1)))
+%     lay=1;
+%     temp1 = squeeze(p.r{lay}(1,:));
+%     temp2 = squeeze(p.r{lay}(2,:));
+%     plot(p.tlist(pIdx)/1000, temp1(pIdx),'r-')
+%     plot(p.tlist(pIdx)/1000, temp2(pIdx),'b-')
+%     xlim([0 max(p.tlist(pIdx)/1000)])
+%     ylim([0 max([temp1(:)' temp2(:)'])+.1])
+%     
+%     %Right eye
+%     subplot(4,1,3);hold on
+%     title(sprintf('RE contrast:%2.4f',p_pool{cond}.contrast(2)))
+%     lay=2;
+%     temp1 = squeeze(p.r{lay}(1,:));
+%     temp2 = squeeze(p.r{lay}(2,:));
+%     plot(p.tlist(pIdx)/1000, temp1(pIdx),'r:','LineWidth',1)
+%     plot(p.tlist(pIdx)/1000, temp2(pIdx),'b:','LineWidth',1)
+%     xlim([0 max(p.tlist(pIdx)/1000)])
+%     ylim([0 max([temp1(:)' temp2(:)'])+.1])
+%     xlabel('Time (sec)', 'FontSize',12)
+%     tightfig;
+%     drawnow;
 end
 
 %% smooth the simualted time series. 

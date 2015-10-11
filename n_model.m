@@ -155,7 +155,7 @@ end
 %     p.r{lay} = p.r{lay} + p.m_n{lay};
 % end
 
-    function y = sigmoid(x,theta, k)
-        y = 1./(1+exp(-k*(x-theta)));
-    end
+%     function y = sigmoid(x,theta, k)
+%         y = 1./(1+exp(-k*(x-theta)));
+%     end
 end
