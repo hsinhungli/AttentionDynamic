@@ -2,9 +2,9 @@
 % CV: .4-.6; Dominance duration: 1-10 sec (Shpiro et al., 2009)
 clear all;
 %close all;
-datafolder = '/Users/hhli/Google Drive/PROJECTS_CURRENT/Pro_BR_RivalryDynamic/Data';
+datafolder = '../Data';
 condIdx    = '1';
-fileIdx    = '10101739';
+fileIdx    = '10101700';
 fileName   = sprintf('%s/cond_%s_%s.mat',datafolder,condIdx,fileIdx);
 load(fileName);
 condnames  =  {'B/A','B/iA','M/A','M/iA','SR/A','SR/iA','R/A','R/iA'};
@@ -134,7 +134,8 @@ for i = 1:nsim
 end
 cpsFigure(.6,.6);
 plot(Idx_c,Idx_domD_p,'-o');
-
+xlabel('Dominance duration','FontSize',14)
+ylabel('Stimul contrast','FontSize',14)
 %% Plot dominance duration distributaion for each simulated condition 
 % Better suited for system with noise.
 cpsFigure(.6*nsim,.6);

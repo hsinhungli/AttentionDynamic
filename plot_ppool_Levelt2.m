@@ -1,9 +1,10 @@
 % Plot the simulation of Levelt's Proposition. (The scheme by Moreno-Bote,
 % 2010 JoV)
 
-datafolder = '/Users/hhli/Google Drive/PROJECTS_CURRENT/Pro_BR_RivalryDynamic/Data';
-fileIdx    = '10070021';
-fileName   = sprintf('%s/cond_1_%s.mat',datafolder,fileIdx);
+datafolder = '../Data';
+condIdx    = '1';
+fileIdx    = '10101700';
+fileName   = sprintf('%s/cond_%s_%s.mat',datafolder,condIdx,fileIdx);
 load(fileName);
 nsim = length(p_pool);
 condnames  =  {'B/A','B/iA','P/A','P/iA','SR/A','SR/iA','R/A','R/iA'};
