@@ -1,10 +1,10 @@
-clear all;
-close all; 
+%clear all;
+%close all; 
 drawnow;
 condnames  =  {'B/A','B/iA','M/A','M/iA'};
 layernames =  {'L. Monocular', 'R. Monocular', 'Summation', 'Inhibition R to L', 'Inhibition L to R'};
 note       = 'new set of sigma, with noise';
-saveData   = 1; %To save the results of simulation in the Data folder or not
+saveData   = 0; %To save the results of simulation in the Data folder or not
 
 %% Set conditions/contrasts to simulate
 contrasts =...
@@ -14,7 +14,7 @@ contrasts =...
 % Pick conditions to run
 rstim     = 1;   %stimuli/attention conditions to run: 1.B/A 2.B/iA 3.M/A 4.M/iA
 nstim     = length(rstim);
-rcontrast = 1:9;   %contrast levels to run
+rcontrast = 1;   %contrast levels to run
 ncontrast = length(rcontrast);
 [stimList, contrastList] = ndgrid(rstim,rcontrast);
 stimList  = stimList(:);
