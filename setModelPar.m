@@ -3,10 +3,10 @@ function p = setModelPar(cond,p)
 % [IdxR] = [find(p.theta==30) find(p.x==p.stimCenterR)];
 
 switch cond
-    case 1 %Dichoptic Gratings + Attention
+    case 1 %Binocualr rivalry + Attention
         p.aend          = 0;
         p.changeAtt     = 1;
-    case 2 %Dichoptic Gratings + noAttention
+    case 2 %Binocualr rivalry + noAttention
         p.aend          = 0;
         p.changeAtt     = 0;
     case 3 %Plaid + Attention
