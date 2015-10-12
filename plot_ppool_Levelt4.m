@@ -1,10 +1,11 @@
 % Extract the index from simulated data and plot the index.
 % CV: .4-.6; Dominance duration: 1-10 sec (Shpiro et al., 2009)
+
 clear all;
-%close all;
+close all;
 datafolder = './ExampleData';
 condIdx    = '1';
-fileIdx    = '10102358';
+fileIdx    = '10121531';
 fileName   = sprintf('%s/cond_%s_%s.mat',datafolder,condIdx,fileIdx);
 load(fileName);
 condnames  =  {'B/A','B/iA','M/A','M/iA','SR/A','SR/iA','R/A','R/iA'};
@@ -108,7 +109,8 @@ for cond = 1:ncond
 %     drawnow;
 end
 
-%% smooth the simualted time series. 
+%% smooth the simualted time series and plot the dominance duration vs contrast.
+% This part is better used for simulation with noise added in the model.
 % This is mailny for computing the dominance duration when noise is added
 % in simulation. Some smoothing can combine the dominance duration that is
 % extremely short and might not be meaningful to reflect perceptual report.
@@ -125,9 +127,6 @@ for i = 1:nsim
     contrastlevel(i) = p_pool{i}.contrast(1);
 end
 
-%% Plot dominance duration for each contrast level
-% Note that when there is no noise, this plot won't reflect the both-off,
-% WTA and both-on regime well. Please check the original time series.
 for i = 1:nsim
     Idx_domD_p(i) = p_pool{i}.Idx_domD_p;
     Idx_c(i) = p_pool{i}.contrast(1);
@@ -137,7 +136,8 @@ plot(Idx_c,Idx_domD_p,'-o');
 xlabel('Dominance duration','FontSize',14)
 ylabel('Stimul contrast','FontSize',14)
 %% Plot dominance duration distributaion for each simulated condition 
-% Better suited for system with noise.
+% This part is better used for simulation with noise added in the model.
+
 cpsFigure(.6*nsim,.6);
 for i = 1:nsim
     subplot(1,nsim,i)

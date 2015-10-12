@@ -1,10 +1,10 @@
-%clear all;
-%close all; 
+clear all;
+close all; 
 drawnow;
 condnames  =  {'B/A','B/iA','M/A','M/iA'};
 layernames =  {'L. Monocular', 'R. Monocular', 'Summation', 'Inhibition R to L', 'Inhibition L to R'};
-note       = 'new set of sigma, with noise';
-saveData   = 1; %To save the results of simulation in the Data folder or not
+note       = 'Simulating Levelt four';
+saveData   = 0; %To save the results of simulation in the Data folder or not
 
 %% Set conditions/contrasts to simulate
 %The contrast of the stimuli in each eye (in two rows).
@@ -71,7 +71,7 @@ if plotFig == 1
     for cond = 1:ncond
             
             p = p_pool{cond};
-            plotduration = 30*1000;
+            plotduration = 60*1000;
             pIdx = p.tlist<plotduration;
             subplotlocs    = [4 6 2 1 3]; %on a 2x3 plot
             cpsFigure(2,.8);

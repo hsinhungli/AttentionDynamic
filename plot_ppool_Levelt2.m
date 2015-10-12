@@ -1,9 +1,9 @@
 % Plot the simulation of Levelt's Proposition. (The scheme by Moreno-Bote,
 % 2010 JoV)
 
-datafolder = './Data';
+datafolder = './ExampleData';
 condIdx    = '1';
-fileIdx    = '10070021';
+fileIdx    = '10121540';
 fileName   = sprintf('%s/cond_%s_%s.mat',datafolder,condIdx,fileIdx);
 load(fileName);
 nsim = length(p_pool);
