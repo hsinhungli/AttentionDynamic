@@ -2,8 +2,13 @@
 % CV: .4-.6; Dominance duration: 1-10 sec (Shpiro et al., 2009)
 
 clear all;
+<<<<<<< HEAD
 close all;
 datafolder = './ExampleData';
+=======
+%close all;
+datafolder = './Data';
+>>>>>>> e38c6d39d3a3b436e10851315d8af2622d66eb71
 condIdx    = '1';
 fileIdx    = '10121531';
 fileName   = sprintf('%s/cond_%s_%s.mat',datafolder,condIdx,fileIdx);
