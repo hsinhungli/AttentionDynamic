@@ -28,8 +28,6 @@ p.ntheta        = 2;                %Sampling of orientation
 p.baselineMod   = [0 0 0 0 0];
 p.baselineAtt   = 1;
 p.p             = [1 1 1 1 1]*2;    %exponentiation of each layer
-
-p.p             = [1 1 1 1 1]*2;      %exponentiation of each layer
 p.sigma         = [.5 .5 .5 .5 .5]; %semisaturation constant of each layer
 p.wa            = [1 1 1 1 1];      %weights of self-adaptation
 p.w_int         = 1;                %weights of interocular normalization (serve as input normalization here)
