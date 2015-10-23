@@ -18,7 +18,7 @@ switch cond
                 attWeights = [max(w) max(w)];
         end
     otherwise
-        error('cond not recognized')
+        attWeights = [0 0];
 end
 
 % start and end times of attention to T1

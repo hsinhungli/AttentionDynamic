@@ -1,20 +1,39 @@
 function plotPerformanceTA(condnames, soas, perf)
 
-if ~isequal(condnames,{'no-endo','endoT1','endoT2','endoT1T2'})
-    fprintf('conds must be {"no-endo","endoT1","endoT2","endoT1T2"}\nnot plotting ...\n')
+% if ~isequal(condnames,{'no-endo','endoT1','endoT2','endoT1T2'})
+%     fprintf('conds must be {"no-endo","endoT1","endoT2","endoT1T2"}\nnot plotting ...\n')
+%     return
+% end
+if numel(soas)==1
+    fprintf('plotPerformanceTA is for multiple SOAS, not plotting ...\n')
     return
 end
 
 %% re-sort endo condition data into valid, invalid, neutral
-perfv{1}(1,:) = perf(1,:,2); % T1 valid
-perfv{1}(2,:) = perf(1,:,3); % T1 invalid
-perfv{1}(3,:) = perf(1,:,4); % T1 neutral - endoT1T2
-perfv{1}(4,:) = perf(1,:,1); % T1 neutral - no endo
-
-perfv{2}(1,:) = perf(2,:,3); % T2 valid
-perfv{2}(2,:) = perf(2,:,2); % T2 invalid
-perfv{2}(3,:) = perf(2,:,4); % T2 neutral - endoT1T2
-perfv{2}(4,:) = perf(2,:,1); % T2 neutral - no endo
+if isequal(condnames,{'no-endo','endoT1','endoT2','endoT1T2'}) || isequal(condnames,{'no-endo','exoT1','exoT2','exoT1T2'})
+    cueValidityNames = {'valid','invalid','both','none'};
+    
+    perfv{1}(1,:) = perf(1,:,2); % T1 valid
+    perfv{1}(2,:) = perf(1,:,3); % T1 invalid
+    perfv{1}(3,:) = perf(1,:,4); % T1 neutral - endoT1T2
+    perfv{1}(4,:) = perf(1,:,1); % T1 neutral - no endo
+    
+    perfv{2}(1,:) = perf(2,:,3); % T2 valid
+    perfv{2}(2,:) = perf(2,:,2); % T2 invalid
+    perfv{2}(3,:) = perf(2,:,4); % T2 neutral - endoT1T2
+    perfv{2}(4,:) = perf(2,:,1); % T2 neutral - no endo
+elseif isequal(condnames,{'endoT1','endoT2'}) || isequal(condnames,{'exoT1','exoT2'})
+    cueValidityNames = {'valid','invalid'};
+    
+    perfv{1}(1,:) = perf(1,:,1); % T1 valid
+    perfv{1}(2,:) = perf(1,:,2); % T1 invalid
+    
+    perfv{2}(1,:) = perf(2,:,2); % T2 valid
+    perfv{2}(2,:) = perf(2,:,1); % T2 invalid
+else
+    fprintf('conds must be {"no-endo","endoT1","endoT2","endoT1T2"} or {"endoT1","endoT2"}\nnot plotting ...\n')
+    return
+end
 
 % cuing effect and average across cue validities
 for iT = 1:numel(perfv)
@@ -24,9 +43,8 @@ end
 
 %% plot figs
 % sorted by validity
-cueValidityNames = {'valid','invalid','both','none'};
 intervalNames = {'T1','T2'};
-ylims = [0 15];
+ylims = [0 20]; % [0 12]
 xlims = [soas(1)-100 soas(end)+100];
 colors = get(0,'DefaultAxesColorOrder');
 axTitle = '';

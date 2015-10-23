@@ -1,4 +1,4 @@
-function p = accumulateTA(p)
+function p = accumulateTA(cond, p)
 %
 % p = accumulateTA(p)
 %
@@ -7,7 +7,13 @@ function p = accumulateTA(p)
 % next stimulus. use the same interval for the final stimulus.
 
 %% Setup
-decisionWindowDur = p.soa;
+if isempty(strfind(cond, 'exo'))
+%     exoCueSOA = 0;
+    exoCueSOA = p.exoCueSOA;
+else
+    exoCueSOA = p.exoCueSOA;
+end
+decisionWindowDur = p.soa - exoCueSOA;
 stimStarts = [p.stimOnset p.stimOnset+p.soa];
 nStim = numel(stimStarts);
 if isempty(p.ceiling)

@@ -6,8 +6,8 @@
 clear all
 
 %% Set conditions/contrasts to simulate
-condnames  =  {'no-endo','endoT1','endoT2','endoT1T2'};
-p          = setParametersTA;
+condnames  =  {'no-endo','endoT1','endoT2','endoT1T2','exoT1','exoT2','exoT1T2'};
+p          = setParametersFA;
 saveData   = 0;
 plotFig    = 0;
 
@@ -15,10 +15,11 @@ plotFig    = 0;
 % logspace(-1.699,log10(.5),7)
 % 0.0200    0.0342    0.0585    0.1000    0.1710    0.2924    0.5000
 contrasts = [0.16 0.64];
-soas = 100:50:800;
+soas = [100:50:500 800];
+% soas = [100:10:800];
 
 % Pick conditions to run
-rcond     = 1:4;   %conditions to run
+rcond     = [1 5:7];   %conditions to run
 ncond     = numel(rcond);
 rcontrast = 2;   %contrast levels to run
 ncontrast = numel(rcontrast);
@@ -36,9 +37,6 @@ for icond = 1:numel(rcond)
     cond = rcond(icond);
     condname = condnames{cond};
     
-    %% Decide stimuli configuration for this condition
-%     p = setModelParTA(condname, p);
-    
     %% Loop through contrast levels
     for icontrast = 1:numel(rcontrast)
         c = rcontrast(icontrast);
@@ -49,8 +47,8 @@ for icond = 1:numel(rcond)
             p.soa = soas(:,s);
             fprintf('cond: %s contrast: %1.2f soa: %d \n\n', condname, p.contrast, p.soa)
             count = count+1;
-            p = initTimeSeriesTA(p);
-            p = setStimTA(p);
+            p = initTimeSeriesFA(p);
+            p = setStimTA(condname,p);
             p = setTaskTA(condname,p);
             
             %Stimulus inputs
@@ -64,7 +62,7 @@ for icond = 1:numel(rcond)
             p.e = p.e(:,1:p.nt);
             
             %run the model
-            p = n_model_TA(p);
+            p = n_model_FA(p);
             
             % convolve output with a temporal filter
             p.r2 = [];
@@ -74,7 +72,7 @@ for icond = 1:numel(rcond)
             p.r2 = p.r2(:,1:p.nt);
             
             %accumulate evidence
-            p = accumulateTA(p);
+            p = accumulateTA(condname,p);
             ev(:,isoa,icond,icontrast) = p.evidence(end,:);
             
             %save the p
@@ -85,7 +83,8 @@ for icond = 1:numel(rcond)
             
             %% Draw time series_1
             if plotFig == 1
-                plotTA(condname, p)
+%                 plotTA(condname, p)
+                plotFA2(condname, p)
             end
         end
     end
