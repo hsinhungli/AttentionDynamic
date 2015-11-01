@@ -3,7 +3,7 @@
 % modified from runModelTA.m
 % 2015-10-20 (RD)
 
-clear all
+% clear all
 
 %% Set conditions/contrasts to simulate
 condnames  =  {'no-att','exoF1','exoF2','endoF1','endoF2'};
@@ -18,7 +18,7 @@ contrasts = [0.16 0.32 0.64];
 soas = 100:50:800;
 
 % Pick conditions to run
-rcond     = [2 4];   %conditions to run
+rcond     = [1 2 4];   %conditions to run
 ncond     = numel(rcond);
 rcontrast = 3;   %contrast levels to run
 ncontrast = numel(rcontrast);
@@ -71,7 +71,7 @@ for icond = 1:numel(rcond)
             p.r2 = p.r2(:,1:p.nt);
             
             %accumulate evidence
-            p = accumulateTA(p);
+            p = accumulateTA(condname,p);
             ev(:,isoa,icond,icontrast) = p.evidence(end,:);
             
             %save the p
