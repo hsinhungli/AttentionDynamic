@@ -1,13 +1,16 @@
-% runModelTA.m
+function perfv = runModelTA(opt)
 
 % modified from runModel.m
 % 2015-09-28 (RD)
 
-clear all
+% clear all
+
+%% Set params
+p          = setParametersFA(opt);
+% p          = setParametersFA;
 
 %% Set conditions/contrasts to simulate
 condnames  =  {'no-endo','endoT1','endoT2','endoT1T2','exoT1','exoT2','exoT1T2'};
-p          = setParametersFA;
 saveData   = 0;
 plotFig    = 0;
 
@@ -19,7 +22,7 @@ soas = [100:50:500 800];
 % soas = [100:10:800];
 
 % Pick conditions to run
-rcond     = [1 5:7];   %conditions to run
+rcond     = [2:3];   %conditions to run
 ncond     = numel(rcond);
 rcontrast = 2;   %contrast levels to run
 ncontrast = numel(rcontrast);
@@ -92,7 +95,7 @@ end
 
 %% plot multiple conditions
 for icontrast = 1:numel(rcontrast)
-    plotPerformanceTA(condnames(rcond), soas(rsoa), ev(:,:,:,icontrast))
+    perfv = plotPerformanceTA(condnames(rcond), soas(rsoa), ev(:,:,:,icontrast));
 end
 
 %% save data

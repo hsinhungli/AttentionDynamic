@@ -1,4 +1,4 @@
-function plotPerformanceTA(condnames, soas, perf)
+function perfv = plotPerformanceTA(condnames, soas, perf)
 
 % if ~isequal(condnames,{'no-endo','endoT1','endoT2','endoT1T2'})
 %     fprintf('conds must be {"no-endo","endoT1","endoT2","endoT1T2"}\nnot plotting ...\n')
@@ -8,6 +8,8 @@ if numel(soas)==1
     fprintf('plotPerformanceTA is for multiple SOAS, not plotting ...\n')
     return
 end
+
+plotOption = 2; % 1 = normal; 2 = during fitting
 
 %% re-sort endo condition data into valid, invalid, neutral
 if isequal(condnames,{'no-endo','endoT1','endoT2','endoT1T2'}) || isequal(condnames,{'no-endo','exoT1','exoT2','exoT1T2'})
@@ -50,7 +52,11 @@ colors = get(0,'DefaultAxesColorOrder');
 axTitle = '';
 
 % evidence
-figure
+if plotOption==2
+    figure(gcf)
+else
+    figure
+end
 for iT = 1:numel(perfv)
     subplot(1,numel(perfv),iT)
     hold on    
@@ -71,18 +77,20 @@ for iT = 1:numel(perfv)
     %     rd_supertitle(axTitle);
 end
 
-figure
-for iT = 1:numel(perfv)
-    subplot(1,numel(perfv),iT)
-    hold on
-    
-    plot(soas, cueEff{iT})
-    plot(soas, cueAve{iT},'k')
-    
-    xlabel('soa')
-    ylabel('cuing effect / average performance')
-    title(intervalNames{iT})
-    xlim(xlims)
-    ylim(ylims)
+if plotOption==1
+    figure
+    for iT = 1:numel(perfv)
+        subplot(1,numel(perfv),iT)
+        hold on
+        
+        plot(soas, cueEff{iT})
+        plot(soas, cueAve{iT},'k')
+        
+        xlabel('soa')
+        ylabel('cuing effect / average performance')
+        title(intervalNames{iT})
+        xlim(xlims)
+        ylim(ylims)
+    end
+    legend('cuing effect','average performance')
 end
-legend('cuing effect','average performance')

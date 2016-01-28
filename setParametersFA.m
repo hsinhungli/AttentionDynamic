@@ -1,4 +1,13 @@
-function p = setParametersFA
+function p = setParametersFA(opt)
+
+% function p = setParametersFA(opt)
+%
+% opt is a structure containing values of p fields. will overwrite existing values. 
+
+%% Deal with input
+if ~exist('opt','var')
+    opt = [];
+end
 
 %% Temporal Parameters
 %Expeirment parameters
@@ -43,7 +52,9 @@ p.ap      = 4;
 p.asigma  = .3;
 p.aKernel = [1; -1];
 p.aIOR    = 1; % 1 (spatial sim), 1.3 (stronger IOR), 1.12 (temporal sim)
-aW               = repmat(makeBiphasic(0:p.dt/1000:0.8,25,3),2,1)*p.aMI;
+p.biph1   = 25;
+p.biph2   = 3;
+aW               = repmat(makeBiphasic(0:p.dt/1000:0.8,p.biph1,p.biph2),2,1)*p.aMI;
 aW(aW<0)         = aW(aW<0)*p.aIOR;
 % g1 = makeGamma(0:800,[],12,10,1);
 % g2 = makeGamma(0:800,[],12,25,1);
@@ -62,3 +73,13 @@ p.neutralAttOp = 'max';             % 'mean','max'; attention weight assigned in
 p.bounds = [0 0];                   % evidence accumulation bounds for perceptual decision (when measuring accuracy)
 p.ceiling = []; %7.8; %[];                     % evidence ceiling (when measuring eveidence)
 p.exoCueSOA = 100;
+
+%% Set params from opt
+if ~isempty(opt)
+    fieldNames = fields(opt);
+    for iF = 1:numel(fieldNames)
+        f = fieldNames{iF};
+        p.(f) = opt.(f);
+    end
+end
+

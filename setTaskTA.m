@@ -27,8 +27,8 @@ attEnd = p.stimOnset + p.stimDur + p.attOffset;
 
 % make voluntary attention input (same across features)
 timeSeries = zeros([2 p.nt 2]);
-timeSeries(:,(attStart:p.dt:attEnd)/p.dt, 1) = attWeights(1); % T1
-timeSeries(:,((attStart:p.dt:attEnd) + p.soa)/p.dt, 2) = attWeights(2); % T2
+timeSeries(:,unique(round((attStart:p.dt:attEnd)/p.dt)), 1) = attWeights(1); % T1
+timeSeries(:,unique(round((attStart:p.dt:attEnd + p.soa)/p.dt)), 2) = attWeights(2); % T2
 timeSeries = max(timeSeries,[],3);
 
 p.task = timeSeries;

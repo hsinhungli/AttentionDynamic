@@ -47,10 +47,10 @@ for t = p.dt:p.dt:p.T
     attnGainV = p.task(:,idx-1);
     p.attV(:,idx) = p.attV(:,idx-1) + (p.dt/p.tau_attV)*(-p.attV(:,idx-1) + attnGainV);
     
-    if idx==640
-        a = 1;
-        a = 2;
-    end
+%     if idx==640
+%         a = 1;
+%         a = 2;
+%     end
     
     % involuntary
     if idx > length(p.aW)
