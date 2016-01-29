@@ -81,5 +81,16 @@ if ~isempty(opt)
         f = fieldNames{iF};
         p.(f) = opt.(f);
     end
+    
+    % update params that depend on opt params
+    filter_e          = (p.tlist/p.tau_e).*exp(1-p.tlist/p.tau_e); % alpha
+    p.filter_e        = filter_e/sum(filter_e);     %temporal filter for excitatory response
+    filter_r2         = exp(-p.tlist/p.tau_r2); % exponential
+    p.filter_r2       = filter_r2/sum(filter_r2);     %temporal filter for firing rate
+    
+    aW               = repmat(makeBiphasic(0:p.dt/1000:0.8,round(p.biph1),round(p.biph2)),2,1)*p.aMI;
+    aW(aW<0)         = aW(aW<0)*p.aIOR;
+    p.aW(:,:,1)      = aW;
+    p.aW(:,:,2)      = -aW;
 end
 

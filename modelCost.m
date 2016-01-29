@@ -1,4 +1,4 @@
-function cost = modelCost(x, D)
+function [cost, model, data] = modelCost(x, D)
 
 %% run model
 opt = x2opt(x);
