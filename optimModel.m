@@ -17,7 +17,8 @@ turnwhite
 % make function to take extra params
 f = @(x)modelCost(x,D);
 
-x = fminsearch(f, x0);
+% do optimization
+[x,fval,exitflag,output] = fminsearch(f, x0);
 % x = fmincon(@f,x0,[],[],[],[],lb,ub);
 opt = x2opt(x);
 

@@ -46,12 +46,12 @@ p.wa            = 0;               %weights of self-adaptation
 p.wh            = 3; %1.5;               %weight of inhibitory involuntary attention
 
 %% Attention
-p.aMI     = 5; % 5 (spatial sim), 4 (stronger IOR), 4 (temporal sim)
+p.aMI     = 4; % 5 (spatial sim), 4 (stronger IOR), 4 (temporal sim)
 p.aMV     = 9;
 p.ap      = 4;
 p.asigma  = .3;
 p.aKernel = [1; -1];
-p.aIOR    = 1; % 1 (spatial sim), 1.3 (stronger IOR), 1.12 (temporal sim)
+p.aIOR    = 1.12; % 1 (spatial sim), 1.3 (stronger IOR), 1.12 (temporal sim)
 p.biph1   = 25;
 p.biph2   = 3;
 aW               = repmat(makeBiphasic(0:p.dt/1000:0.8,p.biph1,p.biph2),2,1)*p.aMI;

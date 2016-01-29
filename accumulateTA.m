@@ -8,8 +8,8 @@ function p = accumulateTA(cond, p)
 
 %% Setup
 if isempty(strfind(cond, 'exo'))
-%     exoCueSOA = 0;
-    exoCueSOA = p.exoCueSOA;
+    exoCueSOA = 0;
+%     exoCueSOA = p.exoCueSOA;
 else
     exoCueSOA = p.exoCueSOA;
 end

@@ -54,6 +54,7 @@ axTitle = '';
 % evidence
 if plotOption==2
     figure(gcf)
+    clf
 else
     figure
 end

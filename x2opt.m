@@ -20,8 +20,8 @@ p.aMV           = 9;
 % involuntary attention
 p.biph1         = 25;
 p.biph2         = 3;
-p.aMI           = 5; % 5 (spatial sim), 4 (stronger IOR), 4 (temporal sim)
-p.aIOR          = 1; % 1 (spatial sim), 1.3 (stronger IOR), 1.12 (temporal sim)
+p.aMI           = 4; % 5 (spatial sim), 4 (stronger IOR), 4 (temporal sim)
+p.aIOR          = 1.12; % 1 (spatial sim), 1.3 (stronger IOR), 1.12 (temporal sim)
 p.asigma        = .3;
 p.tau_attI      = 50;  %50         %time constant involuntary attention (ms)
 

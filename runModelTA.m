@@ -4,6 +4,9 @@ function perfv = runModelTA(opt)
 % 2015-09-28 (RD)
 
 % clear all
+if nargin==0
+    opt = [];
+end
 
 %% Set params
 p          = setParametersFA(opt);
