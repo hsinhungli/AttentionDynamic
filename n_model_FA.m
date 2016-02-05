@@ -47,11 +47,6 @@ for t = p.dt:p.dt:p.T
     attnGainV = p.task(:,idx-1);
     p.attV(:,idx) = p.attV(:,idx-1) + (p.dt/p.tau_attV)*(-p.attV(:,idx-1) + attnGainV);
     
-%     if idx==640
-%         a = 1;
-%         a = 2;
-%     end
-    
     % involuntary
     if idx > length(p.aW)
         r = p.r(:,idx-length(p.aW):idx-1);
@@ -65,7 +60,8 @@ for t = p.dt:p.dt:p.T
     end
     aDrive  = inp*p.aKernel; % on channel - off channel
     aE      = halfExp(1 + p.attV(:,idx)*p.aMV).*(aDrive + p.aBaseline);
-    aS      = repmat((sum(aDrive) + p.asigma^p.ap),p.ntheta,1); % S + sigma^2
+%     aS      = repmat((sum(aDrive) + p.asigma^p.ap),p.ntheta,1); % S + sigma^2
+    aS      = repmat((sum(abs(aE)) + p.asigma^p.ap),p.ntheta,1); % S + sigma^2
     
 %     aDrive  = abs(p.aKernel*inp);
 %     aSign   = sign(p.aKernel*inp);

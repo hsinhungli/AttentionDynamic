@@ -6,10 +6,11 @@ function perfv = plotPerformanceTA(condnames, soas, perf)
 % end
 if numel(soas)==1
     fprintf('plotPerformanceTA is for multiple SOAS, not plotting ...\n')
+    perfv = [];
     return
 end
 
-plotOption = 2; % 1 = normal; 2 = during fitting
+plotOption = 1; % 1 = normal; 2 = during fitting
 
 %% re-sort endo condition data into valid, invalid, neutral
 if isequal(condnames,{'no-endo','endoT1','endoT2','endoT1T2'}) || isequal(condnames,{'no-endo','exoT1','exoT2','exoT1T2'})
