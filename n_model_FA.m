@@ -2,10 +2,15 @@ function [p] = n_model_FA(p)
 %This function is called by runModelFA.m
 
 idx = 1; %corresponds to t=0
+istim = 1; % relevant only for WM. works only with no noise at the moment.
 for t = p.dt:p.dt:p.T
 %     counterdisp(t);
     idx = idx+1;
-    %% Computing the responses of a layer
+    if t > p.stimOnset + p.soa
+        istim = 2;
+    end
+    
+    %% Computing the responses of sensory layer
     %defining inputs (stimulus)
     % use the stimulus that's been convolved with a temporal filter
     inp = p.e(:,idx);
@@ -40,6 +45,36 @@ for t = p.dt:p.dt:p.T
     
     %update adaptation
     p.a(:,idx) = p.a(:,idx-1) + (p.dt/p.tau_a)*(-p.a(:,idx-1) + p.r(:,idx));
+    
+    
+    %% Computing the responses of working memory layer
+    %defining inputs (from sensory layer)
+    inpwm = p.r(1,idx); % assume for now that the stim have feature 1
+    
+    %updating noise
+    p.dwm_n(:,idx) = p.dwm_n(:,idx-1) + (p.dt/p.tau_n)*...
+        (-p.dwm_n(:,idx-1) + randn(p.ntheta,p.nx)*p.d_noiseamp*sqrt(p.tau_n*2));
+    
+    %updating drives
+    drive = halfExp(inpwm,p.p); %%% leaving out w and a
+    p.dwm(istim,idx) = drive; % note difference from sensory layer: no attention, each row is a stimulus
+    
+    % normalization pool
+    pool = p.dwm(:,idx);
+    
+    %Compute Suppressive Drive
+    p.swm(:,idx) = sum(pool(:)); %normalized across orientation
+    
+    %Normalization
+    p.fwm(:,idx) = p.dwm(:,idx) ./ ...
+        (p.swm(:,idx) + halfExp(p.sigmawm, p.p) + halfExp(p.awm(:,idx-1)*p.wa, p.p)) ...
+        + p.baselineMod;
+    
+    %update firing rates
+    p.rwm(:,idx) = p.rwm(:,idx-1) + (p.dt/p.tauwm)*(-p.rwm(:,idx-1) + p.fwm(:,idx));
+    
+    %update adaptation
+    p.awm(:,idx) = p.awm(:,idx-1) + (p.dt/p.tau_a)*(-p.awm(:,idx-1) + p.rwm(:,idx));
     
     
     %% Update attention map

@@ -7,7 +7,7 @@ function plotFA2(condname, p)
 % panel 1
 cpsFigure(.5,1.2);
 set(gcf,'Name',sprintf('%s contrast: %1.2f soa: %d', condname, p.contrast, p.soa));
-nr = 6;
+nr = 7;
 nc = 1;
 xlims = [0 1.5];
 
@@ -50,6 +50,14 @@ ylabel('R1 filtered')
 set(gca,'YLim',[0 max(p.r(:))+.1]);
 
 subplot(nr,nc,6)
+hold on
+plot(p.tlist/1000,p.rwm(1,:),'color',[110 119 143]/255);
+plot(p.tlist/1000,p.rwm(2,:),'color',[110 119 143]/255);
+xlim(xlims)
+ylabel('R4')
+set(gca,'YLim',[0 max(p.rwm(:))+.1]);
+
+subplot(nr,nc,7)
 hold on
 plot(p.tlist/1000, zeros(size(p.tlist)), 'k')
 plot(p.tlist(p.decisionWindows(1,:))/1000,p.evidence(:,1),'color',[53 68 88]/255);

@@ -89,7 +89,7 @@ for icond = 1:numel(rcond)
             
             %% Draw time series_1
             if plotFig == 1
-                plotTA(condname, p)
+%                 plotTA(condname, p)
                 plotFA2(condname, p)
             end
         end

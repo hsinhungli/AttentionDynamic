@@ -24,15 +24,25 @@ end
 
 %% Accumulate
 decisionWindows = [];
-for iStim = 1:nStim
-    decisionWindows(iStim,:) = round((stimStarts(iStim)/p.dt):(stimStarts(iStim)/p.dt)+decisionWindowDur/p.dt); % indices
-end
-decisionWindows = unique(decisionWindows','rows')';  
-
-evidence = zeros([size(decisionWindows) nStim]);
-for iStim = 1:nStim
-    dw = decisionWindows(iStim,:);
-    evidence(:,:,iStim) = cumsum(p.r2(:,dw),2);
+switch p.model
+    case 1
+        for iStim = 1:nStim
+            decisionWindows(iStim,:) = round((stimStarts(iStim)/p.dt):(stimStarts(iStim)/p.dt)+decisionWindowDur/p.dt); % indices
+        end
+        decisionWindows = unique(decisionWindows','rows')';
+        
+        evidence = zeros([size(decisionWindows) nStim]);
+        for iStim = 1:nStim
+            dw = decisionWindows(iStim,:);
+            evidence(:,:,iStim) = cumsum(p.r2(:,dw),2);
+        end
+    case 2
+        decisionWindows = repmat(1:size(p.stim,2),nStim,1);
+        for iStim = 1:nStim
+            evidence(:,:,iStim) = cumsum(p.rwm(iStim,:),2);
+        end
+    otherwise
+        error('p.model not recognized')
 end
 
 % evidence ceiling

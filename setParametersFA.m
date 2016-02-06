@@ -9,6 +9,9 @@ if ~exist('opt','var')
     opt = [];
 end
 
+%% Model
+p.model         = 2; % 1 (IOR) or 2 (WM)
+
 %% Temporal Parameters
 %Expeirment parameters
 p.dt            = 2;                        %time-step (ms)
@@ -18,6 +21,7 @@ p.tlist         = 0:p.dt:p.T;
 
 %Temporal dynamic of neurons
 p.tau             = 10;                     %time constant (ms)
+p.tauwm           = 200;                    % time constant of working memory (ms)
 p.tau_a           = 99;                     %time constant adaptation (ms)
 p.tau_att         = 200;                    %time constant attention (ms)
 p.tau_attI        = 50;  %50                %time constant involuntary attention (ms)
@@ -44,6 +48,9 @@ p.p             = 2;
 p.sigma         = .5; % .1              %semisaturation constant
 p.wa            = 0;               %weights of self-adaptation
 p.wh            = 3; %1.5;               %weight of inhibitory involuntary attention
+
+%% Working memory
+p.sigmawm       = 0.5;
 
 %% Attention
 p.aMI     = .2; % 5 (spatial sim), 4 (stronger IOR), 4 (temporal sim)
