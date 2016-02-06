@@ -11,7 +11,7 @@ end
 
 %% Temporal Parameters
 %Expeirment parameters
-p.dt            = 2                        %time-step (ms)
+p.dt            = 2;                        %time-step (ms)
 p.T             = 2.1*1000;                  %duration (ms)
 p.nt            = p.T/p.dt+1;
 p.tlist         = 0:p.dt:p.T;
@@ -46,7 +46,7 @@ p.wa            = 0;               %weights of self-adaptation
 p.wh            = 3; %1.5;               %weight of inhibitory involuntary attention
 
 %% Attention
-p.aMI     = 4; % 5 (spatial sim), 4 (stronger IOR), 4 (temporal sim)
+p.aMI     = .2; % 5 (spatial sim), 4 (stronger IOR), 4 (temporal sim)
 p.aMV     = 9; %9
 p.ap      = 4;
 p.asigma  = .3;

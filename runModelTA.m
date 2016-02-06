@@ -1,4 +1,4 @@
-function perfv = runModelTA(opt)
+function [perfv, p] = runModelTA(opt)
 
 % modified from runModel.m
 % 2015-09-28 (RD)
@@ -25,7 +25,7 @@ soas = [100:50:500 800];
 % soas = [100:10:800];
 
 % Pick conditions to run
-rcond     = [2:3];   %conditions to run
+rcond     = 2;   %conditions to run
 ncond     = numel(rcond);
 rcontrast = 2;   %contrast levels to run
 ncontrast = numel(rcontrast);
@@ -89,7 +89,7 @@ for icond = 1:numel(rcond)
             
             %% Draw time series_1
             if plotFig == 1
-%                 plotTA(condname, p)
+                plotTA(condname, p)
                 plotFA2(condname, p)
             end
         end

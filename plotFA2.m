@@ -30,7 +30,7 @@ subplot(nr,nc,3)
 hold on
 plot(p.tlist/1000,p.attI(1,:),'color',[185 178 170]/255);
 xlim(xlims)
-ylim([-0.5 1.5])
+ylim([-1.2 1.2])
 set(gca,'XTickLabel',[])
 ylabel('R2')
 

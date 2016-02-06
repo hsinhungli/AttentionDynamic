@@ -25,7 +25,7 @@ end
 %% Accumulate
 decisionWindows = [];
 for iStim = 1:nStim
-    decisionWindows(iStim,:) = round((stimStarts(iStim):stimStarts(iStim)+decisionWindowDur)./p.dt); % indices
+    decisionWindows(iStim,:) = round((stimStarts(iStim)/p.dt):(stimStarts(iStim)/p.dt)+decisionWindowDur/p.dt); % indices
 end
 decisionWindows = unique(decisionWindows','rows')';  
 

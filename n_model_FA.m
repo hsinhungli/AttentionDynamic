@@ -55,8 +55,11 @@ for t = p.dt:p.dt:p.T
         r(:,end-idx+2:end) = p.r(:,1:idx-1);
     end
     for iPhase = 1:2
-        inp0    = halfExp(r.*fliplr(p.aW(:,:,iPhase)), p.ap);
-        inp(:,iPhase)     = sum(inp0(:,max(end-idx+2,1):end),2); % sum across time
+%         inp0    = halfExp(r.*fliplr(p.aW(:,:,iPhase)), p.ap);
+%         inp(:,iPhase)     = sum(inp0(:,max(end-idx+2,1):end),2); % sum across time
+        inp0 =  r.*fliplr(p.aW(:,:,iPhase)); % convolve step 1 (multiply)
+        inp1 =  sum(inp0(:,max(end-idx+2,1):end),2)*p.dt; % convolve step 2 (integrate across time)
+        inp(:,iPhase)     = halfExp(inp1,p.ap); % rectify and raise to power
     end
     aDrive  = inp*p.aKernel; % on channel - off channel
     aE      = halfExp(1 + p.attV(:,idx)*p.aMV).*(aDrive + p.aBaseline);
