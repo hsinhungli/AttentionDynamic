@@ -38,7 +38,7 @@ subplot(nr,nc,4)
 hold on
 plot(p.tlist/1000,p.r(1,:),'color',[112 191 65]/255);
 xlim(xlims)
-set(gca,'XTickLabel',[-0.5 0 0.5 1])
+set(gca,'XTickLabel',[])
 ylabel('R1')
 set(gca,'YLim',[0 max(p.r(:))+.1]);
 
@@ -46,23 +46,26 @@ subplot(nr,nc,5)
 hold on
 plot(p.tlist/1000,p.r2(1,:),'color',[58 154 217]/255);
 xlim(xlims)
+set(gca,'XTickLabel',[])
 ylabel('R1 filtered')
 set(gca,'YLim',[0 max(p.r(:))+.1]);
 
 subplot(nr,nc,6)
 hold on
-plot(p.tlist/1000,p.rwm(1,:),'color',[110 119 143]/255);
-plot(p.tlist/1000,p.rwm(2,:),'color',[110 119 143]/255);
+plot(p.tlist/1000,p.rwm(:,:,1)','color',[110 119 143]/255);
+plot(p.tlist/1000,p.rwm(:,:,2)','color',[110 119 143]/255);
 xlim(xlims)
+set(gca,'XTickLabel',[])
 ylabel('R4')
 set(gca,'YLim',[0 max(p.rwm(:))+.1]);
 
 subplot(nr,nc,7)
 hold on
 plot(p.tlist/1000, zeros(size(p.tlist)), 'k')
-plot(p.tlist(p.decisionWindows(1,:))/1000,p.evidence(:,1),'color',[53 68 88]/255);
-plot(p.tlist(p.decisionWindows(2,:))/1000,p.evidence(:,2),'color',[53 68 88]/255);
+plot(p.tlist(p.decisionWindows(1,:))/1000,p.evidence(:,:,1)','color',[53 68 88]/255);
+plot(p.tlist(p.decisionWindows(2,:))/1000,p.evidence(:,:,2)','color',[53 68 88]/255);
 xlim(xlims)
+set(gca,'XTickLabel',[-0.5 0 0.5 1])
 ylabel('Evidence')
 xlabel('Time (s)')
 

@@ -8,13 +8,13 @@ p.f   = zeros(p.ntheta,p.nt); %Estimated Asy firing rate
 p.a   = zeros(p.ntheta,p.nt); %Adaptation term
 p.d_n = zeros(p.ntheta,p.nt); %Noise
 
-% working memory (each row is a stimulus)
-p.dwm   = zeros(2,p.nt); %Drive
-p.swm   = zeros(2,p.nt); %Suppressive Drive
-p.rwm   = zeros(2,p.nt); %Firing Rate
-p.fwm   = zeros(2,p.nt); %Estimated Asy firing rate
-p.awm   = zeros(2,p.nt); %Adaptation term
-p.dwm_n = zeros(2,p.nt); %Noise
+% working memory 
+p.dwm   = zeros(p.ntheta,p.nt,p.nstim); %Drive
+p.swm   = zeros(p.ntheta,p.nt,p.nstim); %Suppressive Drive
+p.rwm   = zeros(p.ntheta,p.nt,p.nstim); %Firing Rate
+p.fwm   = zeros(p.ntheta,p.nt,p.nstim); %Estimated Asy firing rate
+p.awm   = zeros(p.ntheta,p.nt,p.nstim); %Adaptation term
+p.dwm_n = zeros(p.ntheta,p.nt,p.nstim); %Noise
 
 % attention
 p.att = zeros(p.ntheta,p.nt);   %Attentional gain factor

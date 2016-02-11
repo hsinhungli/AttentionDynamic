@@ -21,7 +21,7 @@ p.tlist         = 0:p.dt:p.T;
 
 %Temporal dynamic of neurons
 p.tau             = 10;                     %time constant (ms)
-p.tauwm           = 200;                    % time constant of working memory (ms)
+p.tauwm           = 10;                    % time constant of working memory (ms)
 p.tau_a           = 99;                     %time constant adaptation (ms)
 p.tau_att         = 200;                    %time constant attention (ms)
 p.tau_attI        = 50;  %50                %time constant involuntary attention (ms)
@@ -50,10 +50,14 @@ p.wa            = 0;               %weights of self-adaptation
 p.wh            = 3; %1.5;               %weight of inhibitory involuntary attention
 
 %% Working memory
-p.sigmawm       = 0.5;
+p.sigmawm       = .1;
+p.tau_dwm       = 200;                   % memory on the drive
+p.tau_wmW       = 80;                   % temporal receptive field
+filter_wm       = exp(-p.tlist/p.tau_wmW); % exponential
+p.wmW           = repmat(filter_wm/sum(filter_wm),p.ntheta,1);
 
 %% Attention
-p.aMI     = .2; % 5 (spatial sim), 4 (stronger IOR), 4 (temporal sim)
+p.aMI     = 0; % .2 % 5 (spatial sim), 4 (stronger IOR), 4 (temporal sim)
 p.aMV     = 9; %9
 p.ap      = 4;
 p.asigma  = .3;
@@ -61,8 +65,18 @@ p.aKernel = [1; -1];
 p.aIOR    = 1.12; % 1 (spatial sim), 1.3 (stronger IOR), 1.12 (temporal sim)
 p.biph1   = 25;
 p.biph2   = 3;
-aW               = repmat(makeBiphasic(0:p.dt/1000:0.8,p.biph1,p.biph2),2,1)*p.aMI;
-aW(aW<0)         = aW(aW<0)*p.aIOR;
+p.gam1    = 8;
+p.gam2    = .005;
+switch p.model
+    case 1
+        aW        = repmat(makeBiphasic(0:p.dt/1000:0.8,p.biph1,p.biph2),p.ntheta,1)*p.aMI;
+        aW(aW<0)  = aW(aW<0)*p.aIOR;
+    case 2
+        aW        = repmat(makeGamma(0:p.dt/1000:0.8,[],p.gam1,p.gam2,1),p.ntheta,1)*p.aMI;
+    otherwise
+        error('p.model not recognized')
+end
+
 % g1 = makeGamma(0:800,[],12,10,1);
 % g2 = makeGamma(0:800,[],12,25,1);
 % aW = repmat(g1-g2*0.4,2,1);

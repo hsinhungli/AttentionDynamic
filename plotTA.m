@@ -98,8 +98,8 @@ ylabel('Attention')
 subplot(nr,nc,14)
 hold on
 plot(p.tlist/1000, zeros(size(p.tlist)), 'k')
-plot(p.tlist(p.decisionWindows(1,:))/1000,p.evidence(:,1),'color',[1 0 1]);
-plot(p.tlist(p.decisionWindows(2,:))/1000,p.evidence(:,2),'color',[1 0 1]);
+plot(p.tlist(p.decisionWindows(1,:))/1000,p.evidence(:,:,1),'color',[1 0 1]);
+plot(p.tlist(p.decisionWindows(2,:))/1000,p.evidence(:,:,2),'color',[1 0 1]);
 ylabel('Evidence')
 
 rd_supertitle(sprintf('%s contrast: %1.2f soa: %d', condname, p.contrast, p.soa));

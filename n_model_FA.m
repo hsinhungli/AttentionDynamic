@@ -48,33 +48,44 @@ for t = p.dt:p.dt:p.T
     
     
     %% Computing the responses of working memory layer
-    %defining inputs (from sensory layer)
-    inpwm = p.r(1,idx); % assume for now that the stim have feature 1
-    
     %updating noise
-    p.dwm_n(:,idx) = p.dwm_n(:,idx-1) + (p.dt/p.tau_n)*...
-        (-p.dwm_n(:,idx-1) + randn(p.ntheta,p.nx)*p.d_noiseamp*sqrt(p.tau_n*2));
+    p.dwm_n(:,idx,:) = p.dwm_n(:,idx-1,:) + (p.dt/p.tau_n)*...
+        (-p.dwm_n(:,idx-1,:) + randn(p.ntheta,p.nx,p.nstim)*p.d_noiseamp*sqrt(p.tau_n*2));
     
     %updating drives
-    drive = halfExp(inpwm,p.p); %%% leaving out w and a
-    p.dwm(istim,idx) = drive; % note difference from sensory layer: no attention, each row is a stimulus
+%     % with temporal receptive field
+%     if idx > length(p.wmW)
+%         r = p.r(:,idx-length(p.wmW):idx-1);
+%     else
+%         r = nan(size(p.wmW));
+%         r(:,end-idx+2:end) = p.r(:,1:idx-1);
+%     end
+%     inp0 =  r.*fliplr(p.wmW); % convolve step 1 (multiply)
+%     inp1 =  sum(inp0(:,max(end-idx+2,1):end),2)*p.dt; % convolve step 2 (integrate across time)
+%     drive     = halfExp(inp1,p.p); % rectify and raise to power
+%     p.dwm(:,idx,istim) = drive; % note difference from sensory layer: no attention
+
+    % with history
+    drive = halfExp(p.r(:,idx),p.p); %%% leaving out w and a
+    p.dwm(:,idx,:) = p.dwm(:,idx-1,:) + (p.dt/p.tau_dwm)*(-p.dwm(:,idx-1,:));
+    p.dwm(:,idx,istim) = p.dwm(:,idx-1,istim) + (p.dt/p.tau_dwm)*(-p.dwm(:,idx-1,istim) + drive); % overwrite
     
     % normalization pool
-    pool = p.dwm(:,idx);
+    pool = p.dwm(:,idx,:); % pool over features and stimuli
     
     %Compute Suppressive Drive
-    p.swm(:,idx) = sum(pool(:)); %normalized across orientation
+    p.swm(:,idx,:) = sum(pool(:)); %normalized across orientation
     
     %Normalization
-    p.fwm(:,idx) = p.dwm(:,idx) ./ ...
-        (p.swm(:,idx) + halfExp(p.sigmawm, p.p) + halfExp(p.awm(:,idx-1)*p.wa, p.p)) ...
+    p.fwm(:,idx,:) = p.dwm(:,idx,:) ./ ...
+        (p.swm(:,idx,:) + halfExp(p.sigmawm, p.p) + halfExp(p.awm(:,idx-1,:)*p.wa, p.p)) ...
         + p.baselineMod;
     
     %update firing rates
-    p.rwm(:,idx) = p.rwm(:,idx-1) + (p.dt/p.tauwm)*(-p.rwm(:,idx-1) + p.fwm(:,idx));
+    p.rwm(:,idx,:) = p.rwm(:,idx-1,:) + (p.dt/p.tauwm)*(-p.rwm(:,idx-1,:) + p.fwm(:,idx,:));
     
     %update adaptation
-    p.awm(:,idx) = p.awm(:,idx-1) + (p.dt/p.tau_a)*(-p.awm(:,idx-1) + p.rwm(:,idx));
+    p.awm(:,idx,:) = p.awm(:,idx-1,:) + (p.dt/p.tau_a)*(-p.awm(:,idx-1,:) + p.rwm(:,idx,:));
     
     
     %% Update attention map

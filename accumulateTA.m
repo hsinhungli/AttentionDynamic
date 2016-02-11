@@ -15,7 +15,6 @@ else
 end
 decisionWindowDur = p.soa - exoCueSOA;
 stimStarts = [p.stimOnset p.stimOnset+p.soa];
-nStim = numel(stimStarts);
 if isempty(p.ceiling)
     evidenceCeiling = 0;
 else
@@ -26,21 +25,19 @@ end
 decisionWindows = [];
 switch p.model
     case 1
-        for iStim = 1:nStim
+        for iStim = 1:p.nstim
             decisionWindows(iStim,:) = round((stimStarts(iStim)/p.dt):(stimStarts(iStim)/p.dt)+decisionWindowDur/p.dt); % indices
         end
         decisionWindows = unique(decisionWindows','rows')';
         
-        evidence = zeros([size(decisionWindows) nStim]);
-        for iStim = 1:nStim
+        evidence = zeros([size(decisionWindows) p.nstim]);
+        for iStim = 1:p.nstim
             dw = decisionWindows(iStim,:);
             evidence(:,:,iStim) = cumsum(p.r2(:,dw),2);
         end
     case 2
-        decisionWindows = repmat(1:size(p.stim,2),nStim,1);
-        for iStim = 1:nStim
-            evidence(:,:,iStim) = cumsum(p.rwm(iStim,:),2);
-        end
+        decisionWindows = repmat(1:size(p.stim,2),p.nstim,1);
+        evidence = cumsum(p.rwm,2);
     otherwise
         error('p.model not recognized')
 end
@@ -53,7 +50,7 @@ end
 %% Determine which decision was selected
 % correct decision = 1, incorrect decision = -1
 % take the first boundary crossing
-for iStim = 1:nStim
+for iStim = 1:p.nstim
     cc = find(evidence(1,:,iStim) >= p.bounds(1), 1, 'first'); % look only at first feature row in this simulation
     ic = find(evidence(1,:,iStim) <= p.bounds(2), 1, 'first');
     
@@ -70,11 +67,12 @@ for iStim = 1:nStim
 end
 
 % if there is no decision from evidence, guess randomly
-guesses = (round(rand(nStim,1))-0.5)*2;
+guesses = (round(rand(p.nstim,1))-0.5)*2;
 decision(decision==0) = guesses(decision==0);
 
 %% Store things
 p.decisionWindows = decisionWindows;
-p.evidence = squeeze(evidence(1,:,:)); % look only at first feature row in this simulatio
+% p.evidence = squeeze(evidence(1,:,:)); % look only at first feature row in this simulation
+p.evidence = evidence; 
 p.decision = decision;
 
