@@ -13,7 +13,8 @@ for t = p.dt:p.dt:p.T
     %% Computing the responses of sensory layer
     %defining inputs (stimulus)
     % use the stimulus that's been convolved with a temporal filter
-    inp = p.e(:,idx);
+%     inp = p.e(:,idx);
+    inp = p.stim(:,idx);
     
     %updating noise
     p.d_n(:,idx) = p.d_n(:,idx-1) + (p.dt/p.tau_n)*...
@@ -23,8 +24,19 @@ for t = p.dt:p.dt:p.T
 %     drive = halfExp(inp,p.p) .* p.att(:,idx-1) + p.d_n(:,idx);
     %drive : stimulus_contrast * attention + noise
 %     p.d(:,idx) = halfExp(drive, 1); %rectification
-    drive = halfExp(inp,p.p); %%% leaving out w and a
-    p.d(:,idx) = halfExp(1+p.att(:,idx-1)).*drive;
+    if isempty(p.rf) 
+        drive = halfExp(inp,p.p); %%% leaving out w and a
+    else
+        if any(inp)
+            drive = halfExp(p.rfresp(logical(inp),:),p.p)'; % select pre-calculated response
+        else
+            drive = zeros(p.ntheta,1);
+        end
+    end
+%     p.d(:,idx) = halfExp(1+p.att(:,idx-1)).*drive; % previous -> turning
+%     into dynamical here:
+    p.d(:,idx) = p.d(:,idx-1) + (p.dt/p.tau_e)*...
+        (-p.d(:,idx-1) + halfExp(1+p.att(:,idx-1)).*drive);
     
     % normalization pool
     pool = p.d(:,idx);
@@ -100,6 +112,7 @@ for t = p.dt:p.dt:p.T
         r = nan(size(p.aW(:,:,1)));
         r(:,end-idx+2:end) = p.r(:,1:idx-1);
     end
+    inp = [];
     for iPhase = 1:2
 %         inp0    = halfExp(r.*fliplr(p.aW(:,:,iPhase)), p.ap);
 %         inp(:,iPhase)     = sum(inp0(:,max(end-idx+2,1):end),2); % sum across time

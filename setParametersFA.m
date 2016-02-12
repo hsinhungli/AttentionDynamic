@@ -11,6 +11,7 @@ end
 
 %% Model
 p.model         = 2; % 1 (IOR) or 2 (WM)
+p.rf            = 'rf/resp_stim2_rf6.mat'; % sensory RFs - encode stim and decode responses using saved RFs. [] for none.
 
 %% Temporal Parameters
 %Expeirment parameters
@@ -41,7 +42,11 @@ p.nHCascades      = 4;                      % h, number of cascades to turn expo
 %% Spatial & Neuronal Parameters
 p.x             = 0;                %Sampling of space
 p.nx            = numel(p.x);
-p.ntheta        = 2;                %Sampling of orientation
+if isempty(p.rf)
+    p.ntheta    = 2;                %Sampling of orientation
+else
+    p.ntheta    = 6;
+end
 p.baselineMod   = 0;
 p.baselineAtt   = 1;
 p.p             = 2;
