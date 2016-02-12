@@ -22,21 +22,26 @@ else
 end
 
 %% Accumulate
-decisionWindows = [];
+decisionWindows = zeros(size(p.stim));
 switch p.model
     case 1
         for iStim = 1:p.nstim
-            decisionWindows(iStim,:) = round((stimStarts(iStim)/p.dt):(stimStarts(iStim)/p.dt)+decisionWindowDur/p.dt); % indices
+            if iStim==p.nstim
+                idx = round((stimStarts(iStim)/p.dt):size(p.stim,2)); % last stim - integrate to the end
+            else
+                idx = round((stimStarts(iStim)/p.dt):(stimStarts(iStim)/p.dt)+decisionWindowDur/p.dt); 
+            end
+            decisionWindows(iStim,idx) = 1;
         end
-        decisionWindows = unique(decisionWindows','rows')';
+%         decisionWindows = unique(decisionWindows','rows')';
         
         evidence = zeros([size(decisionWindows) p.nstim]);
         for iStim = 1:p.nstim
             dw = decisionWindows(iStim,:);
-            evidence(:,:,iStim) = cumsum(p.r2(:,dw),2);
+            evidence(:,:,iStim) = cumsum(p.r2.*repmat(dw,p.ntheta,1),2);
         end
     case 2
-        decisionWindows = repmat(1:size(p.stim,2),p.nstim,1);
+        decisionWindows(:,:) = 1;
         evidence = cumsum(p.rwm,2);
     otherwise
         error('p.model not recognized')

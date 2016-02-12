@@ -15,7 +15,7 @@ p          = setParametersFA(opt);
 %% Set conditions/contrasts to simulate
 condnames  =  {'no-endo','endoT1','endoT2','endoT1T2','exoT1','exoT2','exoT1T2'};
 saveData   = 0;
-plotFig    = 0;
+plotFig    = 1;
 
 % Pick contrasts to run
 % logspace(-1.699,log10(.5),7)
@@ -30,7 +30,7 @@ rcond     = 2:3;   %conditions to run
 ncond     = numel(rcond);
 rcontrast = 2;   %contrast levels to run
 ncontrast = numel(rcontrast);
-rsoa      = 1:numel(soas);   %soa levels to run
+rsoa      = 1;%1:numel(soas);   %soa levels to run
 nsoa      = numel(rsoa);
 rseq      = 4;
 nseq      = numel(rseq);
@@ -40,8 +40,10 @@ condtag  = regexprep(num2str(rcond),'\W','');
 dataName = sprintf('./Data/cond_%s_%s.mat',condtag,datestr(now,'mmddHHMM'));
 
 % Load rf
-rf = load(p.rf,'resp');
-p.rfresp = rf.resp;
+if ~isempty(p.rf)
+    rf = load(p.rf,'resp');
+    p.rfresp = rf.resp;
+end
 
 %% loop through all conditions to run
 count = 0;

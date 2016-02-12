@@ -64,8 +64,8 @@ set(gca,'YLim',[0 max(p.rwm(:))+.1]);
 subplot(nr,nc,7)
 hold on
 plot(p.tlist/1000, zeros(size(p.tlist)), 'k')
-plot(p.tlist(p.decisionWindows(1,:))/1000,p.evidence(:,:,1)','color',[53 68 88]/255);
-plot(p.tlist(p.decisionWindows(2,:))/1000,p.evidence(:,:,2)','color',[53 68 88]/255);
+plot(p.tlist/1000,p.evidence(:,:,1)','color',[53 68 88]/255);
+plot(p.tlist/1000,p.evidence(:,:,2)','color',[53 68 88]/255);
 xlim(xlims)
 set(gca,'XTickLabel',[-0.5 0 0.5 1])
 ylabel('Evidence')

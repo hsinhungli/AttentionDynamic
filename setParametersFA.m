@@ -10,8 +10,8 @@ if ~exist('opt','var')
 end
 
 %% Model
-p.model         = 2; % 1 (IOR) or 2 (WM)
-p.rf            = 'rf/resp_stim2_rf6.mat'; % sensory RFs - encode stim and decode responses using saved RFs. [] for none.
+p.model         = 1; % 1 (IOR) or 2 (WM)
+p.rf            = []; %'rf/resp_stim2_rf6.mat'; % sensory RFs - encode stim and decode responses using saved RFs. [] for none.
 
 %% Temporal Parameters
 %Expeirment parameters
