@@ -4,9 +4,11 @@ function plotFA2(condname, p)
 % first feature.
 
 %% Figure 1
+figTitle = sprintf('%s contrast: %1.2f soa: %d seq: %d %d', condname, p.contrast, p.soa, p.stimseq);
+
 % panel 1
 cpsFigure(.5,1.2);
-set(gcf,'Name',sprintf('%s contrast: %1.2f soa: %d', condname, p.contrast, p.soa));
+set(gcf,'Name',figTitle);
 nr = 7;
 nc = 1;
 xlims = [0 1.5];
@@ -69,5 +71,5 @@ set(gca,'XTickLabel',[-0.5 0 0.5 1])
 ylabel('Evidence')
 xlabel('Time (s)')
 
-rd_supertitle(sprintf('%s contrast: %1.2f soa: %d', condname, p.contrast, p.soa));
+rd_supertitle(figTitle);
 %                 tightfig
