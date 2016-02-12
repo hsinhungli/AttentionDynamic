@@ -30,9 +30,9 @@ rcond     = 2:3;   %conditions to run
 ncond     = numel(rcond);
 rcontrast = 2;   %contrast levels to run
 ncontrast = numel(rcontrast);
-rsoa      = 1;%1:numel(soas);   %soa levels to run
+rsoa      = 6; %1:numel(soas);   %soa levels to run
 nsoa      = numel(rsoa);
-rseq      = 4;
+rseq      = 1;
 nseq      = numel(rseq);
 p_pool    = cell(ncond*ncontrast*nsoa,1); %data (p) of each simulated condition will be saved here
 

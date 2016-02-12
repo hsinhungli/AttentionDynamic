@@ -21,21 +21,22 @@ p.nt            = p.T/p.dt+1;
 p.tlist         = 0:p.dt:p.T;
 
 %Temporal dynamic of neurons
-p.tau             = 10;                     %time constant (ms)
 p.tauwm           = 10;                    % time constant of working memory (ms)
 p.tau_a           = 99;                     %time constant adaptation (ms)
-p.tau_att         = 200;                    %time constant attention (ms)
 p.tau_attI        = 50;  %50                %time constant involuntary attention (ms)
 p.tau_attV        = 50;  %50               %time constant voluntary attention (ms)
-p.tau_h           = 50;  %50               %time constant inhibitory component of involuntary attention (ms)
 p.tau_e           = 20;  %20             %time constant filter for excitatory response (ms)
 p.tau_r2          = 80;                     %time constant filter for firing rate (ms)
-p.tau_n           = 100;                    %time constant noise (ms)
+p.tau_n           = 99; %100                   %time constant noise (ms)
 p.d_noiseamp      = 0; % 0.0015;
 filter_e          = (p.tlist/p.tau_e).*exp(1-p.tlist/p.tau_e); % alpha
 p.filter_e        = filter_e/sum(filter_e);     %temporal filter for excitatory response
 filter_r2         = exp(-p.tlist/p.tau_r2); % exponential
 p.filter_r2       = filter_r2/sum(filter_r2);     %temporal filter for firing rate
+
+p.tau             = 10;                     %time constant (ms)
+p.tau_att         = 99;                    %time constant attention (ms)
+p.tau_h           = 99;  %50               %time constant inhibitory component of involuntary attention (ms)
 p.nAttICascades   = 2;                      % involuntary attention, number of cascades to turn exponential into gamma
 p.nHCascades      = 4;                      % h, number of cascades to turn exponential into gamma
 
@@ -48,10 +49,11 @@ else
     p.ntheta    = 6;
 end
 p.baselineMod   = 0;
-p.baselineAtt   = 1;
 p.p             = 2;
 p.sigma         = .5; % .1              %semisaturation constant
 p.wa            = 0;               %weights of self-adaptation
+
+p.baselineAtt   = 1;
 p.wh            = 3; %1.5;               %weight of inhibitory involuntary attention
 
 %% Working memory
@@ -62,8 +64,8 @@ filter_wm       = exp(-p.tlist/p.tau_wmW); % exponential
 p.wmW           = repmat(filter_wm/sum(filter_wm),p.ntheta,1);
 
 %% Attention
-p.aMI     = 0; % .2 % 5 (spatial sim), 4 (stronger IOR), 4 (temporal sim)
-p.aMV     = 9; %9
+p.aMI     = .1; % .2 % 5 (spatial sim), 4 (stronger IOR), 4 (temporal sim)
+p.aMV     = 36; %9
 p.ap      = 4;
 p.asigma  = .3;
 p.aKernel = [1; -1];
