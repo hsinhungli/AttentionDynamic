@@ -2,13 +2,13 @@ function [p] = n_model_FA(p)
 %This function is called by runModelFA.m
 
 idx = 1; %corresponds to t=0
-istim = 1; % relevant only for WM. works only with no noise at the moment.
+% istim = 1; % relevant only for WM. works only with no noise at the moment.
 for t = p.dt:p.dt:p.T
 %     counterdisp(t);
     idx = idx+1;
-    if t > p.stimOnset + p.soa
-        istim = 2;
-    end
+%     if t > p.stimOnset + p.soa
+%         istim = 2;
+%     end
     
     %% Computing the responses of sensory layer
     %defining inputs (stimulus)
@@ -33,10 +33,10 @@ for t = p.dt:p.dt:p.T
             drive = zeros(p.ntheta,1);
         end
     end
-%     p.d(:,idx) = halfExp(1+p.att(:,idx-1)).*drive; % previous -> turning
+    p.d(:,idx) = halfExp(1+p.att(:,idx-1)).*drive; % previous -> turning
 %     into dynamical here:
-    p.d(:,idx) = p.d(:,idx-1) + (p.dt/p.tau_e)*...
-        (-p.d(:,idx-1) + halfExp(1+p.att(:,idx-1)).*drive);
+%     p.d(:,idx) = p.d(:,idx-1) + (p.dt/p.tau_e)*...
+%         (-p.d(:,idx-1) + halfExp(1+p.att(:,idx-1)).*drive);
     
     % normalization pool
     pool = p.d(:,idx);
@@ -65,22 +65,25 @@ for t = p.dt:p.dt:p.T
         (-p.dwm_n(:,idx-1,:) + randn(p.ntheta,p.nx,p.nstim)*p.d_noiseamp*sqrt(p.tau_n*2));
     
     %updating drives
-%     % with temporal receptive field
-%     if idx > length(p.wmW)
-%         r = p.r(:,idx-length(p.wmW):idx-1);
-%     else
-%         r = nan(size(p.wmW));
-%         r(:,end-idx+2:end) = p.r(:,1:idx-1);
-%     end
-%     inp0 =  r.*fliplr(p.wmW); % convolve step 1 (multiply)
-%     inp1 =  sum(inp0(:,max(end-idx+2,1):end),2)*p.dt; % convolve step 2 (integrate across time)
-%     drive     = halfExp(inp1,p.p); % rectify and raise to power
-%     p.dwm(:,idx,istim) = drive; % note difference from sensory layer: no attention
+    % with temporal receptive field
+    for istim = 1:p.nstim
+        rr = p.r.*repmat(p.gate(istim,:),p.ntheta,1); % gate
+        if idx > length(p.wmW)
+            r = rr(:,idx-length(p.wmW):idx-1);
+        else
+            r = nan(size(p.wmW));
+            r(:,end-idx+2:end) = rr(:,1:idx-1);
+        end
+        inp0  = r.*fliplr(p.wmW); % convolve step 1 (multiply)
+        inp1  = sum(inp0(:,max(end-idx+2,1):end),2)*p.dt; % convolve step 2 (integrate across time)
+        drive = halfExp(inp1,p.p); % rectify and raise to power
+        p.dwm(:,idx,istim) = drive; % note difference from sensory layer: no attention
+    end
 
-    % with history
-    drive = halfExp(p.r(:,idx),p.p); %%% leaving out w and a
-    p.dwm(:,idx,:) = p.dwm(:,idx-1,:) + (p.dt/p.tau_dwm)*(-p.dwm(:,idx-1,:));
-    p.dwm(:,idx,istim) = p.dwm(:,idx-1,istim) + (p.dt/p.tau_dwm)*(-p.dwm(:,idx-1,istim) + drive); % overwrite
+%     % with history
+%     drive = halfExp(p.r(:,idx),p.p); %%% leaving out w and a
+%     p.dwm(:,idx,:) = p.dwm(:,idx-1,:) + (p.dt/p.tau_dwm)*(-p.dwm(:,idx-1,:));
+%     p.dwm(:,idx,istim) = p.dwm(:,idx-1,istim) + (p.dt/p.tau_dwm)*(-p.dwm(:,idx-1,istim) + drive); % overwrite
     
     % normalization pool
     pool = p.dwm(:,idx,:); % pool over features and stimuli

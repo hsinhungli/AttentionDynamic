@@ -10,8 +10,8 @@ if ~exist('opt','var')
 end
 
 %% Model
-p.model         = 1; % 1 (IOR) or 2 (WM)
-p.rf            = []; %'rf/resp_stim2_rf6.mat'; % sensory RFs - encode stim and decode responses using saved RFs. [] for none.
+p.model         = 2; % 1 (IOR) or 2 (WM)
+p.rf            = [];%'rf/resp_stim2_rf6.mat'; % sensory RFs - encode stim and decode responses using saved RFs. [] for none.
 
 %% Temporal Parameters
 %Expeirment parameters
@@ -21,24 +21,24 @@ p.nt            = p.T/p.dt+1;
 p.tlist         = 0:p.dt:p.T;
 
 %Temporal dynamic of neurons
+p.tau             = 20;  %10                   %time constant (ms)
 p.tauwm           = 10;                    % time constant of working memory (ms)
 p.tau_a           = 99;                     %time constant adaptation (ms)
 p.tau_attI        = 50;  %50                %time constant involuntary attention (ms)
 p.tau_attV        = 50;  %50               %time constant voluntary attention (ms)
-p.tau_e           = 20;  %20             %time constant filter for excitatory response (ms)
 p.tau_r2          = 80;                     %time constant filter for firing rate (ms)
 p.tau_n           = 99; %100                   %time constant noise (ms)
 p.d_noiseamp      = 0; % 0.0015;
-filter_e          = (p.tlist/p.tau_e).*exp(1-p.tlist/p.tau_e); % alpha
-p.filter_e        = filter_e/sum(filter_e);     %temporal filter for excitatory response
 filter_r2         = exp(-p.tlist/p.tau_r2); % exponential
 p.filter_r2       = filter_r2/sum(filter_r2);     %temporal filter for firing rate
 
-p.tau             = 10;                     %time constant (ms)
-p.tau_att         = 99;                    %time constant attention (ms)
-p.tau_h           = 99;  %50               %time constant inhibitory component of involuntary attention (ms)
-p.nAttICascades   = 2;                      % involuntary attention, number of cascades to turn exponential into gamma
-p.nHCascades      = 4;                      % h, number of cascades to turn exponential into gamma
+% p.tau_e           = 20;  %20             %time constant filter for excitatory response (ms)
+% filter_e          = (p.tlist/p.tau_e).*exp(1-p.tlist/p.tau_e); % alpha
+% p.filter_e        = filter_e/sum(filter_e);     %temporal filter for excitatory response
+% p.tau_att         = 99;                    %time constant attention (ms)
+% p.tau_h           = 99;  %50               %time constant inhibitory component of involuntary attention (ms)
+% p.nAttICascades   = 2;                      % involuntary attention, number of cascades to turn exponential into gamma
+% p.nHCascades      = 4;                      % h, number of cascades to turn exponential into gamma
 
 %% Spatial & Neuronal Parameters
 p.x             = 0;                %Sampling of space
@@ -53,23 +53,24 @@ p.p             = 2;
 p.sigma         = .5; % .1              %semisaturation constant
 p.wa            = 0;               %weights of self-adaptation
 
-p.baselineAtt   = 1;
-p.wh            = 3; %1.5;               %weight of inhibitory involuntary attention
+% p.baselineAtt   = 1;
+% p.wh            = 3; %1.5;               %weight of inhibitory involuntary attention
 
 %% Working memory
 p.sigmawm       = .1;
-p.tau_dwm       = 200;                   % memory on the drive
-p.tau_wmW       = 80;                   % temporal receptive field
+p.tau_wmW       = 200;                   % temporal receptive field
 filter_wm       = exp(-p.tlist/p.tau_wmW); % exponential
 p.wmW           = repmat(filter_wm/sum(filter_wm),p.ntheta,1);
 
+% p.tau_dwm       = 200;                   % memory on the drive
+
 %% Attention
-p.aMI     = .1; % .2 % 5 (spatial sim), 4 (stronger IOR), 4 (temporal sim)
-p.aMV     = 36; %9
+p.aMI     = .2; % .2 % 5 (spatial sim), 4 (stronger IOR), 4 (temporal sim)
+p.aMV     = 9; %9
 p.ap      = 4;
 p.asigma  = .3;
 p.aKernel = [1; -1];
-p.aIOR    = 1.12; % 1 (spatial sim), 1.3 (stronger IOR), 1.12 (temporal sim)
+p.aIOR    = 1.12; %1.12 % 1 (spatial sim), 1.3 (stronger IOR), 1.12 (temporal sim)
 p.biph1   = 25;
 p.biph2   = 3;
 p.gam1    = 8;
