@@ -20,7 +20,7 @@ plotFig    = 0;
 % Pick contrasts to run
 % logspace(-1.699,log10(.5),7)
 % 0.0200    0.0342    0.0585    0.1000    0.1710    0.2924    0.5000
-contrasts = [0.16 0.64];
+contrasts = [0 0.16 0.64];
 soas      = [100:50:500 800];
 % soas     = [100:10:800];
 stimseqs  = {[1 1],[1 2],[2 1],[2 2]};

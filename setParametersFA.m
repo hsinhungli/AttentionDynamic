@@ -22,7 +22,7 @@ p.tlist         = 0:p.dt:p.T;
 
 %Temporal dynamic of neurons
 p.tau             = 20;  %10                   %time constant (ms)
-p.tauwm           = 10;                    % time constant of working memory (ms)
+p.tauwm           = 20;                    % time constant of working memory (ms)
 p.tau_a           = 99;                     %time constant adaptation (ms)
 p.tau_attI        = 50;  %50                %time constant involuntary attention (ms)
 p.tau_attV        = 50;  %50               %time constant voluntary attention (ms)
@@ -50,14 +50,14 @@ else
 end
 p.baselineMod   = 0;
 p.p             = 2;
-p.sigma         = .5; % .1              %semisaturation constant
+p.sigma         = .5; %.5 .1              %semisaturation constant
 p.wa            = 0;               %weights of self-adaptation
 
 % p.baselineAtt   = 1;
 % p.wh            = 3; %1.5;               %weight of inhibitory involuntary attention
 
 %% Working memory
-p.sigmawm       = .1;
+p.sigmawm       = .01; %.1
 p.tau_wmW       = 200;                   % temporal receptive field
 filter_wm       = exp(-p.tlist/p.tau_wmW); % exponential
 p.wmW           = repmat(filter_wm/sum(filter_wm),p.ntheta,1);
@@ -66,7 +66,7 @@ p.wmW           = repmat(filter_wm/sum(filter_wm),p.ntheta,1);
 
 %% Attention
 p.aMI     = .2; % .2 % 5 (spatial sim), 4 (stronger IOR), 4 (temporal sim)
-p.aMV     = 9; %9
+p.aMV     = 200; %9
 p.ap      = 4;
 p.asigma  = .3;
 p.aKernel = [1; -1];
@@ -94,10 +94,12 @@ p.aBaseline      = 0.001;
 
 %% Stimulus and task parameters
 p.stimOnset = 500;                  % relative to start of trial (ms)
-p.stimDur = 30;   
-p.attOnset = -50;                  % voluntary attention on, relative to stim onset (ms)
+p.stimDur = 30; %30  
+p.attOnset = -50; %-50                  % voluntary attention on, relative to stim onset (ms)
 p.attOffset = 10;                  % voluntary attention off, relative to stim offset (ms)
-p.vAttWeights = [1 0]; % [1 0]            % [high low]
+p.vAttWeight1 = 1;
+p.vAttWeight2 = 0;
+p.vAttWeights = [p.vAttWeight1 p.vAttWeight2]; % [1 0]            % [high low]
 p.neutralAttOp = 'max';             % 'mean','max'; attention weight assigned in the neutral condition
 p.bounds = [0 0];                   % evidence accumulation bounds for perceptual decision (when measuring accuracy)
 p.ceiling = []; %7.8; %[];                     % evidence ceiling (when measuring eveidence)
@@ -112,14 +114,24 @@ if ~isempty(opt)
     end
     
     % update params that depend on opt params
-    filter_e          = (p.tlist/p.tau_e).*exp(1-p.tlist/p.tau_e); % alpha
-    p.filter_e        = filter_e/sum(filter_e);     %temporal filter for excitatory response
+%     filter_e          = (p.tlist/p.tau_e).*exp(1-p.tlist/p.tau_e); % alpha
+%     p.filter_e        = filter_e/sum(filter_e);     %temporal filter for excitatory response
     filter_r2         = exp(-p.tlist/p.tau_r2); % exponential
     p.filter_r2       = filter_r2/sum(filter_r2);     %temporal filter for firing rate
     
-    aW               = repmat(makeBiphasic(0:p.dt/1000:0.8,round(p.biph1),round(p.biph2)),2,1)*p.aMI;
-    aW(aW<0)         = aW(aW<0)*p.aIOR;
-    p.aW(:,:,1)      = aW;
-    p.aW(:,:,2)      = -aW;
+    filter_wm       = exp(-p.tlist/p.tau_wmW); % exponential
+    p.wmW           = repmat(filter_wm/sum(filter_wm),p.ntheta,1);
+    
+    switch p.model
+        case 1
+            aW        = repmat(makeBiphasic(0:p.dt/1000:0.8,p.biph1,p.biph2),p.ntheta,1)*p.aMI;
+            aW(aW<0)  = aW(aW<0)*p.aIOR;
+        case 2
+            aW        = repmat(makeGamma(0:p.dt/1000:0.8,[],p.gam1,p.gam2,1),p.ntheta,1)*p.aMI;
+        otherwise
+            error('p.model not recognized')
+    end
+    
+    p.vAttWeights    = [p.vAttWeight1 p.vAttWeight2];
 end
 

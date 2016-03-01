@@ -6,31 +6,41 @@ end
 
 %% initial param vals
 % sensory
-p.tau_e         = 20;  %20         %time constant filter for excitatory response (ms)
-p.tau_r2        = 80;              %time constant filter for firing rate (ms)
+% p.tau           = 20;  %20         %time constant filter for excitatory response (ms)
+% p.tauwm         = 20;              %time constant filter for working memory (ms)
+% p.tau_r2        = 80;              %time constant filter for firing rate (ms)
 p.sigma         = .5; % .1         %semisaturation constant
 
+% working memory
+p.sigmawm       = .01; % 0.1
+p.tau_wmW       = 200;                   % temporal receptive field
+
 % voluntary attention
-p.attOnset      = -50;             % voluntary attention on, relative to stim onset (ms)
-p.attOffset     = 10;              % voluntary attention off, relative to stim offset (ms)
-p.vAttWeights   = [1 0]; % [1 0]   % [high low]
-p.tau_attV      = 50;  %50         %time constant voluntary attention (ms)
-p.aMV           = 9;
+% p.attOnset      = -50;             % voluntary attention on, relative to stim onset (ms)
+% p.attOffset     = 10;              % voluntary attention off, relative to stim offset (ms)
+p.vAttWeight1   = 1;               % high
+p.vAttWeight2   = 0;               % low
+% p.tau_attV      = 50;  %50         %time constant voluntary attention (ms)
+p.aMV           = 200;
 
 % involuntary attention
-p.biph1         = 25;
-p.biph2         = 3;
-p.aMI           = 4; % 5 (spatial sim), 4 (stronger IOR), 4 (temporal sim)
-p.aIOR          = 1.12; % 1 (spatial sim), 1.3 (stronger IOR), 1.12 (temporal sim)
-p.asigma        = .3;%.3
-p.tau_attI      = 50;  %50         %time constant involuntary attention (ms)
+% p.biph1         = 25;
+% p.biph2         = 3;
+% p.gam1          = 8;
+% p.gam2          = .005;
+p.aMI           = .2; % 5 (spatial sim), 4 (stronger IOR), 4 (temporal sim)
+% p.aIOR          = 1.12; % 1 (spatial sim), 1.3 (stronger IOR), 1.12 (temporal sim)
+p.asigma        = .3;  %.3
+% p.tau_attI      = 50;  %50         %time constant involuntary attention (ms)
 
 % fitting
-p.fitScaling    = 0.1;
+p.fitScaling    = 0.01;
+p.t1Offset      = 0;
+% p.t2Offset      = -60;
 
 %% initialize x if needed
+pFields = fields(p);
 if isempty(x)
-    pFields = fields(p);
     idx = 1;
     for iF = 1:numel(pFields)
         f = pFields{iF};
@@ -43,28 +53,10 @@ if isempty(x)
 end
 
 %% assign x values to opt fields
-% sensory
-opt.tau_e       = x(1);
-opt.tau_r2      = x(2);
-opt.sigma       = x(3);
-
-% voluntary attention
-opt.attOnset    = x(4);
-opt.attOffset   = x(5);
-opt.vAttWeights = x(6:7); 
-opt.tau_attV    = x(8);
-opt.aMV         = x(9);
-
-% involuntary attention
-opt.biph1       = x(10);
-opt.biph2       = x(11); 
-opt.aMI         = x(12); 
-opt.aIOR        = x(13); 
-opt.asigma      = x(14);
-opt.tau_attI    = x(15); 
-
-% fitting
-opt.fitScaling  = x(16);
+for iF = 1:numel(pFields)
+    f = pFields{iF};
+    opt.(f) = x(iF);
+end
 
 %% set bounds on x
 lb = ones(size(x))*-Inf;
@@ -73,11 +65,21 @@ ub = ones(size(x))*Inf;
 b.attOnset = [-500 0];
 b.attOffset = [0 500];
 
-% this is by hand
-lb(4) = b.attOnset(1);
-ub(4) = b.attOnset(2);
+b.sigma = [0 10];
+b.sigmawm = [0 10];
+b.tau_wmW = [0 1000];
+b.vAttWeight1 = [0 1];
+b.vAttWeight2 = [0 1];
+b.aMV = [0 Inf];
+b.aMI = [0 Inf];
+b.asigma = [0 10];
+b.fitScaling = [0 Inf];
 
-lb(5) = b.attOffset(1);
-ub(5) = b.attOffset(2);
-    
+for iF = 1:numel(pFields)
+    f = pFields{iF};
+    if isfield(b, f)
+        lb(iF) = b.(f)(1);
+        ub(iF) = b.(f)(2);
+    end
+end
 
