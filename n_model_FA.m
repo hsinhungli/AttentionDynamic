@@ -105,8 +105,10 @@ for t = p.dt:p.dt:p.T
         inp(:,iPhase)     = halfExp(inp1,p.ap); % rectify and raise to power
     end
     aDrive  = inp*p.aKernel; % on channel - off channel
-    aE      = halfExp(1 + p.attV(:,idx)*p.aMV).*(aDrive + p.aBaseline);
+    aE      = halfExp(1 + p.attV(:,idx)*p.aMV).*(aDrive + p.aBaseline); 
     aS      = repmat((sum(abs(aE)) + p.asigma^p.ap),p.ntheta,1); % S + sigma^2
+    
+    p.aDrive(:,idx) = aDrive; p.aE(:,idx) = aE; p.aS(:,idx) = aS; % store things
 
     attnGainI = aE./aS;
     p.attI(:,idx) = p.attI(:,idx-1) + (p.dt/p.tau_attI)*(-p.attI(:,idx-1) + attnGainI);

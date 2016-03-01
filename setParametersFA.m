@@ -10,7 +10,7 @@ if ~exist('opt','var')
 end
 
 %% Model
-p.model         = 2; % 1 (IOR) or 2 (WM)
+p.model         = 1; % 1 (IOR) or 2 (WM)
 p.rf            = [];%'rf/resp_stim2_rf6.mat'; % sensory RFs - encode stim and decode responses using saved RFs. [] for none.
 
 %% Temporal Parameters
@@ -57,7 +57,7 @@ p.wa            = 0;               %weights of self-adaptation
 % p.wh            = 3; %1.5;               %weight of inhibitory involuntary attention
 
 %% Working memory
-p.sigmawm       = .01; %.1
+p.sigmawm       = .1; %.1, .01
 p.tau_wmW       = 200;                   % temporal receptive field
 filter_wm       = exp(-p.tlist/p.tau_wmW); % exponential
 p.wmW           = repmat(filter_wm/sum(filter_wm),p.ntheta,1);
@@ -65,8 +65,8 @@ p.wmW           = repmat(filter_wm/sum(filter_wm),p.ntheta,1);
 % p.tau_dwm       = 200;                   % memory on the drive
 
 %% Attention
-p.aMI     = .2; % .2 % 5 (spatial sim), 4 (stronger IOR), 4 (temporal sim)
-p.aMV     = 200; %9
+p.aMI     = .55; % .2 % 5 (spatial sim), 4 (stronger IOR), 4 (temporal sim)
+p.aMV     = 9; %9, 200
 p.ap      = 4;
 p.asigma  = .3;
 p.aKernel = [1; -1];
@@ -90,7 +90,7 @@ end
 % aW = repmat(g1-g2*0.4,2,1);
 p.aW(:,:,1)      = aW;
 p.aW(:,:,2)      = -aW;
-p.aBaseline      = 0.001;
+p.aBaseline      = 0.001; % 0.001;
 
 %% Stimulus and task parameters
 p.stimOnset = 500;                  % relative to start of trial (ms)
