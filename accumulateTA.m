@@ -33,9 +33,8 @@ switch p.model
             end
             decisionWindows(iStim,idx) = 1;
         end
-%         decisionWindows = unique(decisionWindows','rows')';
         
-        evidence = zeros([size(decisionWindows) p.nstim]);
+        evidence = zeros(p.ntheta, size(decisionWindows,2), p.nstim);
         for iStim = 1:p.nstim
             dw = decisionWindows(iStim,:);
             evidence(:,:,iStim) = cumsum(p.r2.*repmat(dw,p.ntheta,1),2);
@@ -77,7 +76,6 @@ decision(decision==0) = guesses(decision==0);
 
 %% Store things
 p.decisionWindows = decisionWindows;
-% p.evidence = squeeze(evidence(1,:,:)); % look only at first feature row in this simulation
 p.evidence = evidence; 
 p.decision = decision;
 

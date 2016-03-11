@@ -7,8 +7,8 @@ nRF = 6;
 tilt = 2*pi/180;
 step = .001;
 
-% stim = [pi/2+tilt pi/2-tilt tilt pi-tilt]; % V-CCW V-CW H-CCW H-CW
-stim = [pi/2+tilt pi/2-tilt]; % V-CCW V-CW
+stim = [pi/2+tilt pi/2-tilt tilt pi-tilt]; % V-CCW V-CW H-CCW H-CW
+% stim = [pi/2+tilt pi/2-tilt]; % V-CCW V-CW
 
 theta = 0:step:pi;
 

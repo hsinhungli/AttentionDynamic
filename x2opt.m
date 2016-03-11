@@ -6,36 +6,39 @@ end
 
 %% initial param vals
 % sensory
-% p.tau           = 20;  %20         %time constant filter for excitatory response (ms)
+p.tau           = 70;  %20         %time constant filter for excitatory response (ms)
 % p.tauwm         = 20;              %time constant filter for working memory (ms)
-% p.tau_r2        = 80;              %time constant filter for firing rate (ms)
-p.sigma         = .5; % .1         %semisaturation constant
+p.tau_r2        = 100;              %time constant filter for firing rate (ms)
+% p.sigma         = .5; % .1         %semisaturation constant
 
 % working memory
-p.sigmawm       = .01; % 0.1
-p.tau_wmW       = 200;                   % temporal receptive field
+% p.sigmawm       = .01; % 0.1
+% p.tau_wmW       = 200;                   % temporal receptive field
 
 % voluntary attention
 % p.attOnset      = -50;             % voluntary attention on, relative to stim onset (ms)
 % p.attOffset     = 10;              % voluntary attention off, relative to stim offset (ms)
-p.vAttWeight1   = 1;               % high
-p.vAttWeight2   = 0;               % low
+% p.vAttWeight1   = 1;               % high
+% p.vAttWeight2   = 0;               % low
 % p.tau_attV      = 50;  %50         %time constant voluntary attention (ms)
-p.aMV           = 200;
+p.aMV           = 1;
 
 % involuntary attention
-% p.biph1         = 25;
-% p.biph2         = 3;
+p.biph1         = 35;
+p.biph2         = 3;
 % p.gam1          = 8;
 % p.gam2          = .005;
-p.aMI           = .2; % 5 (spatial sim), 4 (stronger IOR), 4 (temporal sim)
-% p.aIOR          = 1.12; % 1 (spatial sim), 1.3 (stronger IOR), 1.12 (temporal sim)
-p.asigma        = .3;  %.3
+p.aMI           = 1; % 5 (spatial sim), 4 (stronger IOR), 4 (temporal sim)
+p.aIOR          = 1; % 1 (spatial sim), 1.3 (stronger IOR), 1.12 (temporal sim)
+% p.asigma        = .3;  %.3
 % p.tau_attI      = 50;  %50         %time constant involuntary attention (ms)
 
+% evidence
+% p.ceiling = 11;
+
 % fitting
-p.fitScaling    = 0.01;
-p.t1Offset      = 0;
+p.fitScaling    = 0.1;
+p.t1Offset      = 0.2;
 % p.t2Offset      = -60;
 
 %% initialize x if needed
@@ -62,18 +65,23 @@ end
 lb = ones(size(x))*-Inf;
 ub = ones(size(x))*Inf;
 
-b.attOnset = [-500 0];
-b.attOffset = [0 500];
+b.tau           = [0 1000]; 
+b.tau_r2        = [0 1000]; 
+b.attOnset      = [-500 0];
+b.attOffset     = [0 500];
+b.biph1         = [1 100];
+b.biph2         = [1 10];
 
-b.sigma = [0 10];
-b.sigmawm = [0 10];
-b.tau_wmW = [0 1000];
-b.vAttWeight1 = [0 1];
-b.vAttWeight2 = [0 1];
-b.aMV = [0 Inf];
-b.aMI = [0 Inf];
-b.asigma = [0 10];
-b.fitScaling = [0 Inf];
+b.sigma         = [0 10];
+b.sigmawm       = [0 10];
+b.tau_wmW       = [0 1000];
+b.vAttWeight1   = [0 1];
+b.vAttWeight2   = [0 1];
+b.aMV           = [0 Inf];
+b.aMI           = [0 Inf];
+b.aIOR          = [0 Inf];
+b.asigma        = [0 10];
+b.fitScaling    = [0 Inf];
 
 for iF = 1:numel(pFields)
     f = pFields{iF};

@@ -15,7 +15,7 @@ p          = setParametersFA(opt);
 %% Set conditions/contrasts to simulate
 condnames  =  {'no-endo','endoT1','endoT2','endoT1T2','exoT1','exoT2','exoT1T2'};
 saveData   = 0;
-plotFig    = 1;
+plotFig    = 0;
 
 % Pick contrasts to run
 % logspace(-1.699,log10(.5),7)
@@ -23,16 +23,17 @@ plotFig    = 1;
 contrasts = [0 0.16 0.64];
 soas      = [100:50:500 800];
 % soas     = [100:10:800];
-stimseqs  = {[1 1],[1 2],[2 1],[2 2]};
+% stimseqs  = {[1 1],[1 2]};
+stimseqs  = {[1 1],[1 2],[1 3],[1 4]};
 
 % Pick conditions to run
 rcond     = 2:3;   %conditions to run
 ncond     = numel(rcond);
 rcontrast = 3;   %contrast levels to run
 ncontrast = numel(rcontrast);
-rsoa      = 5; %1:numel(soas);   %soa levels to run
+rsoa      = 1:numel(soas);   %soa levels to run
 nsoa      = numel(rsoa);
-rseq      = 1;
+rseq      = 1:2; % 1:2 % sequences to run
 nseq      = numel(rseq);
 p_pool    = cell(ncond*ncontrast*nsoa,1); %data (p) of each simulated condition will be saved here
 
@@ -93,12 +94,33 @@ for icond = 1:numel(rcond)
                 %accumulate evidence
                 p = accumulateTA(condname,p);
                 if isempty(p.rf)
-                    p.ev = squeeze(p.evidence(1,end,:)); % take the first feature
+                    % take the difference between evidence for the correct
+                    % vs. incorrect feature
+                    ev_s1 = squeeze(p.evidence(:,end,1)); % stim 1
+                    ev_s2 = squeeze(p.evidence(:,end,2)); % stim 2
+                    corr = p.stimseq;
+                    incorr = 3-p.stimseq;
+                    p.ev(1) = ev_s1(corr(1)) - ev_s1(incorr(1)); % stim 1
+                    p.ev(2) = ev_s2(corr(2)) - ev_s2(incorr(2)); % stim 2
+                    
+                    % take the first feature
+%                     p.ev = squeeze(p.evidence(1,end,:)); 
                 else
-                    p.ev(1) = decodeEvidence(p.evidence(:,end,1)', p.rfresp); % stim 1
-                    p.ev(2) = decodeEvidence(p.evidence(:,end,2)', p.rfresp); % stim 2
+                    % decode just between CCW/CW for the appropriate axis
+                    for iStim = 1:2
+                        switch p.stimseq(iStim)
+                            case {1, 2}
+                                rfresp(:,:,iStim) = p.rfresp(1:2,:);
+                            case {3, 4}
+                                rfresp(:,:,iStim) = p.rfresp(3:4,:);
+                        end
+                        p.ev(iStim) = decodeEvidence(p.evidence(:,end,iStim)', rfresp(:,:,iStim));
+                    end
                 end
-                ev(:,isoa,icond,icontrast) = p.ev;
+                % make evidence positive for the correct stimulus
+                p.ev = p.ev.*(-1).^p.stimseq; % flip sign for CCW (odd #s)
+                % store evidence
+                ev(:,isoa,icond,icontrast,iseq) = p.ev;
                 
                 %save the p
                 if saveData==1
@@ -118,7 +140,7 @@ end
 
 %% plot multiple conditions
 for icontrast = 1:numel(rcontrast)
-    perfv = plotPerformanceTA(condnames(rcond), soas(rsoa), ev(:,:,:,icontrast));
+    perfv = plotPerformanceTA(condnames(rcond), soas(rsoa), mean(ev(:,:,:,icontrast,:),5));
 end
 
 %% save data

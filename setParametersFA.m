@@ -11,7 +11,7 @@ end
 
 %% Model
 p.model         = 1; % 1 (IOR) or 2 (WM)
-p.rf            = [];%'rf/resp_stim2_rf6.mat'; % sensory RFs - encode stim and decode responses using saved RFs. [] for none.
+p.rf            = 'rf/resp_stim4_rf6.mat'; % sensory RFs - encode stim and decode responses using saved RFs. [] for none.
 
 %% Temporal Parameters
 %Expeirment parameters
@@ -21,12 +21,12 @@ p.nt            = p.T/p.dt+1;
 p.tlist         = 0:p.dt:p.T;
 
 %Temporal dynamic of neurons
-p.tau             = 20;  %10                   %time constant (ms)
+p.tau             = 70;  %20                   %time constant (ms)
 p.tauwm           = 20;                    % time constant of working memory (ms)
 p.tau_a           = 99;                     %time constant adaptation (ms)
 p.tau_attI        = 50;  %50                %time constant involuntary attention (ms)
 p.tau_attV        = 50;  %50               %time constant voluntary attention (ms)
-p.tau_r2          = 80;                     %time constant filter for firing rate (ms)
+p.tau_r2          = 100;  %120,80                   %time constant filter for firing rate (ms)
 p.tau_n           = 99; %100                   %time constant noise (ms)
 p.d_noiseamp      = 0; % 0.0015;
 filter_r2         = exp(-p.tlist/p.tau_r2); % exponential
@@ -65,32 +65,29 @@ p.wmW           = repmat(filter_wm/sum(filter_wm),p.ntheta,1);
 % p.tau_dwm       = 200;                   % memory on the drive
 
 %% Attention
-p.aMI     = .55; % .2 % 5 (spatial sim), 4 (stronger IOR), 4 (temporal sim)
-p.aMV     = 9; %9, 200
+p.aMI     = 1; % .2 % 5 (spatial sim), 4 (stronger IOR), 4 (temporal sim)
+p.aMV     = 1; %9, 200
 p.ap      = 4;
 p.asigma  = .3;
 p.aKernel = [1; -1];
-p.aIOR    = 1.12; %1.12 % 1 (spatial sim), 1.3 (stronger IOR), 1.12 (temporal sim)
-p.biph1   = 25;
+p.aIOR    = 1; %.4 % 1 (spatial sim), 1.3 (stronger IOR), 1.12 (temporal sim)
+p.biph1   = 35; % 35,25
 p.biph2   = 3;
 p.gam1    = 8;
 p.gam2    = .005;
 switch p.model
     case 1
-        aW        = repmat(makeBiphasic(0:p.dt/1000:0.8,p.biph1,p.biph2),p.ntheta,1)*p.aMI;
+        aW        = repmat(makeBiphasic(0:p.dt/1000:0.8,p.biph1,round(p.biph2)),p.ntheta,1);
+        aW(aW>0)  = aW(aW>0)*p.aMI;
         aW(aW<0)  = aW(aW<0)*p.aIOR;
     case 2
         aW        = repmat(makeGamma(0:p.dt/1000:0.8,[],p.gam1,p.gam2,1),p.ntheta,1)*p.aMI;
     otherwise
         error('p.model not recognized')
 end
-
-% g1 = makeGamma(0:800,[],12,10,1);
-% g2 = makeGamma(0:800,[],12,25,1);
-% aW = repmat(g1-g2*0.4,2,1);
 p.aW(:,:,1)      = aW;
 p.aW(:,:,2)      = -aW;
-p.aBaseline      = 0.001; % 0.001;
+p.aBaseline      = 0; % 0.001;
 
 %% Stimulus and task parameters
 p.stimOnset = 500;                  % relative to start of trial (ms)
@@ -124,13 +121,16 @@ if ~isempty(opt)
     
     switch p.model
         case 1
-            aW        = repmat(makeBiphasic(0:p.dt/1000:0.8,p.biph1,p.biph2),p.ntheta,1)*p.aMI;
+            aW        = repmat(makeBiphasic(0:p.dt/1000:0.8,p.biph1,round(p.biph2)),p.ntheta,1);
+            aW(aW>0)  = aW(aW>0)*p.aMI;
             aW(aW<0)  = aW(aW<0)*p.aIOR;
         case 2
             aW        = repmat(makeGamma(0:p.dt/1000:0.8,[],p.gam1,p.gam2,1),p.ntheta,1)*p.aMI;
         otherwise
             error('p.model not recognized')
     end
+    p.aW(:,:,1)      = aW;
+    p.aW(:,:,2)      = -aW;
     
     p.vAttWeights    = [p.vAttWeight1 p.vAttWeight2];
 end

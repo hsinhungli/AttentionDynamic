@@ -47,8 +47,9 @@ end
 %% plot figs
 % sorted by validity
 intervalNames = {'T1','T2'};
-% ylims = [0 20]; % [0 12]
-ylims = [0 max(max(perfv{1}))*1.1];
+% ylims = [0 25]; % [0 12]
+ylims = [0 1];
+% ylims = [0 max(max(perfv{1}))*1.1];
 xlims = [soas(1)-100 soas(end)+100];
 colors = get(0,'DefaultAxesColorOrder');
 axTitle = '';

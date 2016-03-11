@@ -2,7 +2,7 @@ function decisionEvidence = decodeEvidence(sampleResp, resp)
 
 % rf = load(p.rf);
 % resp = rf.resp;
-a = 10^9; % amplitude of line extension
+a = 10^10; % amplitude of line extension
 
 % project sample point onto line defined by stim 1 and stim 2 responses
 center = mean(resp,1); % decision boundary
@@ -13,7 +13,7 @@ sampleProj = distance2curve(extreme, sampleResp);
 
 % make sure projection line was long enough to allow an orthgonal projection
 if any(sampleResp>max(extreme)) || any(sampleResp<min(extreme))
-    error('projection line is too short')
+%     warning('projection line is too short')
 end
 
 % determine direction and distance from decision boundary
