@@ -20,7 +20,7 @@ plotFig    = 0;
 % Pick contrasts to run
 % logspace(-1.699,log10(.5),7)
 % 0.0200    0.0342    0.0585    0.1000    0.1710    0.2924    0.5000
-contrasts = [0 0.16 0.64];
+contrasts = [0 0.16 0.64 1];
 soas      = [100:50:500 800];
 % soas     = [100:10:800];
 % stimseqs  = {[1 1],[1 2]};
@@ -33,7 +33,7 @@ rcontrast = 3;   %contrast levels to run
 ncontrast = numel(rcontrast);
 rsoa      = 1:numel(soas);   %soa levels to run
 nsoa      = numel(rsoa);
-rseq      = 1:2; % 1:2 % sequences to run
+rseq      = 3; % 1:2 % sequences to run
 nseq      = numel(rseq);
 p_pool    = cell(ncond*ncontrast*nsoa,1); %data (p) of each simulated condition will be saved here
 

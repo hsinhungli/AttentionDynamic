@@ -24,7 +24,7 @@ for t = p.dt:p.dt:p.T
             drive = zeros(p.ntheta,1);
         end
     end
-    p.d(:,idx) = halfExp(1+p.attV(:,idx-1)*p.aMV).*halfExp(1+p.attI(:,idx-1)).*drive;
+    p.d(:,idx) = halfExp(1+p.attV(:,idx-1)*p.aMV).*halfExp(1+p.attI(:,idx-1)*p.aMI).*drive;
     
     % normalization pool
     pool = p.d(:,idx);

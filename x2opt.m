@@ -6,10 +6,10 @@ end
 
 %% initial param vals
 % sensory
-p.tau           = 70;  %20         %time constant filter for excitatory response (ms)
+p.tau           = 70;  %70, 20         %time constant filter for excitatory response (ms)
 % p.tauwm         = 20;              %time constant filter for working memory (ms)
-p.tau_r2        = 100;              %time constant filter for firing rate (ms)
-% p.sigma         = .5; % .1         %semisaturation constant
+p.tau_r2        = 120;  %100            %time constant filter for firing rate (ms)
+% p.sigma         = .5; % .5, .1         %semisaturation constant
 
 % working memory
 % p.sigmawm       = .01; % 0.1
@@ -21,25 +21,26 @@ p.tau_r2        = 100;              %time constant filter for firing rate (ms)
 % p.vAttWeight1   = 1;               % high
 % p.vAttWeight2   = 0;               % low
 % p.tau_attV      = 50;  %50         %time constant voluntary attention (ms)
-p.aMV           = 1;
+p.aMV           = 3.5; % 3.5,2.5
 
 % involuntary attention
 p.biph1         = 35;
-p.biph2         = 3;
+p.biph2         = 2;
 % p.gam1          = 8;
 % p.gam2          = .005;
-p.aMI           = 1; % 5 (spatial sim), 4 (stronger IOR), 4 (temporal sim)
-p.aIOR          = 1; % 1 (spatial sim), 1.3 (stronger IOR), 1.12 (temporal sim)
+p.aMI           = 5; % 5 (spatial sim), 4 (stronger IOR), 4 (temporal sim)
+p.aIOR          = .4; % 1 (spatial sim), 1.3 (stronger IOR), 1.12 (temporal sim)
 % p.asigma        = .3;  %.3
 % p.tau_attI      = 50;  %50         %time constant involuntary attention (ms)
 
 % evidence
-% p.ceiling = 11;
+p.ceiling = 0.82; %.85
 
 % fitting
-p.fitScaling    = 0.1;
-p.t1Offset      = 0.2;
-% p.t2Offset      = -60;
+p.scaling1 = 4.5; % 4.5
+p.scaling2 = 3.5;
+% p.offset1  = 0;
+% p.offset2  = 0;
 
 %% initialize x if needed
 pFields = fields(p);

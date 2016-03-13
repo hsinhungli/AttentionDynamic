@@ -2,7 +2,7 @@ function [cost, model, data] = modelCost(x, D)
 
 %% run model
 opt = x2opt(x);
-perf = runModelTA(opt);
+[perf, p] = runModelTA(opt);
 
 %% organize model performance
 for iT = 1:2
@@ -10,10 +10,8 @@ for iT = 1:2
 end
 
 %% scale fit
-% model(:,:,1) = model(:,:,1) + opt.t1Offset;
-% model(:,:,2) = model(:,:,2) + opt.t2Offset;
-model = model*opt.fitScaling;
-model(:,:,1) = model(:,:,1) + opt.t1Offset;
+model(:,:,1) = model(:,:,1)*p.scaling1 + p.offset1;
+model(:,:,2) = model(:,:,2)*p.scaling2 + p.offset2;
 
 %% load data
 for iT = 1:2

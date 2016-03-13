@@ -65,12 +65,13 @@ p.wmW           = repmat(filter_wm/sum(filter_wm),p.ntheta,1);
 % p.tau_dwm       = 200;                   % memory on the drive
 
 %% Attention
-p.aMI     = 1; % .2 % 5 (spatial sim), 4 (stronger IOR), 4 (temporal sim)
+p.aMI     = 5; % .2 % 5 (spatial sim), 4 (stronger IOR), 4 (temporal sim)
 p.aMV     = 1; %9, 200
 p.ap      = 4;
 p.asigma  = .3;
 p.aKernel = [1; -1];
-p.aIOR    = 1; %.4 % 1 (spatial sim), 1.3 (stronger IOR), 1.12 (temporal sim)
+p.aIE     = 0; % excitatory part of involuntary attention kernel
+p.aIOR    = .4; %.4 % 1 (spatial sim), 1.3 (stronger IOR), 1.12 (temporal sim)
 p.biph1   = 35; % 35,25
 p.biph2   = 3;
 p.gam1    = 8;
@@ -78,7 +79,7 @@ p.gam2    = .005;
 switch p.model
     case 1
         aW        = repmat(makeBiphasic(0:p.dt/1000:0.8,p.biph1,round(p.biph2)),p.ntheta,1);
-        aW(aW>0)  = aW(aW>0)*p.aMI;
+        aW(aW>0)  = aW(aW>0)*p.aIE;
         aW(aW<0)  = aW(aW<0)*p.aIOR;
     case 2
         aW        = repmat(makeGamma(0:p.dt/1000:0.8,[],p.gam1,p.gam2,1),p.ntheta,1)*p.aMI;
@@ -99,8 +100,14 @@ p.vAttWeight2 = 0;
 p.vAttWeights = [p.vAttWeight1 p.vAttWeight2]; % [1 0]            % [high low]
 p.neutralAttOp = 'max';             % 'mean','max'; attention weight assigned in the neutral condition
 p.bounds = [0 0];                   % evidence accumulation bounds for perceptual decision (when measuring accuracy)
-p.ceiling = []; %7.8; %[];                     % evidence ceiling (when measuring eveidence)
+p.ceiling = .3; %0.8, 7.8; %[];                     % evidence ceiling (when measuring eveidence)
 p.exoCueSOA = 100;
+
+%% Scaling and offset (for fitting only)
+p.scaling1 = 4.5;
+p.scaling2 = 3.5;
+p.offset1 = 0;
+p.offset2 = 0;
 
 %% Set params from opt
 if ~isempty(opt)
@@ -122,7 +129,7 @@ if ~isempty(opt)
     switch p.model
         case 1
             aW        = repmat(makeBiphasic(0:p.dt/1000:0.8,p.biph1,round(p.biph2)),p.ntheta,1);
-            aW(aW>0)  = aW(aW>0)*p.aMI;
+            aW(aW>0)  = aW(aW>0)*p.aIE;
             aW(aW<0)  = aW(aW<0)*p.aIOR;
         case 2
             aW        = repmat(makeGamma(0:p.dt/1000:0.8,[],p.gam1,p.gam2,1),p.ntheta,1)*p.aMI;
