@@ -10,7 +10,7 @@ if ~exist('opt','var')
 end
 
 %% Model
-p.model         = 1; % 1 (IOR) or 2 (WM)
+p.model         = 2; % 1 (IOR) or 2 (WM)
 p.rf            = 'rf/resp_stim4_rf6.mat'; % sensory RFs - encode stim and decode responses using saved RFs. [] for none.
 
 %% Temporal Parameters
@@ -57,10 +57,13 @@ p.wa            = 0;               %weights of self-adaptation
 % p.wh            = 3; %1.5;               %weight of inhibitory involuntary attention
 
 %% Working memory
-p.sigmawm       = .1; %.1, .01
+p.sigmawm       = 1; %.1, .01
 p.tau_wmW       = 200;                   % temporal receptive field
-filter_wm       = exp(-p.tlist/p.tau_wmW); % exponential
-p.wmW           = repmat(filter_wm/sum(filter_wm),p.ntheta,1);
+p.gam1_wmW      = 2; %8
+p.gam2_wmW      = .2; %.02
+% filter_wm       = exp(-p.tlist/p.tau_wmW); % exponential
+% p.wmW           = repmat(filter_wm/sum(filter_wm),p.ntheta,1);
+p.wmW             = repmat(makeGamma(0:p.dt/1000:1.5,[],p.gam1_wmW,p.gam2_wmW,1),p.ntheta,1)*.1;
 
 % p.tau_dwm       = 200;                   % memory on the drive
 
@@ -100,7 +103,7 @@ p.vAttWeight2 = 0;
 p.vAttWeights = [p.vAttWeight1 p.vAttWeight2]; % [1 0]            % [high low]
 p.neutralAttOp = 'max';             % 'mean','max'; attention weight assigned in the neutral condition
 p.bounds = [0 0];                   % evidence accumulation bounds for perceptual decision (when measuring accuracy)
-p.ceiling = .3; %0.8, 7.8; %[];                     % evidence ceiling (when measuring eveidence)
+p.ceiling = []; %0.8, 7.8; %[];                     % evidence ceiling (when measuring eveidence)
 p.exoCueSOA = 100;
 
 %% Scaling and offset (for fitting only)
@@ -123,8 +126,9 @@ if ~isempty(opt)
     filter_r2         = exp(-p.tlist/p.tau_r2); % exponential
     p.filter_r2       = filter_r2/sum(filter_r2);     %temporal filter for firing rate
     
-    filter_wm       = exp(-p.tlist/p.tau_wmW); % exponential
-    p.wmW           = repmat(filter_wm/sum(filter_wm),p.ntheta,1);
+%     filter_wm       = exp(-p.tlist/p.tau_wmW); % exponential
+%     p.wmW           = repmat(filter_wm/sum(filter_wm),p.ntheta,1);
+    p.wmW             = repmat(makeGamma(0:p.dt/1000:1.5,[],p.gam1_wmW,p.wm_gam2_wmW,1),p.ntheta,1);
     
     switch p.model
         case 1

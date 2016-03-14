@@ -19,8 +19,8 @@ turnwhite
 f = @(x)modelCost(x,D);
 
 % do optimization
-% [x,fval,exitflag,output] = fminsearch(f, x0);
-[x,fval,exitflag,output] = fmincon(f,x0,[],[],[],[],lb,ub);
+[x,fval,exitflag,output] = fminsearch(f, x0);
+% [x,fval,exitflag,output] = fmincon(f,x0,[],[],[],[],lb,ub);
 
 %% final state
 opt = x2opt(x);
