@@ -20,6 +20,7 @@ switch cond
     otherwise
         attWeights = [0 0];
 end
+attWeights(2) = attWeights(2)*p.vAttScale2;
 
 % start and end times of attention to T1
 attStart = p.stimOnset + p.attOnset;

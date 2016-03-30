@@ -19,11 +19,12 @@ for t = p.dt:p.dt:p.T
         drive = halfExp(inp,p.p); %%% leaving out w and a
     else
         if any(inp)
-            drive = halfExp(p.rfresp(logical(inp),:),p.p)'; % select pre-calculated response
+            drive = halfExp(p.rfresp(logical(inp),:),p.p)'*p.contrast; % select pre-calculated response
         else
             drive = zeros(p.ntheta,1);
         end
     end
+    drive = drive + p.r2(:,idx-1)*p.wF; % add feedback from layer S2 to drive
     p.d(:,idx) = halfExp(1+p.attV(:,idx-1)*p.aMV).*halfExp(1+p.attI(:,idx-1)*p.aMI).*drive;
     
     % normalization pool
@@ -45,6 +46,48 @@ for t = p.dt:p.dt:p.T
     
     %update adaptation
     p.a(:,idx) = p.a(:,idx-1) + (p.dt/p.tau_a)*(-p.a(:,idx-1) + p.r(:,idx));
+    
+    
+    %% Computing the responses of sensory layer 2 (S2)
+    %defining inputs (stimulus)
+    inp = p.r(:,idx);
+    
+    %updating noise
+    p.d2_n(:,idx) = p.d2_n(:,idx-1) + (p.dt/p.tau_n)*...
+        (-p.d2_n(:,idx-1) + randn(p.ntheta,p.nx)*p.d_noiseamp*sqrt(p.tau_n*2));
+    
+    %updating drives
+    % with temporal receptive field
+    if idx > length(p.s2W)
+        r = p.r(:,idx-length(p.s2W):idx-1);
+    else
+        r = nan(size(p.s2W));
+        r(:,end-idx+2:end) = p.r(:,1:idx-1);
+    end
+    inp0  = r.*fliplr(p.s2W); % convolve step 1 (multiply)
+    inp1  = sum(inp0(:,max(end-idx+2,1):end),2)*p.dt; % convolve step 2 (integrate across time)
+    drive = halfExp(inp1,p.p); % rectify and raise to power
+    p.d2(:,idx) = drive;
+    
+    % normalization pool
+    pool = p.d2(:,idx);
+    
+    %Compute Suppressive Drive
+    p.s2(:,idx) = sum(pool(:)); %normalized across orientation
+    sigma = p.sigma2;
+    
+    %Normalization
+    p.f2(:,idx) = p.d2(:,idx) ./ ...
+        (p.s2(:,idx) + halfExp(sigma, p.p) + halfExp(p.a2(:,idx-1)*p.wa, p.p)) ...
+        + p.baselineMod;
+    %Adaptation, p.a, is implemented as Wilson 2003 here. %Subject to change
+    %p.f(:,idx) = halfExp(p.f(:,idx)+ p.f_n(:,idx),1); %Add niose at the firing rate
+    
+    %update firing rates
+    p.r2(:,idx) = p.r2(:,idx-1) + (p.dt/p.tau2)*(-p.r2(:,idx-1) + p.f2(:,idx));
+    
+    %update adaptation
+    p.a2(:,idx) = p.a2(:,idx-1) + (p.dt/p.tau_a)*(-p.a2(:,idx-1) + p.r2(:,idx));
     
     
     %% Computing the responses of working memory layer

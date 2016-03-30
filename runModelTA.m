@@ -1,4 +1,4 @@
-function [perfv, p] = runModelTA(opt)
+function [perfv, p, ev] = runModelTA(opt)
 
 % modified from runModel.m
 % 2015-09-28 (RD)
@@ -20,7 +20,7 @@ plotFig    = 0;
 % Pick contrasts to run
 % logspace(-1.699,log10(.5),7)
 % 0.0200    0.0342    0.0585    0.1000    0.1710    0.2924    0.5000
-contrasts = [0 0.16 0.64 1];
+contrasts = [0 .01 .02 .04 .08 0.16 0.32 0.64 1];
 soas      = [100:50:500 800];
 % soas     = [100:10:800];
 % stimseqs  = {[1 1],[1 2]};
@@ -29,7 +29,7 @@ stimseqs  = {[1 1],[1 2],[1 3],[1 4]};
 % Pick conditions to run
 rcond     = 2:3;   %conditions to run
 ncond     = numel(rcond);
-rcontrast = 3;   %contrast levels to run
+rcontrast = 8; %1:numel(contrasts);   %contrast levels to run
 ncontrast = numel(rcontrast);
 rsoa      = 1:numel(soas);   %soa levels to run
 nsoa      = numel(rsoa);
@@ -85,11 +85,13 @@ for icond = 1:numel(rcond)
                 p = n_model_FA(p);
                 
                 % convolve output with a temporal filter
-                p.r2 = [];
-                for i=1:size(p.r,1)
-                    p.r2(i,:) = conv(p.r(i,:), p.filter_r2);
+                if p.model==1
+                    p.r2 = [];
+                    for i=1:size(p.r,1)
+                        p.r2(i,:) = conv(p.r(i,:), p.filter_r2);
+                    end
+                    p.r2 = p.r2(:,1:p.nt);
                 end
-                p.r2 = p.r2(:,1:p.nt);
                 
                 %accumulate evidence
                 p = accumulateTA(condname,p);

@@ -8,6 +8,14 @@ p.f   = zeros(p.ntheta,p.nt); %Estimated Asy firing rate
 p.a   = zeros(p.ntheta,p.nt); %Adaptation term
 p.d_n = zeros(p.ntheta,p.nt); %Noise
 
+% sensory layer 2
+p.d2   = zeros(p.ntheta,p.nt); %Drive
+p.s2   = zeros(p.ntheta,p.nt); %Suppressive Drive
+p.r2   = zeros(p.ntheta,p.nt); %Firing Rate
+p.f2   = zeros(p.ntheta,p.nt); %Estimated Asy firing rate
+p.a2   = zeros(p.ntheta,p.nt); %Adaptation term
+p.d2_n = zeros(p.ntheta,p.nt); %Noise
+
 % working memory 
 p.dwm   = zeros(p.ntheta,p.nt,p.nstim); %Drive
 p.swm   = zeros(p.ntheta,p.nt,p.nstim); %Suppressive Drive

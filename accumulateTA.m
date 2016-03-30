@@ -13,7 +13,11 @@ if isempty(strfind(cond, 'exo'))
 else
     exoCueSOA = p.exoCueSOA;
 end
-decisionWindowDur = p.soa - exoCueSOA;
+if isempty(p.decisionWindowDur)
+    decisionWindowDur = p.soa - exoCueSOA;
+else
+    decisionWindowDur = p.decisionWindowDur;
+end
 stimStarts = [p.stimOnset p.stimOnset+p.soa];
 if isempty(p.ceiling)
     evidenceCeiling = 0;
@@ -24,7 +28,7 @@ end
 %% Accumulate
 decisionWindows = zeros(size(p.stim));
 switch p.model
-    case 1
+    case {1, 4}
         for iStim = 1:p.nstim
             if iStim==p.nstim
                 idx = round((stimStarts(iStim)/p.dt):size(p.stim,2)); % last stim - integrate to the end
