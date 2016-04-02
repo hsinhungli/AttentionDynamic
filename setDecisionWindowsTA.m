@@ -15,7 +15,7 @@ end
 stimStarts = [p.stimOnset p.stimOnset+p.soa];
 
 %% Define decision windows
-p.decisionWindows = zeros(size(p.stim));
+p.decisionWindows = zeros(p.nstim,p.nt);
 switch p.model
     case {1, 4}
         for iStim = 1:p.nstim

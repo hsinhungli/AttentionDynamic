@@ -15,7 +15,7 @@ xlims = [0 1.5];
 
 subplot(nr,nc,1)
 hold on
-plot(p.tlist/1000,p.stim(1,:),'color',[0 0 0]);
+plot(p.tlist/1000,p.stim','color',[0 0 0]);
 xlim(xlims)
 set(gca,'XTickLabel',[])
 ylabel('Stimulus')

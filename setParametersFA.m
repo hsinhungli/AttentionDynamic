@@ -82,6 +82,9 @@ p.wmW             = repmat(makeGamma(0:p.dt/1000:1.5,[],p.gam1_wmW,p.gam2_wmW,1)
 
 % p.tau_dwm       = 200;                   % memory on the drive
 
+%% Decision
+p.tau_e         = 100;
+
 %% Attention
 p.aMI     = 6; % .2 % 5 (spatial sim), 4 (stronger IOR), 4 (temporal sim)
 p.aMV     = 3.9; %9, 200
@@ -123,7 +126,7 @@ p.vAttScale2 = 1;                  % scale the magnitude of voluntary attention 
 p.neutralAttOp = 'max';             % 'mean','max'; attention weight assigned in the neutral condition
 p.bounds = [0 0];                   % evidence accumulation bounds for perceptual decision (when measuring accuracy)
 p.ceiling = []; %0.8, 7.8; %[];                     % evidence ceiling (when measuring eveidence)
-p.decisionWindowDur = []; %[]
+p.decisionWindowDur = 300; %[]
 
 %% Scaling and offset (for fitting only)
 p.scaling1 = 4.2;

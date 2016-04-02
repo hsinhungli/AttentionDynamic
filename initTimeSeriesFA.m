@@ -35,6 +35,9 @@ for istim = 1:p.nstim
     p.gate(istim,idx) = 1;
 end
 
+% decision
+p.e     = zeros(p.nstim,p.nt); %Evidence
+
 % attention
 p.att = zeros(p.ntheta,p.nt);   %Attentional gain factor
 p.attI = zeros(p.ntheta,p.nt);  %Involuntary attentional gain factor

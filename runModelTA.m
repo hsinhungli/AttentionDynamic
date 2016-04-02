@@ -33,7 +33,7 @@ rcontrast = 8; %1:numel(contrasts);   %contrast levels to run
 ncontrast = numel(rcontrast);
 rsoa      = 1:numel(soas);   %soa levels to run
 nsoa      = numel(rsoa);
-rseq      = 3; % 1:2 % sequences to run
+rseq      = 2; % 1:2 % sequences to run
 nseq      = numel(rseq);
 p_pool    = cell(ncond*ncontrast*nsoa,1); %data (p) of each simulated condition will be saved here
 
@@ -95,7 +95,7 @@ for icond = 1:numel(rcond)
                 end
                 
                 %accumulate evidence
-                p = accumulateTA(p);
+%                 p = accumulateTA(p);
                 if isempty(p.rf)
                     % take the difference between evidence for the correct
                     % vs. incorrect feature
@@ -109,16 +109,20 @@ for icond = 1:numel(rcond)
                     % take the first feature
 %                     p.ev = squeeze(p.evidence(1,end,:)); 
                 else
-                    % decode just between CCW/CW for the appropriate axis
+%                     % decode just between CCW/CW for the appropriate axis
+%                     for iStim = 1:2
+%                         switch p.stimseq(iStim)
+%                             case {1, 2}
+%                                 rfresp(:,:,iStim) = p.rfresp(1:2,:);
+%                             case {3, 4}
+%                                 rfresp(:,:,iStim) = p.rfresp(3:4,:);
+%                         end
+%                         p.ev(iStim) = decodeEvidence(p.evidence(:,end,iStim)', rfresp(:,:,iStim));
+%                     end
                     for iStim = 1:2
-                        switch p.stimseq(iStim)
-                            case {1, 2}
-                                rfresp(:,:,iStim) = p.rfresp(1:2,:);
-                            case {3, 4}
-                                rfresp(:,:,iStim) = p.rfresp(3:4,:);
-                        end
-                        p.ev(iStim) = decodeEvidence(p.evidence(:,end,iStim)', rfresp(:,:,iStim));
+                        p.evidence(:,:,iStim) = p.e(iStim,:);
                     end
+                    p.ev = squeeze(p.evidence(:,end,:))';
                 end
                 % make evidence positive for the correct stimulus
                 p.ev = p.ev.*(-1).^p.stimseq; % flip sign for CCW (odd #s)

@@ -141,10 +141,12 @@ for t = p.dt:p.dt:p.T
                 case {3, 4}
                     rfresp(:,:,iStim) = p.rfresp(3:4,:);
             end
-            response = p.r(:,idx)'*p.decisionWindows(iStim,idx); % only accumulate if in the decision window
-            evidence = decodeEvidence(response, rfresp(:,:,iStim));
+            evidence = decodeEvidence(p.r(:,idx)', rfresp(:,:,iStim));
+            evidence = evidence*p.decisionWindows(iStim,idx); % only accumulate if in the decision window
+            evidence(abs(evidence)<1e-3) = 0; % otherwise zero response will give a little evidence
             
-            p.e(:,idx,iStim) = p.e(:,idx-1,iStim) + (p.dt/p.tau_e)*(-p.e(:,idx-1,iStim) + evidence);
+%             p.e(iStim,idx) = p.e(iStim,idx-1) + (p.dt/p.tau_e)*(-p.e(iStim,idx-1) + evidence);
+            p.e(iStim,idx) = p.e(iStim,idx-1) + evidence;
         end
     end
     
