@@ -129,6 +129,25 @@ for t = p.dt:p.dt:p.T
     p.awm(:,idx,:) = p.awm(:,idx-1,:) + (p.dt/p.tau_a)*(-p.awm(:,idx-1,:) + p.rwm(:,idx,:));
     
     
+    %% Computing the responses of the decision layer
+    if isempty(p.rf)
+        error('must have RF to decode at each time step')
+    else
+        % decode just between CCW/CW for the appropriate axis
+        for iStim = 1:2
+            switch p.stimseq(iStim)
+                case {1, 2}
+                    rfresp(:,:,iStim) = p.rfresp(1:2,:);
+                case {3, 4}
+                    rfresp(:,:,iStim) = p.rfresp(3:4,:);
+            end
+            response = p.r(:,idx)'*p.decisionWindows(iStim,idx); % only accumulate if in the decision window
+            evidence = decodeEvidence(response, rfresp(:,:,iStim));
+            
+            p.e(:,idx,iStim) = p.e(:,idx-1,iStim) + (p.dt/p.tau_e)*(-p.e(:,idx-1,iStim) + evidence);
+        end
+    end
+    
     %% Update attention map
     % voluntary
     attnGainV = p.task(:,idx-1);

@@ -1,24 +1,8 @@
-function p = accumulateTA(cond, p)
+function p = accumulateTA(p)
 %
 % p = accumulateTA(p)
-%
-% separate decision window for each stimulus
-% assume that the accumulation starts at stimulus onset and lasts until the
-% next stimulus. use the same interval for the final stimulus.
 
 %% Setup
-if isempty(strfind(cond, 'exo'))
-    exoCueSOA = 0;
-%     exoCueSOA = p.exoCueSOA;
-else
-    exoCueSOA = p.exoCueSOA;
-end
-if isempty(p.decisionWindowDur)
-    decisionWindowDur = p.soa - exoCueSOA;
-else
-    decisionWindowDur = p.decisionWindowDur;
-end
-stimStarts = [p.stimOnset p.stimOnset+p.soa];
 if isempty(p.ceiling)
     evidenceCeiling = 0;
 else
@@ -26,25 +10,14 @@ else
 end
 
 %% Accumulate
-decisionWindows = zeros(size(p.stim));
 switch p.model
     case {1, 4}
+        evidence = zeros(p.ntheta, size(p.decisionWindows,2), p.nstim);
         for iStim = 1:p.nstim
-            if iStim==p.nstim
-                idx = round((stimStarts(iStim)/p.dt):size(p.stim,2)); % last stim - integrate to the end
-            else
-                idx = round((stimStarts(iStim)/p.dt):(stimStarts(iStim)/p.dt)+decisionWindowDur/p.dt); 
-            end
-            decisionWindows(iStim,idx) = 1;
-        end
-        
-        evidence = zeros(p.ntheta, size(decisionWindows,2), p.nstim);
-        for iStim = 1:p.nstim
-            dw = decisionWindows(iStim,:);
+            dw = p.decisionWindows(iStim,:);
             evidence(:,:,iStim) = cumsum(p.r2.*repmat(dw,p.ntheta,1),2);
         end
     case 2
-        decisionWindows(:,:) = 1;
         evidence = cumsum(p.rwm,2);
     otherwise
         error('p.model not recognized')
@@ -79,7 +52,6 @@ guesses = (round(rand(p.nstim,1))-0.5)*2;
 decision(decision==0) = guesses(decision==0);
 
 %% Store things
-p.decisionWindows = decisionWindows;
 p.evidence = evidence; 
 p.decision = decision;
 

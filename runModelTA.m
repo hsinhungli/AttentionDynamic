@@ -70,6 +70,7 @@ for icond = 1:numel(rcond)
                 p = initTimeSeriesFA(p);
                 p = setStimTA(condname,p);
                 p = setTaskTA(condname,p);
+                p = setDecisionWindowsTA(condname,p);
                 
 %                 %Stimulus inputs
 %                 p.i = p.stim;
@@ -94,7 +95,7 @@ for icond = 1:numel(rcond)
                 end
                 
                 %accumulate evidence
-                p = accumulateTA(condname,p);
+                p = accumulateTA(p);
                 if isempty(p.rf)
                     % take the difference between evidence for the correct
                     % vs. incorrect feature
