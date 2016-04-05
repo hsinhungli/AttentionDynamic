@@ -15,7 +15,7 @@ p          = setParametersFA(opt);
 %% Set conditions/contrasts to simulate
 condnames  =  {'no-endo','endoT1','endoT2','endoT1T2','exoT1','exoT2','exoT1T2'};
 saveData   = 0;
-plotFig    = 0;
+plotFig    = 1;
 
 % Pick contrasts to run
 % logspace(-1.699,log10(.5),7)
@@ -31,9 +31,9 @@ rcond     = 2:3;   %conditions to run
 ncond     = numel(rcond);
 rcontrast = 8; %1:numel(contrasts);   %contrast levels to run
 ncontrast = numel(rcontrast);
-rsoa      = 1:numel(soas);   %soa levels to run
+rsoa      = 10;%1:numel(soas);   %soa levels to run
 nsoa      = numel(rsoa);
-rseq      = 2; % 1:2 % sequences to run
+rseq      = 3; % 1:2 % sequences to run
 nseq      = numel(rseq);
 p_pool    = cell(ncond*ncontrast*nsoa,1); %data (p) of each simulated condition will be saved here
 
@@ -72,27 +72,25 @@ for icond = 1:numel(rcond)
                 p = setTaskTA(condname,p);
                 p = setDecisionWindowsTA(condname,p);
                 
-%                 %Stimulus inputs
-%                 p.i = p.stim;
-%                 
-%                 % convolve input with a temporal filter
-%                 p.e = [];
-%                 for i=1:size(p.i,1)
-%                     p.e(i,:) = conv(p.i(i,:), p.filter_e);
-%                 end
-%                 p.e = p.e(:,1:p.nt);
+                %Stimulus inputs
+                % convolve input with a temporal filter
+                p.i = [];
+                for i=1:size(p.stim,1)
+                    p.i(i,:) = conv(p.stim(i,:), p.filter_i);
+                end
+                p.i = p.i(:,1:p.nt);
                 
                 %run the model
                 p = n_model_FA(p);
                 
                 % convolve output with a temporal filter
-                if p.model==1
-                    p.r2 = [];
-                    for i=1:size(p.r,1)
-                        p.r2(i,:) = conv(p.r(i,:), p.filter_r2);
-                    end
-                    p.r2 = p.r2(:,1:p.nt);
-                end
+%                 if p.model==1
+%                     p.r2 = [];
+%                     for i=1:size(p.r,1)
+%                         p.r2(i,:) = conv(p.r(i,:), p.filter_r2);
+%                     end
+%                     p.r2 = p.r2(:,1:p.nt);
+%                 end
                 
                 %accumulate evidence
 %                 p = accumulateTA(p);

@@ -19,7 +19,7 @@ for t = p.dt:p.dt:p.T
         drive = halfExp(inp,p.p); %%% leaving out w and a
     else
         if any(inp)
-            drive = halfExp(p.rfresp(logical(inp),:),p.p)'*p.contrast; % select pre-calculated response
+            drive = halfExp(p.rfresp(logical(inp),:),p.p)'*p.contrast*inp(logical(inp)); % select pre-calculated response
         else
             drive = zeros(p.ntheta,1);
         end
@@ -42,7 +42,9 @@ for t = p.dt:p.dt:p.T
     %p.f(:,idx) = halfExp(p.f(:,idx)+ p.f_n(:,idx),1); %Add niose at the firing rate
     
     %update firing rates
-    p.r(:,idx) = p.r(:,idx-1) + (p.dt/p.tau)*(-p.r(:,idx-1) + p.f(:,idx));
+%     p.r(:,idx) = p.r(:,idx-1) + (p.dt/p.tau)*(-p.r(:,idx-1) + p.f(:,idx));
+    p.rCascade = cascadeExp(p.rCascade, p.f(:,idx), p.tau, p.dt, idx, p.nRCascades);
+    p.r(:,idx) = p.rCascade(:,idx,end);
     
     %update adaptation
     p.a(:,idx) = p.a(:,idx-1) + (p.dt/p.tau_a)*(-p.a(:,idx-1) + p.r(:,idx));
@@ -50,7 +52,7 @@ for t = p.dt:p.dt:p.T
     
     %% Computing the responses of sensory layer 2 (S2)
     %defining inputs (stimulus)
-    inp = p.r(:,idx);
+%     inp = p.r(:,idx);
     
     %updating noise
     p.d2_n(:,idx) = p.d2_n(:,idx-1) + (p.dt/p.tau_n)*...
@@ -58,15 +60,18 @@ for t = p.dt:p.dt:p.T
     
     %updating drives
     % with temporal receptive field
-    if idx > length(p.s2W)
-        r = p.r(:,idx-length(p.s2W):idx-1);
-    else
-        r = nan(size(p.s2W));
-        r(:,end-idx+2:end) = p.r(:,1:idx-1);
-    end
-    inp0  = r.*fliplr(p.s2W); % convolve step 1 (multiply)
-    inp1  = sum(inp0(:,max(end-idx+2,1):end),2)*p.dt; % convolve step 2 (integrate across time)
-    drive = halfExp(inp1,p.p); % rectify and raise to power
+%     if idx > length(p.s2W)
+%         r = p.r(:,idx-length(p.s2W):idx-1);
+%     else
+%         r = nan(size(p.s2W));
+%         r(:,end-idx+2:end) = p.r(:,1:idx-1);
+%     end
+%     inp0  = r.*fliplr(p.s2W); % convolve step 1 (multiply)
+%     inp1  = sum(inp0(:,max(end-idx+2,1):end),2)*p.dt; % convolve step 2 (integrate across time)
+%     drive = halfExp(inp1,p.p); % rectify and raise to power
+%     p.d2(:,idx) = drive;
+    % directly from r
+    drive = p.r(:,idx);
     p.d2(:,idx) = drive;
     
     % normalization pool
@@ -84,7 +89,7 @@ for t = p.dt:p.dt:p.T
     %p.f(:,idx) = halfExp(p.f(:,idx)+ p.f_n(:,idx),1); %Add niose at the firing rate
     
     %update firing rates
-    p.r2(:,idx) = p.r2(:,idx-1) + (p.dt/p.tau2)*(-p.r2(:,idx-1) + p.f2(:,idx));
+    p.r2(:,idx) = p.r2(:,idx-1) + (p.dt/p.tau_r2)*(-p.r2(:,idx-1) + p.f2(:,idx));
     
     %update adaptation
     p.a2(:,idx) = p.a2(:,idx-1) + (p.dt/p.tau_a)*(-p.a2(:,idx-1) + p.r2(:,idx));
@@ -141,16 +146,20 @@ for t = p.dt:p.dt:p.T
                 case {3, 4}
                     rfresp(:,:,iStim) = p.rfresp(3:4,:);
             end
-            evidence = decodeEvidence(p.r(:,idx)', rfresp(:,:,iStim));
+            evidence = decodeEvidence(p.r2(:,idx)', rfresp(:,:,iStim));
             evidence = evidence*p.decisionWindows(iStim,idx); % only accumulate if in the decision window
             evidence(abs(evidence)<1e-3) = 0; % otherwise zero response will give a little evidence
             
 %             p.e(iStim,idx) = p.e(iStim,idx-1) + (p.dt/p.tau_e)*(-p.e(iStim,idx-1) + evidence);
             p.e(iStim,idx) = p.e(iStim,idx-1) + evidence;
+            
+            if abs(p.e(iStim,idx))>p.ceiling
+                p.e(iStim,idx) = p.ceiling*sign(p.e(iStim,idx));
+            end
         end
     end
     
-    %% Update attention map
+    %% Update attention layer
     % voluntary
     attnGainV = p.task(:,idx-1);
     p.attV(:,idx) = p.attV(:,idx-1) + (p.dt/p.tau_attV)*(-p.attV(:,idx-1) + attnGainV);

@@ -16,6 +16,7 @@ xlims = [0 1.5];
 subplot(nr,nc,1)
 hold on
 plot(p.tlist/1000,p.stim','color',[0 0 0]);
+plot(p.tlist/1000,p.i','color',[0 0 0]);
 xlim(xlims)
 set(gca,'XTickLabel',[])
 ylabel('Stimulus')
@@ -32,7 +33,7 @@ subplot(nr,nc,3)
 hold on
 plot(p.tlist/1000,p.attI','color',[185 178 170]/255);
 xlim(xlims)
-ylim([-1.2 1.2])
+ylim([-.5 .5])
 set(gca,'XTickLabel',[])
 ylabel('R2')
 
@@ -49,8 +50,8 @@ hold on
 plot(p.tlist/1000,p.r2','color',[58 154 217]/255);
 xlim(xlims)
 set(gca,'XTickLabel',[])
-ylabel('R1 filtered')
-set(gca,'YLim',[0 max(p.r(:))+.1]);
+ylabel('R2')
+set(gca,'YLim',[0 max(p.r2(:))+.1]);
 
 subplot(nr,nc,6)
 hold on
