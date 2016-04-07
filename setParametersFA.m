@@ -82,19 +82,16 @@ p.wmW             = repmat(makeGamma(0:p.dt/1000:1.5,[],p.gam1_wmW,p.gam2_wmW,1)
 
 % p.tau_dwm       = 200;                   % memory on the drive
 
-%% Decision
-p.tau_e         = 1000;
-
 %% Attention
-p.aMI     = 6; % .2 % 5 (spatial sim), 4 (stronger IOR), 4 (temporal sim)
+p.aMI     = 6; % 6 % .2 % 5 (spatial sim), 4 (stronger IOR), 4 (temporal sim)
 p.aMV     = 3.9; %3.9, 9, 200
 p.ap      = 4;
 p.asigma  = .3;
 p.aKernel = [1; -1];
 p.aIE     = 0; % excitatory part of involuntary attention kernel
 p.aIOR    = .4; %.4 % 1 (spatial sim), 1.3 (stronger IOR), 1.12 (temporal sim)
-p.biph1   = 40; % 35,25
-p.biph2   = 2;
+p.biph1   = 40; % 40,35,25
+p.biph2   = 2; % 2
 p.gam1    = 8;
 p.gam2    = .005;
 switch p.model
@@ -124,8 +121,13 @@ p.vAttWeight2 = 0;
 p.vAttWeights = [p.vAttWeight1 p.vAttWeight2]; % [1 0]            % [high low]
 p.vAttScale2 = 1;                  % scale the magnitude of voluntary attention to T2
 p.neutralAttOp = 'max';             % 'mean','max'; attention weight assigned in the neutral condition
-p.bounds = [0 0];                   % evidence accumulation bounds for perceptual decision (when measuring accuracy)
-p.ceiling = 3; %0.8, 7.8; %[];                     % evidence ceiling (when measuring eveidence)
+
+%% Decision
+% p.tau_e         = 1000;
+p.sigmad            = .1;
+p.tau_rd            = 10000;
+p.bounds            = [0 0];                   % evidence accumulation bounds for perceptual decision (when measuring accuracy)
+p.ceiling           = []; %3, 0.8, 7.8; %[];                     % evidence ceiling (when measuring eveidence)
 p.decisionWindowDur = 300; %[]
 
 %% Scaling and offset (for fitting only)

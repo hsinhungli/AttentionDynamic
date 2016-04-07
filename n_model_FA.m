@@ -45,6 +45,13 @@ for t = p.dt:p.dt:p.T
 %     p.r(:,idx) = p.r(:,idx-1) + (p.dt/p.tau)*(-p.r(:,idx-1) + p.f(:,idx));
     p.rCascade = cascadeExp(p.rCascade, p.f(:,idx), p.tau, p.dt, idx, p.nRCascades);
     p.r(:,idx) = p.rCascade(:,idx,end);
+%     for i = 1:p.ntheta
+%         if p.rCascade(i,idx,6)==0
+%             p.r(i,idx) = 0;
+%         else
+%             p.r(i,idx) = p.rCascade(i,idx,6)./p.rCascade(i,idx,7);
+%         end
+%     end
     
     %update adaptation
     p.a(:,idx) = p.a(:,idx-1) + (p.dt/p.tau_a)*(-p.a(:,idx-1) + p.r(:,idx));
@@ -150,13 +157,38 @@ for t = p.dt:p.dt:p.T
             evidence = evidence*p.decisionWindows(iStim,idx); % only accumulate if in the decision window
             evidence(abs(evidence)<1e-3) = 0; % otherwise zero response will give a little evidence
             
-%             p.e(iStim,idx) = p.e(iStim,idx-1) + (p.dt/p.tau_e)*(-p.e(iStim,idx-1) + evidence);
-            p.e(iStim,idx) = p.e(iStim,idx-1) + evidence;
-            
-            if abs(p.e(iStim,idx))>p.ceiling
-                p.e(iStim,idx) = p.ceiling*sign(p.e(iStim,idx));
-            end
+%             p.e(iStim,idx) = p.e(iStim,idx-1) + evidence;
+%             if abs(p.e(iStim,idx))>p.ceiling
+%                 p.e(iStim,idx) = p.ceiling*sign(p.e(iStim,idx));
+%             end
+
+            % drive
+            drive = evidence;
+            p.dd(iStim,idx) = drive;
         end
+        
+        %updating noise
+        p.dd_n(:,idx) = p.dd_n(:,idx-1) + (p.dt/p.tau_n)*...
+            (-p.dd_n(:,idx-1) + randn(p.nstim,p.nx)*p.d_noiseamp*sqrt(p.tau_n*2));
+
+        % normalization pool
+        pool = p.dd(:,idx);
+
+        %Compute Suppressive Drive
+        p.sd(:,idx) = abs(pool(:));
+%         p.sd(:,idx) = sum(abs(pool(:))); %normalized across stimuli
+        sigma = p.sigmad;
+
+        %Normalization
+        p.fd(:,idx) = p.dd(:,idx) ./ ...
+            (p.sd(:,idx) + halfExp(sigma, p.p) + halfExp(p.ad(:,idx-1)*p.wa, p.p)) ...
+            + p.baselineMod;
+
+        %update firing rates
+        p.rd(:,idx) = p.rd(:,idx-1) + (p.dt/p.tau_rd)*(-p.rd(:,idx-1) + p.fd(:,idx));
+
+        %update adaptation
+        p.ad(:,idx) = p.ad(:,idx-1) + (p.dt/p.tau_a)*(-p.ad(:,idx-1) + p.rd(:,idx));
     end
     
     %% Update attention layer

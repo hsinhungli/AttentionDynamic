@@ -37,7 +37,12 @@ for istim = 1:p.nstim
 end
 
 % decision
-p.e     = zeros(p.nstim,p.nt); %Evidence
+p.dd   = zeros(p.nstim,p.nt); %Drive
+p.sd   = zeros(p.nstim,p.nt); %Suppressive Drive
+p.rd   = zeros(p.nstim,p.nt); %Firing Rate
+p.fd   = zeros(p.nstim,p.nt); %Estimated Asy firing rate
+p.ad   = zeros(p.nstim,p.nt); %Adaptation term
+p.dd_n = zeros(p.nstim,p.nt); %Noise
 
 % attention
 p.att = zeros(p.ntheta,p.nt);   %Attentional gain factor
