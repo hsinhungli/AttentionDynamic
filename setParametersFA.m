@@ -58,7 +58,7 @@ p.wa            = 0;               %weights of self-adaptation
 % p.wh            = 3; %1.5;               %weight of inhibitory involuntary attention
 
 %% Sensory layer 2
-p.sigma2        = .1;
+p.sigma2        = .3; %.1
 p.wF            = 2; %.05;                     % weight of S2 feedback onto S1
 if p.model~=4
     p.wF = 0;                           % should be zero if not Model 4
@@ -124,7 +124,7 @@ p.neutralAttOp = 'max';             % 'mean','max'; attention weight assigned in
 
 %% Decision
 % p.tau_e         = 1000;
-p.sigmad            = .1;
+p.sigmad            = .05;
 p.tau_rd            = 10000;
 p.bounds            = [0 0];                   % evidence accumulation bounds for perceptual decision (when measuring accuracy)
 p.ceiling           = []; %3, 0.8, 7.8; %[];                     % evidence ceiling (when measuring eveidence)
