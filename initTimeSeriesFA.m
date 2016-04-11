@@ -1,6 +1,6 @@
 function p = initTimeSeriesFA(p)
 
-% sensory
+% sensory layer 1
 p.d   = zeros(p.ntheta,p.nt); %Drive
 p.s   = zeros(p.ntheta,p.nt); %Suppressive Drive
 p.r   = zeros(p.ntheta,p.nt); %Firing Rate
@@ -8,6 +8,12 @@ p.f   = zeros(p.ntheta,p.nt); %Estimated Asy firing rate
 p.a   = zeros(p.ntheta,p.nt); %Adaptation term
 p.d_n = zeros(p.ntheta,p.nt); %Noise
 p.rCascade = zeros(p.ntheta,p.nt,p.nRCascades); %Cascade for gamma-shaped r
+
+% sensory layer 1 transient
+p.dtr   = zeros(p.ntheta,p.nt); %Drive
+p.str   = zeros(p.ntheta,p.nt); %Suppressive Drive
+p.rtr   = zeros(p.ntheta,p.nt); %Firing Rate
+p.ftr   = zeros(p.ntheta,p.nt); %Estimated Asy firing rate
 
 % sensory layer 2
 p.d2   = zeros(p.ntheta,p.nt); %Drive

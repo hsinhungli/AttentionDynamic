@@ -6,9 +6,45 @@ for t = p.dt:p.dt:p.T
 %     counterdisp(t);
     idx = idx+1;
     
-    %% Computing the responses of sensory layer
+    %% Sensory layer 1 transient (S1t)
     %defining inputs (stimulus)
     inp = p.stim(:,idx);
+    
+    %updating drives
+    if isempty(p.rf) 
+        drive = halfExp(inp,p.p); %%% leaving out w and a
+    else
+        if any(inp)
+            drive = halfExp(p.rfresp(logical(inp),:),p.p)'*p.contrast*inp(logical(inp)); % select pre-calculated response
+        else
+            drive = zeros(p.ntheta,1);
+        end
+    end
+    p.dtr(:,idx) = drive; 
+    
+    % normalization pool
+    pool = p.dtr(:,idx);
+    
+    %Compute Suppressive Drive
+    p.str(:,idx) = sum(pool(:)); %normalized across orientation
+    sigma = p.sigma;
+    
+    %Normalization
+    p.ftr(:,idx) = p.dtr(:,idx) ./ ...
+        (p.str(:,idx) + halfExp(sigma, p.p)); % simplified
+    
+    %update firing rates
+    p.rtr(:,idx) = p.rtr(:,idx-1) + (p.dt/p.tautr)*(-p.rtr(:,idx-1) + p.ftr(:,idx));
+
+    
+    %% Computing the responses of sensory layer
+    %defining inputs (stimulus)
+    idxdelay = round(p.delay/p.dt);
+    if idxdelay >= idx
+        inp = zeros(size(p.stim(:,idx)));
+    else
+        inp = p.stim(:,idx - idxdelay); % introduce a delay before the s1 response
+    end
     
     %updating noise
     p.d_n(:,idx) = p.d_n(:,idx-1) + (p.dt/p.tau_n)*...
@@ -27,8 +63,8 @@ for t = p.dt:p.dt:p.T
     drive = drive + p.r2(:,idx-1)*p.wF; % add feedback from layer S2 to drive
     p.d(:,idx) = halfExp(1+p.attV(:,idx-1)*p.aMV).*halfExp(1+p.attI(:,idx-1)*p.aMI).*drive;
     
-    % normalization pool
-    pool = p.d(:,idx);
+    % normalization pool - include transient response
+    pool = p.d(:,idx) + p.rtr(:,idx)*100;
     
     %Compute Suppressive Drive
     p.s(:,idx) = sum(pool(:)); %normalized across orientation
@@ -55,7 +91,7 @@ for t = p.dt:p.dt:p.T
     
     %update adaptation
     p.a(:,idx) = p.a(:,idx-1) + (p.dt/p.tau_a)*(-p.a(:,idx-1) + p.r(:,idx));
-    
+ 
     
     %% Computing the responses of sensory layer 2 (S2)
     %defining inputs (stimulus)

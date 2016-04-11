@@ -22,6 +22,7 @@ p.tlist         = 0:p.dt:p.T;
 
 %Temporal dynamic of neurons
 p.tau             = 90;  %2,90,20                   %time constant (ms)
+p.tautr           = 10;
 p.tauwm           = 20;                    % time constant of working memory (ms)
 p.tau_a           = 99;                     %time constant adaptation (ms)
 p.tau_attI        = 50;  %50                %time constant involuntary attention (ms)
@@ -31,9 +32,10 @@ p.tau_n           = 99; %100                   %time constant noise (ms)
 p.d_noiseamp      = 0; % 0.0015;
 filter_r2         = exp(-p.tlist/p.tau_r2); % exponential
 p.filter_r2       = filter_r2/sum(filter_r2);     %temporal filter for firing rate
-p.nRCascades      = 1;
+p.nRCascades      = 4;
+p.delay           = 50;                     % delay before the start of the sensory response
 
-p.tau_i           = 80;  %20             %time constant filter for excitatory response (ms)
+p.tau_i           = 20;  %20             %time constant filter for excitatory response (ms)
 filter_i          = (p.tlist/p.tau_i).*exp(1-p.tlist/p.tau_i); % alpha
 p.filter_i        = filter_i/sum(filter_i);     %temporal filter for input
 % p.tau_att         = 99;                    %time constant attention (ms)
@@ -114,8 +116,8 @@ p.aBaseline      = 0; % 0.001;
 p.stimOnset = 500;                  % relative to start of trial (ms)
 p.stimDur = 30; %30  
 p.exoCueSOA = 100;
-p.attOnset = -50; %-50                  % voluntary attention on, relative to stim onset (ms)
-p.attOffset = 10; %10                 % voluntary attention off, relative to stim offset (ms)
+p.attOnset = -50 + p.delay; %-50                  % voluntary attention on, relative to stim onset (ms)
+p.attOffset = 10 + p.delay; %10                 % voluntary attention off, relative to stim offset (ms)
 p.vAttWeight1 = 1;
 p.vAttWeight2 = 0;
 p.vAttWeights = [p.vAttWeight1 p.vAttWeight2]; % [1 0]            % [high low]
