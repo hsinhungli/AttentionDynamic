@@ -61,7 +61,12 @@ for t = p.dt:p.dt:p.T
         end
     end
     drive = drive + p.r2(:,idx-1)*p.wF; % add feedback from layer S2 to drive
-    p.d(:,idx) = halfExp(1+p.attV(:,idx-1)*p.aMV).*halfExp(1+p.attI(:,idx-1)*p.aMI).*drive;
+    % orig
+%     p.d(:,idx) = halfExp(1+p.attV(:,idx-1)*p.aMV).*halfExp(1+p.attI(:,idx-1)*p.aMI).*drive;
+    % with history on drive
+    drive = halfExp(1+p.attV(:,idx-1)*p.aMV).*halfExp(1+p.attI(:,idx-1)*p.aMI).*drive;
+    p.rCascade = cascadeExp(p.rCascade, drive, p.tau, p.dt, idx, p.nRCascades);
+    p.d(:,idx) = p.rCascade(:,idx,end);
     
     % normalization pool - include transient response
     pool = p.d(:,idx) + p.rtr(:,idx)*100;
@@ -78,9 +83,12 @@ for t = p.dt:p.dt:p.T
     %p.f(:,idx) = halfExp(p.f(:,idx)+ p.f_n(:,idx),1); %Add niose at the firing rate
     
     %update firing rates
+    % orig
 %     p.r(:,idx) = p.r(:,idx-1) + (p.dt/p.tau)*(-p.r(:,idx-1) + p.f(:,idx));
-    p.rCascade = cascadeExp(p.rCascade, p.f(:,idx), p.tau, p.dt, idx, p.nRCascades);
-    p.r(:,idx) = p.rCascade(:,idx,end);
+    % cascade
+%     p.rCascade = cascadeExp(p.rCascade, p.f(:,idx), p.tau, p.dt, idx, p.nRCascades);
+%     p.r(:,idx) = p.rCascade(:,idx,end);
+    % add to cascade for initial transient
 %     for i = 1:p.ntheta
 %         if p.rCascade(i,idx,6)==0
 %             p.r(i,idx) = 0;
@@ -88,6 +96,8 @@ for t = p.dt:p.dt:p.T
 %             p.r(i,idx) = p.rCascade(i,idx,6)./p.rCascade(i,idx,7);
 %         end
 %     end
+    % with history on drive
+    p.r(:,idx) = p.f(:,idx);
     
     %update adaptation
     p.a(:,idx) = p.a(:,idx-1) + (p.dt/p.tau_a)*(-p.a(:,idx-1) + p.r(:,idx));

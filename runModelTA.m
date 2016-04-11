@@ -15,7 +15,7 @@ p          = setParametersFA(opt);
 %% Set conditions/contrasts to simulate
 condnames  =  {'no-endo','endoT1','endoT2','endoT1T2','exoT1','exoT2','exoT1T2'};
 saveData   = 0;
-plotFig    = 1;
+plotFig    = 0;
 
 % Pick contrasts to run
 % logspace(-1.699,log10(.5),7)
@@ -31,7 +31,7 @@ rcond     = 2:3;   %conditions to run
 ncond     = numel(rcond);
 rcontrast = 8; %1:numel(contrasts);   %contrast levels to run
 ncontrast = numel(rcontrast);
-rsoa      = 1;%1:numel(soas);   %soa levels to run
+rsoa      = 1:numel(soas);   %soa levels to run
 nsoa      = numel(rsoa);
 rseq      = 3; % 1:2 % sequences to run
 nseq      = numel(rseq);
