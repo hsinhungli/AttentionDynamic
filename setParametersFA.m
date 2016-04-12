@@ -26,7 +26,7 @@ p.tauwm           = 20;                    % time constant of working memory (ms
 p.tau_a           = 99;                     %time constant adaptation (ms)
 p.tau_attI        = 50;  %50                %time constant involuntary attention (ms)
 p.tau_attV        = 50;  %50               %time constant voluntary attention (ms)
-p.tau_r2          = 80;  %120,80                   %time constant filter for firing rate (ms)
+p.tau_r2          = 70;  %120,80                   %time constant filter for firing rate (ms)
 p.tau_n           = 99; %100                   %time constant noise (ms)
 p.d_noiseamp      = 0; % 0.0015;
 filter_r2         = exp(-p.tlist/p.tau_r2); % exponential
@@ -50,7 +50,7 @@ else
 end
 p.baselineMod   = 0;
 p.p             = 2;
-p.sigma         = .5; %.5 .1              %semisaturation constant
+p.sigma         = 1; %.5 .1              %semisaturation constant
 p.wa            = 0;               %weights of self-adaptation
 
 % p.baselineAtt   = 1;
@@ -83,13 +83,13 @@ p.wmW             = repmat(makeGamma(0:p.dt/1000:1.5,[],p.gam1_wmW,p.gam2_wmW,1)
 % p.tau_dwm       = 200;                   % memory on the drive
 
 %% Attention
-p.aMI     = 6; % .2 % 5 (spatial sim), 4 (stronger IOR), 4 (temporal sim)
-p.aMV     = 3.9; %9, 200
+p.aMI     = 3.9; % .2 % 5 (spatial sim), 4 (stronger IOR), 4 (temporal sim)
+p.aMV     = 1.6; %9, 200
 p.ap      = 4;
 p.asigma  = .3;
 p.aKernel = [1; -1];
 p.aIE     = 0; % excitatory part of involuntary attention kernel
-p.aIOR    = .4; %.4 % 1 (spatial sim), 1.3 (stronger IOR), 1.12 (temporal sim)
+p.aIOR    = .32; %.4 % 1 (spatial sim), 1.3 (stronger IOR), 1.12 (temporal sim)
 p.biph1   = 40; % 35,25
 p.biph2   = 2;
 p.gam1    = 8;
@@ -119,15 +119,17 @@ p.attOffset = 10;                  % voluntary attention off, relative to stim o
 p.vAttWeight1 = 1;
 p.vAttWeight2 = 0;
 p.vAttWeights = [p.vAttWeight1 p.vAttWeight2]; % [1 0]            % [high low]
-p.vAttScale2 = 1;                  % scale the magnitude of voluntary attention to T2
+p.vAttScale2 = .86;                  % scale the magnitude of voluntary attention to T2
+p.distributeVoluntary = 1;
+p.span = 500;
 p.neutralAttOp = 'max';             % 'mean','max'; attention weight assigned in the neutral condition
 p.bounds = [0 0];                   % evidence accumulation bounds for perceptual decision (when measuring accuracy)
 p.ceiling = []; %0.8, 7.8; %[];                     % evidence ceiling (when measuring eveidence)
 p.decisionWindowDur = []; %[]
 
 %% Scaling and offset (for fitting only)
-p.scaling1 = 4.2;
-p.scaling2 = 3.3;
+p.scaling1 = 4.6;
+p.scaling2 = 3.6;
 p.offset1 = 0;
 p.offset2 = 0;
 

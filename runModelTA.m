@@ -71,6 +71,21 @@ for icond = 1:numel(rcond)
                 p = setStimTA(condname,p);
                 p = setTaskTA(condname,p);
                 
+                % distribute voluntary attention
+                if p.distributeVoluntary
+                    totalAtt = 1 + p.soa/p.span;
+                    if totalAtt>2
+                        totalAtt = 2;
+                    end
+                    if strcmp(condname, 'endoT1T2')
+                        p.vAttWeights = distributeAttention(totalAtt, 0);
+                    else
+                        p.vAttWeights = distributeAttention(totalAtt, 1, 1);
+                    end
+                    p.vAttWeight1 = p.vAttWeights(1);
+                    p.vAttWeight2 = p.vAttWeights(2);
+                end
+                
 %                 %Stimulus inputs
 %                 p.i = p.stim;
 %                 
