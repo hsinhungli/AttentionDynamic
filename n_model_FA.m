@@ -240,6 +240,7 @@ for t = p.dt:p.dt:p.T
 
         %update firing rates
         p.rd(:,idx) = p.rd(:,idx-1) + (p.dt/p.tau_rd)*(-p.rd(:,idx-1) + p.fd(:,idx));
+%         p.rd(:,idx) = p.rd(:,idx-1) + p.fd(:,idx); % no leak
         
         % ceiling on firing rate
         for iStim = 1:p.nstim

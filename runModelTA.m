@@ -32,7 +32,7 @@ rcontrast = 8; %1:numel(contrasts);   %contrast levels to run
 ncontrast = numel(rcontrast);
 rsoa      = 1:numel(soas);   %soa levels to run
 nsoa      = numel(rsoa);
-rseq      = 1:4; % 1:2 % sequences to run
+rseq      = 3; % 1:2 % sequences to run
 nseq      = numel(rseq);
 
 % Load rf

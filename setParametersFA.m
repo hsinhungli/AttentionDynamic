@@ -129,7 +129,7 @@ p.neutralAttOp = 'max';             % 'mean','max'; attention weight assigned in
 p.sigmad            = 1;
 p.tau_rd            = 100000;
 p.bounds            = [0 0];                   % evidence accumulation bounds for perceptual decision (when measuring accuracy)
-p.ceiling           = 3.6e-5;%3.54e-4; %3, 0.8, 7.8; %[];                     % evidence ceiling (when measuring eveidence)
+p.ceiling           = [];%3.6e-5;%3.54e-4; %3, 0.8, 7.8; %[];                     % evidence ceiling (when measuring eveidence)
 p.decisionWindowDur = 600; %[]
 p.decisionLatency   = -100;
 
