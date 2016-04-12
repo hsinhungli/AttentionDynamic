@@ -21,8 +21,8 @@ p.nt            = p.T/p.dt+1;
 p.tlist         = 0:p.dt:p.T;
 
 %Temporal dynamic of neurons
-p.tau             = 90;  %2,90,20                   %time constant (ms)
-p.tautr           = 10;
+p.tau             = 40;  %2,90,20                   %time constant (ms)
+p.tautr           = 5;
 p.tauwm           = 20;                    % time constant of working memory (ms)
 p.tau_a           = 99;                     %time constant adaptation (ms)
 p.tau_attI        = 50;  %50                %time constant involuntary attention (ms)
@@ -32,8 +32,8 @@ p.tau_n           = 99; %100                   %time constant noise (ms)
 p.d_noiseamp      = 0; % 0.0015;
 filter_r2         = exp(-p.tlist/p.tau_r2); % exponential
 p.filter_r2       = filter_r2/sum(filter_r2);     %temporal filter for firing rate
-p.nRCascades      = 4;
-p.delay           = 50;                     % delay before the start of the sensory response
+p.nRCascades      = 1;
+p.delay           = 50;                     % delay before the start of the sustained sensory response
 
 p.tau_i           = 20;  %20             %time constant filter for excitatory response (ms)
 filter_i          = (p.tlist/p.tau_i).*exp(1-p.tlist/p.tau_i); % alpha
@@ -60,7 +60,7 @@ p.wa            = 0;               %weights of self-adaptation
 % p.wh            = 3; %1.5;               %weight of inhibitory involuntary attention
 
 %% Sensory layer 2
-p.sigma2        = .3; %.1
+p.sigma2        = .1; %.1
 p.wF            = 2; %.05;                     % weight of S2 feedback onto S1
 if p.model~=4
     p.wF = 0;                           % should be zero if not Model 4
@@ -91,8 +91,8 @@ p.ap      = 4;
 p.asigma  = .3;
 p.aKernel = [1; -1];
 p.aIE     = 0; % excitatory part of involuntary attention kernel
-p.aIOR    = .4; %.4 % 1 (spatial sim), 1.3 (stronger IOR), 1.12 (temporal sim)
-p.biph1   = 40; % 40,35,25
+p.aIOR    = .2; %.4 % 1 (spatial sim), 1.3 (stronger IOR), 1.12 (temporal sim)
+p.biph1   = 20; % 40,35,25
 p.biph2   = 2; % 2
 p.gam1    = 8;
 p.gam2    = .005;
@@ -126,11 +126,12 @@ p.neutralAttOp = 'max';             % 'mean','max'; attention weight assigned in
 
 %% Decision
 % p.tau_e         = 1000;
-p.sigmad            = .05;
-p.tau_rd            = 10000;
+p.sigmad            = 1;
+p.tau_rd            = 100000;
 p.bounds            = [0 0];                   % evidence accumulation bounds for perceptual decision (when measuring accuracy)
-p.ceiling           = []; %3, 0.8, 7.8; %[];                     % evidence ceiling (when measuring eveidence)
-p.decisionWindowDur = 300; %[]
+p.ceiling           = 3.6e-5;%3.54e-4; %3, 0.8, 7.8; %[];                     % evidence ceiling (when measuring eveidence)
+p.decisionWindowDur = 600; %[]
+p.decisionLatency   = -100;
 
 %% Scaling and offset (for fitting only)
 p.scaling1 = 4.2;

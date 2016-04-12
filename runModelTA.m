@@ -14,7 +14,6 @@ p          = setParametersFA(opt);
 
 %% Set conditions/contrasts to simulate
 condnames  =  {'no-endo','endoT1','endoT2','endoT1T2','exoT1','exoT2','exoT1T2'};
-saveData   = 0;
 plotFig    = 0;
 
 % Pick contrasts to run
@@ -33,12 +32,8 @@ rcontrast = 8; %1:numel(contrasts);   %contrast levels to run
 ncontrast = numel(rcontrast);
 rsoa      = 1:numel(soas);   %soa levels to run
 nsoa      = numel(rsoa);
-rseq      = 3; % 1:2 % sequences to run
+rseq      = 1:4; % 1:2 % sequences to run
 nseq      = numel(rseq);
-p_pool    = cell(ncond*ncontrast*nsoa,1); %data (p) of each simulated condition will be saved here
-
-condtag  = regexprep(num2str(rcond),'\W','');
-dataName = sprintf('./Data/cond_%s_%s.mat',condtag,datestr(now,'mmddHHMM'));
 
 % Load rf
 if ~isempty(p.rf)
@@ -47,7 +42,6 @@ if ~isempty(p.rf)
 end
 
 %% loop through all conditions to run
-count = 0;
 ev = zeros(2,nsoa,ncond,ncontrast);
 for icond = 1:numel(rcond)
     cond = rcond(icond);
@@ -66,7 +60,6 @@ for icond = 1:numel(rcond)
                 p.nstim = numel(p.soa)+1;
                 p.stimseq = stimseqs{q};
                 fprintf('cond: %s contrast: %1.2f soa: %d seq: %d %d\n\n', condname, p.contrast, p.soa, p.stimseq)
-                count = count+1;
                 p = initTimeSeriesFA(p);
                 p = setStimTA(condname,p);
                 p = setTaskTA(condname,p);
@@ -127,12 +120,6 @@ for icond = 1:numel(rcond)
                 % store evidence
                 ev(:,isoa,icond,icontrast,iseq) = p.ev;
                 
-                %save the p
-                if saveData==1
-                    p = rmfield(p,{'d','s','f','d_n'});
-                end
-                p_pool{count} = p;
-                
                 %% Draw time series_1
                 if plotFig == 1
                     %                 plotTA(condname, p)
@@ -148,9 +135,3 @@ for icontrast = 1:numel(rcontrast)
     perfv = plotPerformanceTA(condnames(rcond), soas(rsoa), mean(ev(:,:,:,icontrast,:),5));
 end
 
-%% save data
-if saveData==1
-    sprintf('Saving file')
-    save(dataName,'p_pool');
-end
-% fprintf('\n')

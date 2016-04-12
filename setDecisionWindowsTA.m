@@ -12,7 +12,7 @@ if isempty(p.decisionWindowDur)
 else
     decisionWindowDur = p.decisionWindowDur;
 end
-stimStarts = [p.stimOnset p.stimOnset+p.soa];
+decisionOnsets = [p.stimOnset p.stimOnset+p.soa] + p.decisionLatency;
 
 %% Define decision windows
 p.decisionWindows = zeros(p.nstim,p.nt);
@@ -22,7 +22,7 @@ switch p.model
 %             if iStim==p.nstim
 %                 idx = round((stimStarts(iStim)/p.dt):size(p.stim,2)); % last stim - integrate to the end
 %             else
-                idx = round((stimStarts(iStim)/p.dt):(stimStarts(iStim)/p.dt)+decisionWindowDur/p.dt); 
+                idx = round((decisionOnsets(iStim)/p.dt):(decisionOnsets(iStim)/p.dt)+decisionWindowDur/p.dt); 
 %             end
             p.decisionWindows(iStim,idx) = 1;
         end

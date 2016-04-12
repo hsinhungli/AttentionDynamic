@@ -61,15 +61,21 @@ for t = p.dt:p.dt:p.T
         end
     end
     drive = drive + p.r2(:,idx-1)*p.wF; % add feedback from layer S2 to drive
+%     drive = halfExp(drive - p.rtr(:,idx)); % subtract transient inhibition
     % orig
-%     p.d(:,idx) = halfExp(1+p.attV(:,idx-1)*p.aMV).*halfExp(1+p.attI(:,idx-1)*p.aMI).*drive;
+    p.d(:,idx) = halfExp(1+p.attV(:,idx-1)*p.aMV).*halfExp(1+p.attI(:,idx-1)*p.aMI).*drive;
     % with history on drive
-    drive = halfExp(1+p.attV(:,idx-1)*p.aMV).*halfExp(1+p.attI(:,idx-1)*p.aMI).*drive;
-    p.rCascade = cascadeExp(p.rCascade, drive, p.tau, p.dt, idx, p.nRCascades);
-    p.d(:,idx) = p.rCascade(:,idx,end);
-    
+%     drive = halfExp(1+p.attV(:,idx-1)*p.aMV).*halfExp(1+p.attI(:,idx-1)*p.aMI).*drive;
+%     p.d(:,idx) = p.d(:,idx-1) + (p.dt/p.tau)*(-p.d(:,idx-1) + drive);
+    % with history on drive - cascade version
+%     drive = halfExp(1+p.attV(:,idx-1)*p.aMV).*halfExp(1+p.attI(:,idx-1)*p.aMI).*drive;
+%     p.rCascade = cascadeExp(p.rCascade, drive, p.tau, p.dt, idx, p.nRCascades);
+%     p.d(:,idx) = p.rCascade(:,idx,end);
+
+    % normalization pool
+    pool = p.d(:,idx);
     % normalization pool - include transient response
-    pool = p.d(:,idx) + p.rtr(:,idx)*100;
+%     pool = p.d(:,idx) + p.rtr(:,idx)*100;
     
     %Compute Suppressive Drive
     p.s(:,idx) = sum(pool(:)); %normalized across orientation
@@ -86,8 +92,10 @@ for t = p.dt:p.dt:p.T
     % orig
 %     p.r(:,idx) = p.r(:,idx-1) + (p.dt/p.tau)*(-p.r(:,idx-1) + p.f(:,idx));
     % cascade
-%     p.rCascade = cascadeExp(p.rCascade, p.f(:,idx), p.tau, p.dt, idx, p.nRCascades);
-%     p.r(:,idx) = p.rCascade(:,idx,end);
+    p.rCascade = cascadeExp(p.rCascade, p.f(:,idx), p.tau, p.dt, idx, p.nRCascades);
+    % subtract transient response
+    p.rCascade(:,idx,:) = halfExp(p.rCascade(:,idx,:) - sum(p.rtr(:,idx)));
+    p.r(:,idx) = p.rCascade(:,idx,end);
     % add to cascade for initial transient
 %     for i = 1:p.ntheta
 %         if p.rCascade(i,idx,6)==0
@@ -97,7 +105,7 @@ for t = p.dt:p.dt:p.T
 %         end
 %     end
     % with history on drive
-    p.r(:,idx) = p.f(:,idx);
+%     p.r(:,idx) = p.f(:,idx);
     
     %update adaptation
     p.a(:,idx) = p.a(:,idx-1) + (p.dt/p.tau_a)*(-p.a(:,idx-1) + p.r(:,idx));
@@ -199,7 +207,7 @@ for t = p.dt:p.dt:p.T
                 case {3, 4}
                     rfresp(:,:,iStim) = p.rfresp(3:4,:);
             end
-            evidence = decodeEvidence(p.r2(:,idx)', rfresp(:,:,iStim));
+            evidence = decodeEvidence(p.r2(:,idx)', rfresp(:,:,iStim)); % r2
             evidence = evidence*p.decisionWindows(iStim,idx); % only accumulate if in the decision window
             evidence(abs(evidence)<1e-3) = 0; % otherwise zero response will give a little evidence
             
@@ -232,6 +240,13 @@ for t = p.dt:p.dt:p.T
 
         %update firing rates
         p.rd(:,idx) = p.rd(:,idx-1) + (p.dt/p.tau_rd)*(-p.rd(:,idx-1) + p.fd(:,idx));
+        
+        % ceiling on firing rate
+        for iStim = 1:p.nstim
+            if abs(p.rd(iStim,idx))>p.ceiling
+                p.rd(iStim,idx) = p.ceiling*sign(p.rd(iStim,idx));
+            end
+        end
 
         %update adaptation
         p.ad(:,idx) = p.ad(:,idx-1) + (p.dt/p.tau_a)*(-p.ad(:,idx-1) + p.rd(:,idx));
@@ -244,10 +259,10 @@ for t = p.dt:p.dt:p.T
     
     % involuntary
     if idx > length(p.aW)
-        r = p.r(:,idx-length(p.aW):idx-1);
+        r = p.rtr(:,idx-length(p.aW):idx-1);
     else
         r = nan(size(p.aW(:,:,1)));
-        r(:,end-idx+2:end) = p.r(:,1:idx-1);
+        r(:,end-idx+2:end) = p.rtr(:,1:idx-1);
     end
     inp = [];
     for iPhase = 1:2
