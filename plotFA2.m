@@ -9,14 +9,14 @@ figTitle = sprintf('%s contrast: %1.2f soa: %d seq: %d %d', condname, p.contrast
 % panel 1
 cpsFigure(.5,1.2);
 set(gcf,'Name',figTitle);
-nr = 7;
+nr = 6;
 nc = 1;
 xlims = [0 2];
 
 subplot(nr,nc,1)
 hold on
 plot(p.tlist/1000,p.stim','color',[0 0 0]);
-plot(p.tlist/1000,p.i','color',[244 164 96]/255);
+% plot(p.tlist/1000,p.i','color',[244 164 96]/255);
 xlim(xlims)
 set(gca,'XTickLabel',[])
 ylabel('Stimulus')
@@ -33,14 +33,14 @@ subplot(nr,nc,3)
 hold on
 plot(p.tlist/1000,p.attI','color',[185 178 170]/255);
 xlim(xlims)
-ylim([-.5 .5])
+ylim([-.2 .2])
 set(gca,'XTickLabel',[])
 ylabel('AI')
 
 subplot(nr,nc,4)
 hold on
 plot(p.tlist/1000,p.r','color',[112 191 65]/255);
-plot(p.tlist/1000,p.rtr','color',[34 139 34]/255);
+% plot(p.tlist/1000,p.rtr','color',[34 139 34]/255);
 xlim(xlims)
 set(gca,'XTickLabel',[])
 ylabel('S1')
@@ -54,16 +54,16 @@ set(gca,'XTickLabel',[])
 ylabel('S2')
 set(gca,'YLim',[0 max(p.r2(:))+.1]);
 
-subplot(nr,nc,6)
-hold on
-plot(p.tlist/1000,p.rwm(:,:,1)','color',[110 119 143]/255);
-plot(p.tlist/1000,p.rwm(:,:,2)','color',[110 119 143]/255);
-xlim(xlims)
-set(gca,'XTickLabel',[])
-ylabel('WM')
-set(gca,'YLim',[0 max(p.rwm(:))+.1]);
+% subplot(nr,nc,6)
+% hold on
+% plot(p.tlist/1000,p.rwm(:,:,1)','color',[110 119 143]/255);
+% plot(p.tlist/1000,p.rwm(:,:,2)','color',[110 119 143]/255);
+% xlim(xlims)
+% set(gca,'XTickLabel',[])
+% ylabel('WM')
+% set(gca,'YLim',[0 max(p.rwm(:))+.1]);
 
-subplot(nr,nc,7)
+subplot(nr,nc,6)
 hold on
 plot(p.tlist/1000, zeros(size(p.tlist)), 'k')
 plot(p.tlist/1000,p.evidence(:,:,1)','color',[53 68 88]/255);
