@@ -27,11 +27,11 @@ soas      = [100:50:500 800];
 stimseqs  = {[1 1],[1 2],[1 3],[1 4]};
 
 % Pick conditions to run
-rcond     = 2:3;   %conditions to run
+rcond     = 2;   %conditions to run
 ncond     = numel(rcond);
 rcontrast = 8; %1:numel(contrasts);   %contrast levels to run
 ncontrast = numel(rcontrast);
-rsoa      = 10;%1:numel(soas);   %soa levels to run
+rsoa      = 4;%1:numel(soas);   %soa levels to run
 nsoa      = numel(rsoa);
 rseq      = 3; % 1:2 % sequences to run
 nseq      = numel(rseq);
