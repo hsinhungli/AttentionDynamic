@@ -50,7 +50,7 @@ else
 end
 p.baselineMod   = 0;
 p.p             = 2;
-p.sigma         = 1; %.5 .1              %semisaturation constant
+p.sigma         = .5; %.5 .1              %semisaturation constant
 p.wa            = 0;               %weights of self-adaptation
 
 % p.baselineAtt   = 1;
@@ -120,7 +120,7 @@ p.vAttWeight1 = 1;
 p.vAttWeight2 = 0;
 p.vAttWeights = [p.vAttWeight1 p.vAttWeight2]; % [1 0]            % [high low]
 p.vAttScale2 = .86;                  % scale the magnitude of voluntary attention to T2
-p.distributeVoluntary = 0;
+p.distributeVoluntary = 1;
 p.span = 500;
 p.neutralAttOp = 'max';             % 'mean','max'; attention weight assigned in the neutral condition
 p.bounds = [0 0];                   % evidence accumulation bounds for perceptual decision (when measuring accuracy)

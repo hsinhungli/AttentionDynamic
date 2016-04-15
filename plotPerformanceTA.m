@@ -10,7 +10,7 @@ if numel(soas)==1
     return
 end
 
-plotOption = 1; % 1 = normal; 2 = during fitting; 0 = no plot
+plotOption = 0; % 1 = normal; 2 = during fitting; 0 = no plot
 
 %% re-sort endo condition data into valid, invalid, neutral
 if isequal(condnames,{'no-endo','endoT1','endoT2','endoT1T2'}) || isequal(condnames,{'no-endo','exoT1','exoT2','exoT1T2'})
