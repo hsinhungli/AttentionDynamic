@@ -25,7 +25,7 @@ f = @(x)modelCost(x,D);
 %% final state
 opt = x2opt(x);
 p = setParametersFA(opt);
-[cost, model, data] = modelCost(x, D);
+[cost, model, data, R2] = modelCost(x, D);
 timestamp = datestr(now);
 
 %% save

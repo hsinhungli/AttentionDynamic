@@ -123,7 +123,7 @@ p.vAttWeight2 = 0; %0
 p.vAttWeights = [p.vAttWeight1 p.vAttWeight2]; % [1 0]            % [high low]
 p.vAttScale2 = 1;                  % scale the magnitude of voluntary attention to T2
 p.distributeVoluntary = 1;
-p.span = 500;
+p.span = 680;
 p.neutralAttOp = 'max';             % 'mean','max'; attention weight assigned in the neutral condition
 
 %% Decision

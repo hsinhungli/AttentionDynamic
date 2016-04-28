@@ -1,4 +1,4 @@
-function [cost, model, data] = modelCost(x, D)
+function [cost, model, data, R2] = modelCost(x, D)
 
 %% run model
 opt = x2opt(x);
@@ -21,6 +21,9 @@ end
 %% compare model to data
 error = model - data;
 cost = sum(error(:).^2);
+
+sstot = sum((data(:)-mean(data(:))).^2);
+R2 = 1 - cost/sstot;
 
 %% display current state
 disp(x)
