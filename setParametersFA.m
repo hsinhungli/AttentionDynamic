@@ -21,7 +21,7 @@ p.nt            = p.T/p.dt+1;
 p.tlist         = 0:p.dt:p.T;
 
 %Temporal dynamic of neurons
-p.tau             = 40;  %2,90,20                   %time constant (ms)
+p.tau             = 40;%40;  %2,90,20                   %time constant (ms)
 p.tautr           = 5;
 p.tauwm           = 20;                    % time constant of working memory (ms)
 p.tau_a           = 99;                     %time constant adaptation (ms)
@@ -53,7 +53,7 @@ else
 end
 p.baselineMod   = 0;
 p.p             = 2;
-p.sigma         = .5; %.5 .1              %semisaturation constant
+p.sigma         = 1.8; %.5 .1              %semisaturation constant
 p.wa            = 0;               %weights of self-adaptation
 
 % p.baselineAtt   = 1;

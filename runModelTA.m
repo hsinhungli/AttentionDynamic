@@ -1,4 +1,4 @@
-function [perfv, p, ev] = runModelTA(opt)
+function [perfv, p, ev] = runModelTA(opt, rsoa)
 
 % modified from runModel.m
 % 2015-09-28 (RD)
@@ -10,11 +10,11 @@ end
 
 %% Set params
 p          = setParametersFA(opt);
-% p          = setParametersFA;
 
 %% Set conditions/contrasts to simulate
 condnames  =  {'no-endo','endoT1','endoT2','endoT1T2','exoT1','exoT2','exoT1T2'};
 plotFig    = 0;
+plotPerformance = 0;
 
 % Pick contrasts to run
 % logspace(-1.699,log10(.5),7)
@@ -30,7 +30,9 @@ rcond     = 2:3;   %conditions to run
 ncond     = numel(rcond);
 rcontrast = 8; %1:numel(contrasts);   %contrast levels to run
 ncontrast = numel(rcontrast);
-rsoa      = 1:numel(soas);   %soa levels to run
+if ~exist('rsoa','var')
+    rsoa      = 1:numel(soas);   %soa levels to run
+end
 nsoa      = numel(rsoa);
 rseq      = 3; % 1:2 % sequences to run
 nseq      = numel(rseq);
@@ -53,6 +55,7 @@ for icond = 1:numel(rcond)
         for isoa = 1:nsoa
             s = rsoa(isoa);
             for iseq = 1:nseq
+                % set conditions
                 q = rseq(iseq);
                 p.cond = cond;
                 p.contrast = contrasts(:,c);
@@ -60,10 +63,6 @@ for icond = 1:numel(rcond)
                 p.nstim = numel(p.soa)+1;
                 p.stimseq = stimseqs{q};
                 fprintf('cond: %s contrast: %1.2f soa: %d seq: %d %d\n\n', condname, p.contrast, p.soa, p.stimseq)
-                p = initTimeSeriesFA(p);
-                p = setStimTA(condname,p);
-                p = setTaskTA(condname,p);
-                p = setDecisionWindowsTA(condname,p);
                 
                 % distribute voluntary attention
                 if p.distributeVoluntary
@@ -80,6 +79,12 @@ for icond = 1:numel(rcond)
                     p.vAttWeight2 = p.vAttWeights(2);
                 end
                 
+                % set time series
+                p = initTimeSeriesFA(p);
+                p = setStimTA(condname,p);
+                p = setTaskTA(condname,p);
+                p = setDecisionWindowsTA(condname,p);
+                                
                 %Stimulus inputs
                 % convolve input with a temporal filter
                 p.i = [];
@@ -146,7 +151,10 @@ for icond = 1:numel(rcond)
 end
 
 %% plot multiple conditions
-for icontrast = 1:numel(rcontrast)
-    perfv = plotPerformanceTA(condnames(rcond), soas(rsoa), mean(ev(:,:,:,icontrast,:),5));
+if plotPerformance
+    for icontrast = 1:numel(rcontrast)
+        perfv = plotPerformanceTA(condnames(rcond), soas(rsoa), mean(ev(:,:,:,icontrast,:),5));
+    end
+else
+    perfv = [];
 end
-
