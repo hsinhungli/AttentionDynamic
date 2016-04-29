@@ -31,7 +31,7 @@ ncond     = numel(rcond);
 rcontrast = 8; %1:numel(contrasts);   %contrast levels to run
 ncontrast = numel(rcontrast);
 if ~exist('rsoa','var')
-    rsoa      = 1:numel(soas);   %soa levels to run
+    rsoa  = 1:numel(soas);   %soa levels to run
 end
 nsoa      = numel(rsoa);
 rseq      = 3; % 1:2 % sequences to run
@@ -141,8 +141,8 @@ for icond = 1:numel(rcond)
                 ev(:,isoa,icond,icontrast,iseq) = p.ev;
                 
                 %% Draw time series_1
-                if plotFig == 1
-                    %                 plotTA(condname, p)
+                if plotFig
+                    % plotTA(condname, p)
                     plotFA2(condname, p)
                 end
             end

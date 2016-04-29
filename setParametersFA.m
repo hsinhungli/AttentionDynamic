@@ -85,12 +85,12 @@ p.wmW             = repmat(makeGamma(0:p.dt/1000:1.5,[],p.gam1_wmW,p.gam2_wmW,1)
 % p.tau_dwm       = 200;                   % memory on the drive
 
 %% Attention
-p.aMI     = 6; % 6 % .2 % 5 (spatial sim), 4 (stronger IOR), 4 (temporal sim)
+p.aMI     = 150; % 6 % .2 % 5 (spatial sim), 4 (stronger IOR), 4 (temporal sim)
 p.aMV     = 3.9; %3.9, 9, 200
 p.ap      = 4;
 p.asigma  = .3;
 p.aKernel = [1; -1];
-p.aIE     = 0; % excitatory part of involuntary attention kernel
+p.aIE     = .2; % excitatory part of involuntary attention kernel
 p.aIOR    = .2; %.4 % 1 (spatial sim), 1.3 (stronger IOR), 1.12 (temporal sim)
 p.biph1   = 20; % 40,35,25
 p.biph2   = 2; % 2
@@ -132,8 +132,8 @@ p.sigmad            = 1;
 p.tau_rd            = 100000;
 p.bounds            = [0 0];                   % evidence accumulation bounds for perceptual decision (when measuring accuracy)
 p.ceiling           = [];%3.6e-5;%3.54e-4; %3, 0.8, 7.8; %[];                     % evidence ceiling (when measuring eveidence)
-p.decisionWindowDur = 600; %[]
-p.decisionLatency   = -100;
+p.decisionWindowDur = 300; %[]
+p.decisionLatency   = -50;
 
 %% Scaling and offset (for fitting only)
 p.scaling1 = 4.2;

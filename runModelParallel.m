@@ -1,4 +1,4 @@
-% rumModelParallel
+% runModelParallel
 
 opt = [];
 
@@ -12,8 +12,13 @@ parfor isoa = 1:nsoa
 end
 
 %% combine ev
+ev = [];
 for isoa = 1:nsoa
-    ev(:,isoa,:,:,:) = pev{isoa}; 
+    if numel(size(pev{1}))==5
+        ev(:,isoa,:,1,:) = pev{isoa};
+    else
+        ev(:,isoa,:,:,:) = pev{isoa};
+    end
 end
 
 %% plot multiple conditions

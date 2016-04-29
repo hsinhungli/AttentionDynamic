@@ -40,7 +40,7 @@ ylabel('AI')
 subplot(nr,nc,4)
 hold on
 plot(p.tlist/1000,p.r','color',[112 191 65]/255);
-% plot(p.tlist/1000,p.rtr','color',[34 139 34]/255);
+plot(p.tlist/1000,p.rtr','color',[34 139 34]/255);
 xlim(xlims)
 set(gca,'XTickLabel',[])
 ylabel('S1')
