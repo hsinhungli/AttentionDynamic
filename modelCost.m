@@ -2,7 +2,8 @@ function [cost, model, data, R2] = modelCost(x, D)
 
 %% run model
 opt = x2opt(x);
-[perf, p] = runModelTA(opt);
+% [perf, p] = runModelTA(opt);
+[perf, p] = runModelParallel(opt);
 
 %% organize model performance
 for iT = 1:2
@@ -27,6 +28,7 @@ R2 = 1 - cost/sstot;
 
 %% display current state
 disp(x)
+fprintf('R2 = %1.3f\n', R2) 
 
 %% plot
 soas = D.t1t2soa;
