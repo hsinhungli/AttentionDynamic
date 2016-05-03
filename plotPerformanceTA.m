@@ -33,8 +33,18 @@ elseif isequal(condnames,{'endoT1','endoT2'}) || isequal(condnames,{'exoT1','exo
     
     perfv{2}(1,:) = perf(2,:,2); % T2 valid
     perfv{2}(2,:) = perf(2,:,1); % T2 invalid
+elseif isequal(condnames,{'endoT1','endoT2','endoT1T2'}) || isequal(condnames,{'exoT1','exoT2','exoT1T2'})
+    cueValidityNames = {'valid','invalid','both'};
+    
+    perfv{1}(1,:) = perf(1,:,1); % T1 valid
+    perfv{1}(2,:) = perf(1,:,2); % T1 invalid
+    perfv{1}(3,:) = perf(1,:,3); % T1 neutral - endoT1T2
+    
+    perfv{2}(1,:) = perf(2,:,2); % T2 valid
+    perfv{2}(2,:) = perf(2,:,1); % T2 invalid
+    perfv{2}(3,:) = perf(2,:,3); % T2 neutral - endoT1T2
 else
-    fprintf('conds must be {"no-endo","endoT1","endoT2","endoT1T2"} or {"endoT1","endoT2"}\nnot plotting ...\n')
+    fprintf('conds must be {"no-endo","endoT1","endoT2","endoT1T2"} or {"endoT1","endoT2"} or {"endoT1","endoT2","endoT1T2"}\nnot plotting ...\n')
     return
 end
 

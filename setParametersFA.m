@@ -122,6 +122,7 @@ p.vAttWeights = [p.vAttWeight1 p.vAttWeight2]; % [1 0]            % [high low]
 p.vAttScale2 = .86;                  % scale the magnitude of voluntary attention to T2
 p.distributeVoluntary = 1;
 p.span = 500;
+p.neutralT1Weight = .5;             % bias to treat neutral like attend to T1. 0.5 is no bias
 p.neutralAttOp = 'max';             % 'mean','max'; attention weight assigned in the neutral condition
 p.bounds = [0 0];                   % evidence accumulation bounds for perceptual decision (when measuring accuracy)
 p.ceiling = []; %0.8, 7.8; %[];                     % evidence ceiling (when measuring eveidence)

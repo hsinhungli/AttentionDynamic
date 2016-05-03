@@ -16,7 +16,8 @@ model(:,:,2) = model(:,:,2)*p.scaling2 + p.offset2;
 
 %% load data
 for iT = 1:2
-    data(:,:,iT) = D.dpMean{iT}(1:2,:);
+    data(:,:,iT) = D.dpMean{iT}(1:3,:);
+%     eb(:,:,iT) = D.dpSte{iT}(1:3,:);
 end
 
 %% compare model to data
@@ -34,15 +35,26 @@ fprintf('R2 = %1.3f\n', R2)
 soas = D.t1t2soa;
 figure(gcf)
 clf
+colors = get(gcf,'DefaultAxesColorOrder');
 for iT = 1:2
     subplot(1,2,iT)
     hold on
     plot(soas, data(:,:,iT)','.','MarkerSize',20)
-    plot(soas, model(:,:,iT)')
+%     errorbar(repmat(soas',1,3), data(:,:,iT)', eb(:,:,iT)','.','MarkerSize',20)
+    p1 = plot(soas, model(:,:,iT)');
+    for i = 1:numel(p1)
+        set(p1(i),'color',colors(i,:))
+    end
     ylim([0 2])
     xlabel('soa')
-    ylabel('dprime / evidence')
+    ylabel('dprime')
     title(sprintf('T%d',iT))
 end
 legend('valid','invalid')
+
+%% save
+saveDir = D.saveDir;
+figNames = {'plot'};
+save(sprintf('%s/fit_workspace_%s_interim', saveDir, datestr(now,'yyyymmdd')))
+rd_saveAllFigs([],figNames, [], saveDir)
 
