@@ -101,5 +101,6 @@ switch par
 end
 
 %% save
-save(sprintf('fit/fit_workspace_%s_interim', datestr(now,'yyyymmdd')))
-rd_saveAllFigs([],figNames, [], 'fit')
+saveDir = D.saveDir;
+save(sprintf('%s/fit_workspace_%s_interim', saveDir, datestr(now,'yyyymmdd')))
+rd_saveAllFigs([],figNames, [], saveDir)
