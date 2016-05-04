@@ -6,10 +6,10 @@ end
 
 %% initial param vals
 % sensory
-p.tau           = 71;  %70, 20         %time constant filter for excitatory response (ms)
+p.tau           = 92;  %70, 20         %time constant filter for excitatory response (ms)
 % p.tauwm         = 20;              %time constant filter for working memory (ms)
-p.tau_r2        = 69;  %100            %time constant filter for firing rate (ms)
-p.sigma         = 1.5; % .5, .1         %semisaturation constant
+p.tau_r2        = 68;  %100            %time constant filter for firing rate (ms)
+p.sigma         = .5; % .5, .1         %semisaturation constant
 % p.p             = 1.5;
 
 % working memory
@@ -22,18 +22,18 @@ p.attOffset     = 51;              % voluntary attention off, relative to stim o
 % p.vAttWeight1   = 1;               % high
 % p.vAttWeight2   = 0;               % low
 % p.tau_attV      = 50;  %50         %time constant voluntary attention (ms)
-p.aMV           = 37; % 3.5,2.5
-p.vAttScale2    = .5;
-p.span          = 930;
-p.neutralT1Weight = .5;
+p.aMV           = 1.66; % 3.5,2.5
+p.vAttScale2    = .86;
+% p.span          = 930;
+% p.neutralT1Weight = .5;
 
 % involuntary attention
 p.biph1         = 48;
 p.biph2         = 4;
 % p.gam1          = 8;
 % p.gam2          = .005;
-p.aMI           = 2.6; % 5 (spatial sim), 4 (stronger IOR), 4 (temporal sim)
-p.aIOR          = .36; % 1 (spatial sim), 1.3 (stronger IOR), 1.12 (temporal sim)
+p.aMI           = 3.9; % 5 (spatial sim), 4 (stronger IOR), 4 (temporal sim)
+p.aIOR          = .32; % 1 (spatial sim), 1.3 (stronger IOR), 1.12 (temporal sim)
 % p.asigma        = .3;  %.3
 % p.tau_attI      = 50;  %50         %time constant involuntary attention (ms)
 
@@ -41,8 +41,8 @@ p.aIOR          = .36; % 1 (spatial sim), 1.3 (stronger IOR), 1.12 (temporal sim
 % p.ceiling = 0.82; %.85
 
 % fitting
-p.scaling1 = 4.19; % 4.5
-p.scaling2 = 3.56;
+p.scaling1 = 4.6; % 4.5
+p.scaling2 = 3.6;
 % p.offset1  = 0;
 % p.offset2  = 0;
 
