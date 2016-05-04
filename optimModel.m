@@ -8,7 +8,7 @@ end
 if nargin<3
     jobStr = '';
 else
-    jobStr = sprintf('_job%s', jobID);
+    jobStr = sprintf('_job%d', jobID);
 end
 
 % load data
