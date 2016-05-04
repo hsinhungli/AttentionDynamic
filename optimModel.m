@@ -36,7 +36,8 @@ turnwhite
 f = @(x)modelCost(x,D);
 
 % set options
-options = optimset('Display','iter','MaxFunEvals',3);
+options = optimset('Display','iter');
+% options = optimset('Display','iter','MaxFunEvals',3);
 % options = optimset('Display','iter','MaxFunEvals',3, 'OutputFcn', @outfun);
 
 % do optimization
