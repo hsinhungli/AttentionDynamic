@@ -50,7 +50,11 @@ for iT = 1:2
     ylabel('dprime')
     title(sprintf('T%d',iT))
 end
-legend('valid','invalid')
+if numel(p1)==2
+    legend('valid','invalid')
+elseif numel(p1)==3
+    legend('valid','invalid','neutral')
+end
 
 %% save
 saveDir = D.saveDir;

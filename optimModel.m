@@ -1,4 +1,4 @@
-function optimModel(dataDir, saveDir, jobID)
+function optimModel(dataDir, saveDir, jobID, D)
   
 %% setup
 if nargin==0
@@ -10,10 +10,11 @@ if nargin<3
 else
     jobStr = sprintf('_job%d', jobID);
 end
-
-% load data
-dataFile = 'E2_SOA_cbD6_run98_N4_workspace_20160128.mat';
-D = load(sprintf('%s/%s', dataDir, dataFile));
+if nargin<4
+    % load data
+    dataFile = 'E2_SOA_cbD6_run98_N4_workspace_20160128.mat';
+    D = load(sprintf('%s/%s', dataDir, dataFile));
+end
 
 % store things for modelCost
 D.saveDir = saveDir;
