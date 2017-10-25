@@ -13,7 +13,7 @@ setStimTA       % makes the stimulus time series
 setTaskTA       % makes the task input to voluntary attention
 distributeAttention % controls distribution of attention in neutral condition and span models
 setDecisionWindowsTA % sets decision windows
-accumulateTA    % accumulate evidence
+%accumulateTA    % accumulate evidence
 decodeEvidence  % decode the CW/CCW decision
 
 %% visualization
@@ -37,6 +37,7 @@ makeGamma
 halfExp         % called by n_model_FA
 distance2curve  % called by decodeEvidence
 ideal_response_vector
+cascadeExp
 
 %% cluster
 job_optimModel.sh % main script for fitting on the cluster

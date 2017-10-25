@@ -97,9 +97,6 @@ switch p.modelClass
     case 'transient-span'
         p.aMI     = 150; % 6 % .2 % 5 (spatial sim), 4 (stronger IOR), 4 (temporal sim)
         p.aMV     = 3.9; %3.9, 9, 200
-        p.ap      = 4;
-        p.asigma  = .3;
-        p.aKernel = [1; -1];
         p.aIE     = .2; % excitatory part of involuntary attention kernel
         p.aIOR    = .2; %.4 % 1 (spatial sim), 1.3 (stronger IOR), 1.12 (temporal sim)
         p.biph1   = 20; % 40,35,25
@@ -107,14 +104,15 @@ switch p.modelClass
     case 'span'
         p.aMI     = 3.9; % .2 % 5 (spatial sim), 4 (stronger IOR), 4 (temporal sim)
         p.aMV     = 1.6; %9, 200
-        p.ap      = 4;
-        p.asigma  = .3;
-        p.aKernel = [1; -1];
         p.aIE     = 0; % excitatory part of involuntary attention kernel
         p.aIOR    = .32; %.4 % 1 (spatial sim), 1.3 (stronger IOR), 1.12 (temporal sim)
         p.biph1   = 40; % 35,25
         p.biph2   = 2;
 end
+p.ap = 4;
+p.asigma  = .3;
+p.aKernel = [1; -1];
+
 p.gam1    = 8;
 p.gam2    = .005;
 switch p.model
@@ -141,22 +139,18 @@ switch p.modelClass
     case 'transient-span'
         p.attOnset = -50 + p.delay; %-50                  % voluntary attention on, relative to stim onset (ms)
         p.attOffset = 10 + p.delay; %10                 % voluntary attention off, relative to stim offset (ms)
-        p.vAttWeight1 = 1; %1
-        p.vAttWeight2 = 0; %0
-        p.vAttWeights = [p.vAttWeight1 p.vAttWeight2]; % [1 0]            % [high low]
         p.vAttScale2 = 1;                  % scale the magnitude of voluntary attention to T2
-        p.distributeVoluntary = 1;
         p.span = 680;
     case 'span'
         p.attOnset = -50; %-50                  % voluntary attention on, relative to stim onset (ms)
         p.attOffset = 100; %10                 % voluntary attention off, relative to stim offset (ms)
-        p.vAttWeight1 = 1;
-        p.vAttWeight2 = 0;
-        p.vAttWeights = [p.vAttWeight1 p.vAttWeight2]; % [1 0]            % [high low]
         p.vAttScale2 = .86;                  % scale the magnitude of voluntary attention to T2
-        p.distributeVoluntary = 1;
         p.span = 500;
 end
+p.vAttWeight1 = 1; %1
+p.vAttWeight2 = 0; %0
+p.vAttWeights = [p.vAttWeight1 p.vAttWeight2]; % [1 0]            % [high low]
+p.distributeVoluntary = 1;
 p.neutralT1Weight = .5;             % bias to treat neutral like attend to T1. 0.5 is no bias
 p.neutralAttOp = 'max';             % 'mean','max'; attention weight assigned in the neutral condition
 
