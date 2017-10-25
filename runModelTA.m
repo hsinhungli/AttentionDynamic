@@ -1,4 +1,4 @@
-function [perfv, p, ev] = runModelTA(opt, rsoa, rseq)
+function [perfv, p, ev] = runModelTA(opt, rsoa, rseq, rcond)
 
 % modified from runModel.m
 % 2015-09-28 (RD)
@@ -26,7 +26,9 @@ soas      = [100:50:500 800];
 stimseqs  = {[1 1],[1 2],[1 3],[1 4]};
 
 % Pick conditions to run
-rcond     = 2:3;   %conditions to run
+if ~exist('rcond','var') || isempty(rcond)
+    rcond     = 2:4;   %conditions to run
+end
 ncond     = numel(rcond);
 rcontrast = 8; %1:numel(contrasts);   %contrast levels to run
 ncontrast = numel(rcontrast);
@@ -73,7 +75,7 @@ for icond = 1:numel(rcond)
                         totalAtt = 2;
                     end
                     if strcmp(condname, 'endoT1T2')
-                        p.vAttWeights = distributeAttention(totalAtt, 0);
+                        p.vAttWeights = distributeAttention(totalAtt, 0, [], p.neutralT1Weight);
                     else
                         p.vAttWeights = distributeAttention(totalAtt, 1, 1);
                     end

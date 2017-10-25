@@ -11,11 +11,15 @@ switch cond
     case 'endoT2'
         attWeights = [w(2) w(1)];
     case 'endoT1T2'
-        switch p.neutralAttOp
-            case 'mean'
-                attWeights = [mean(w) mean(w)];
-            case 'max'
-                attWeights = [max(w) max(w)];
+        if p.distributeVoluntary
+            attWeights = w;
+        else
+            switch p.neutralAttOp
+                case 'mean'
+                    attWeights = [mean(w) mean(w)];
+                case 'max'
+                    attWeights = [max(w) max(w)];
+            end
         end
     otherwise
         attWeights = [0 0];

@@ -1,21 +1,65 @@
 function [perfv, p, ev] = runModelParallel(opt)
 
 % opt = [];
-parallelize = 'seq'; % 'soa','seq'
+% w = load('fit/fit_workspace_20160416T0400.mat');
+% opt = w.opt;
 
-switch parallelize
+par = 'soa+attcond'; % 'soa','seq'
+
+% soas
+soas = [100:50:500 800];
+rsoa = 1:10;
+nsoa = numel(rsoa);
+
+% att conds
+condnames  =  {'no-endo','endoT1','endoT2','endoT1T2','exoT1','exoT2','exoT1T2'};
+rcond = 2:4;
+ncond = numel(rcond);
+
+% seqs
+rseq = 1:4;
+nseq = numel(rseq);
+
+%% run in parallel
+switch par
+    case 'soa+attcond'
+        parconds = fullfact([nsoa, ncond]);
+        nparconds = size(parconds,1);
+        parfor ipc = 1:nparconds
+            isoa = parconds(ipc,1);
+            icond = parconds(ipc,2);
+            [pperfv{ipc}, pp{ipc}, pev{ipc}] = runModelTA(opt, rsoa(isoa), [], rcond(icond));
+        end
     case 'soa'
-        soas = [100:50:500 800];
-        rsoa = 1:10;
-        nsoa = numel(rsoa);
-        
-        %% run soas in parallel
         parfor isoa = 1:nsoa
             [pperfv{isoa}, pp{isoa}, pev{isoa}] = runModelTA(opt, rsoa(isoa));
         end
-        
-        %% combine ev
-        ev = [];
+    case 'seq'
+        parfor iseq = 1:nseq
+            [pperfv{iseq}, pp{iseq}, pev{iseq}] = runModelTA(opt, [], rseq(iseq));
+        end
+    otherwise
+        error('par not found')
+end
+
+%% combine ev
+% ev(:,isoa,icond,icontrast,iseq)
+ev = [];
+switch par
+    case 'soa+attcond'
+        for icond = 1:ncond
+            for isoa = 1:nsoa
+                ipc = (icond-1)*nsoa + isoa;
+                if numel(size(pev{1}))==5
+                    ev(:,isoa,icond,1,:) = pev{ipc};
+                else
+                    ev(:,isoa,icond,:,:) = pev{ipc};
+                end
+            end
+        end
+        p = pp{end}; % specify a p
+        perfv = plotPerformanceTA(condnames(rcond), soas(rsoa), mean(ev,5));
+    case 'soa'
         for isoa = 1:nsoa
             if numel(size(pev{1}))==5
                 ev(:,isoa,:,1,:) = pev{isoa};
@@ -23,27 +67,15 @@ switch parallelize
                 ev(:,isoa,:,:,:) = pev{isoa};
             end
         end
-        
-        %% plot multiple conditions
-        condnames = {'endoT1','endoT2'};
-        perfv = plotPerformanceTA(condnames, soas(rsoa), mean(ev,5));
-        
+        p = pp{end};
+        perfv = plotPerformanceTA(condnames(rcond), soas(rsoa), mean(ev,5));
     case 'seq'
-        rseq = 1:4;
-        nseq = numel(rseq);
-        
-        %% run seqs in parallel
-        parfor iseq = 1:nseq
-            [pperfv{iseq}, pp{iseq}, pev{iseq}] = runModelTA(opt, [], rseq(iseq));
-        end
-        
-        %% assign outputs
         perfv = pperfv;
         p = pp;
         ev = pev;
-        
     otherwise
-        error('parallelize option not found')
+        error('par not found')
 end
+
 
     

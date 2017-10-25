@@ -70,17 +70,25 @@ switch par
         soas = D.t1t2soa;
         figure(gcf)
         clf
+        colors = get(gcf,'DefaultAxesColorOrder');
         for iT = 1:2
             subplot(1,2,iT)
             hold on
             plot(soas, data(:,:,iT)','.','MarkerSize',20)
-            plot(soas, model(:,:,iT)')
+            p1 = plot(soas, model(:,:,iT)');
+            for i = 1:numel(p1)
+                set(p1(i),'color',colors(i,:))
+            end
             ylim([0 2])
             xlabel('soa')
             ylabel('dprime')
             title(sprintf('T%d',iT))
         end
-        legend('valid','invalid')
+        if numel(p1)==2
+            legend('valid','invalid')
+        elseif numel(p1)==3
+            legend('valid','invalid','neutral')
+        end
     case 'seq'
         soas = D(1).t1t2soa;
         for iS = 1:nseq

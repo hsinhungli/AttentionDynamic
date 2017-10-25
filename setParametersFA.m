@@ -10,6 +10,7 @@ if ~exist('opt','var')
 end
 
 %% Model
+p.modelClass      = 'transient-span'; % 'span','transient-span'
 p.model         = 1; % 1 (IOR), 2 (WM), 4 (feedback)
 p.rf            = 'rf/resp_stim4_rf6.mat'; % sensory RFs - encode stim and decode responses using saved RFs. [] for none.
 
@@ -27,7 +28,14 @@ p.tauwm           = 20;                    % time constant of working memory (ms
 p.tau_a           = 99;                     %time constant adaptation (ms)
 p.tau_attI        = 50;  %50                %time constant involuntary attention (ms)
 p.tau_attV        = 50;  %50               %time constant voluntary attention (ms)
-p.tau_r2          = 2;  %80,120                   %time constant filter for firing rate (ms)
+switch p.modelClass
+    case 'transient-span'
+        p.tau_r2  = 2;  %80,120                   %time constant filter for firing rate (ms)
+    case 'span'
+        p.tau_r2  = 70;  %120,80                   %time constant filter for firing rate (ms)
+    otherwise
+        error('modelClass not found')
+end
 p.tau_n           = 99; %100                   %time constant noise (ms)
 p.d_noiseamp      = 0; % 0.0015;
 filter_r2         = exp(-p.tlist/p.tau_r2); % exponential
@@ -85,15 +93,28 @@ p.wmW             = repmat(makeGamma(0:p.dt/1000:1.5,[],p.gam1_wmW,p.gam2_wmW,1)
 % p.tau_dwm       = 200;                   % memory on the drive
 
 %% Attention
-p.aMI     = 150; % 6 % .2 % 5 (spatial sim), 4 (stronger IOR), 4 (temporal sim)
-p.aMV     = 3.9; %3.9, 9, 200
-p.ap      = 4;
-p.asigma  = .3;
-p.aKernel = [1; -1];
-p.aIE     = .2; % excitatory part of involuntary attention kernel
-p.aIOR    = .2; %.4 % 1 (spatial sim), 1.3 (stronger IOR), 1.12 (temporal sim)
-p.biph1   = 20; % 40,35,25
-p.biph2   = 2; % 2
+switch p.modelClass
+    case 'transient-span'
+        p.aMI     = 150; % 6 % .2 % 5 (spatial sim), 4 (stronger IOR), 4 (temporal sim)
+        p.aMV     = 3.9; %3.9, 9, 200
+        p.ap      = 4;
+        p.asigma  = .3;
+        p.aKernel = [1; -1];
+        p.aIE     = .2; % excitatory part of involuntary attention kernel
+        p.aIOR    = .2; %.4 % 1 (spatial sim), 1.3 (stronger IOR), 1.12 (temporal sim)
+        p.biph1   = 20; % 40,35,25
+        p.biph2   = 2; % 2
+    case 'span'
+        p.aMI     = 3.9; % .2 % 5 (spatial sim), 4 (stronger IOR), 4 (temporal sim)
+        p.aMV     = 1.6; %9, 200
+        p.ap      = 4;
+        p.asigma  = .3;
+        p.aKernel = [1; -1];
+        p.aIE     = 0; % excitatory part of involuntary attention kernel
+        p.aIOR    = .32; %.4 % 1 (spatial sim), 1.3 (stronger IOR), 1.12 (temporal sim)
+        p.biph1   = 40; % 35,25
+        p.biph2   = 2;
+end
 p.gam1    = 8;
 p.gam2    = .005;
 switch p.model
@@ -116,14 +137,27 @@ p.aBaseline      = 0; % 0.001;
 p.stimOnset = 500;                  % relative to start of trial (ms)
 p.stimDur = 30; %30  
 p.exoCueSOA = 100;
-p.attOnset = -50 + p.delay; %-50                  % voluntary attention on, relative to stim onset (ms)
-p.attOffset = 10 + p.delay; %10                 % voluntary attention off, relative to stim offset (ms)
-p.vAttWeight1 = 1; %1
-p.vAttWeight2 = 0; %0
-p.vAttWeights = [p.vAttWeight1 p.vAttWeight2]; % [1 0]            % [high low]
-p.vAttScale2 = 1;                  % scale the magnitude of voluntary attention to T2
-p.distributeVoluntary = 1;
-p.span = 680;
+switch p.modelClass
+    case 'transient-span'
+        p.attOnset = -50 + p.delay; %-50                  % voluntary attention on, relative to stim onset (ms)
+        p.attOffset = 10 + p.delay; %10                 % voluntary attention off, relative to stim offset (ms)
+        p.vAttWeight1 = 1; %1
+        p.vAttWeight2 = 0; %0
+        p.vAttWeights = [p.vAttWeight1 p.vAttWeight2]; % [1 0]            % [high low]
+        p.vAttScale2 = 1;                  % scale the magnitude of voluntary attention to T2
+        p.distributeVoluntary = 1;
+        p.span = 680;
+    case 'span'
+        p.attOnset = -50; %-50                  % voluntary attention on, relative to stim onset (ms)
+        p.attOffset = 100; %10                 % voluntary attention off, relative to stim offset (ms)
+        p.vAttWeight1 = 1;
+        p.vAttWeight2 = 0;
+        p.vAttWeights = [p.vAttWeight1 p.vAttWeight2]; % [1 0]            % [high low]
+        p.vAttScale2 = .86;                  % scale the magnitude of voluntary attention to T2
+        p.distributeVoluntary = 1;
+        p.span = 500;
+end
+p.neutralT1Weight = .5;             % bias to treat neutral like attend to T1. 0.5 is no bias
 p.neutralAttOp = 'max';             % 'mean','max'; attention weight assigned in the neutral condition
 
 %% Decision
@@ -136,8 +170,8 @@ p.decisionWindowDur = 300; %[]
 p.decisionLatency   = -50;
 
 %% Scaling and offset (for fitting only)
-p.scaling1 = 4.2;
-p.scaling2 = 3.3;
+p.scaling1 = 4.6;
+p.scaling2 = 3.6;
 p.offset1 = 0;
 p.offset2 = 0;
 
