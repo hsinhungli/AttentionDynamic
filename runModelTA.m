@@ -13,7 +13,7 @@ p          = setParametersFA(opt);
 
 %% Set conditions/contrasts to simulate
 condnames  =  {'no-endo','endoT1','endoT2','endoT1T2','exoT1','exoT2','exoT1T2'};
-plotFig    = 0;
+plotFig    = 1;
 plotPerformance = 1;
 
 % Conditions
@@ -26,12 +26,12 @@ rcontrast = 8; %1:numel(contrasts);   %contrast levels to run
 ncontrast = numel(rcontrast);
 
 if ~exist('rcond','var') || isempty(rcond)
-    rcond = 2:4;   %conditions to run
+    rcond = 2:3; %2:4;   %conditions to run
 end
 ncond = numel(rcond);
 
 if ~exist('rsoa','var') || isempty(rsoa)
-    rsoa = [1 4 10]; %1:numel(soas);   %soa levels to run
+    rsoa = 10; %[1 3 5 7 9 10]; %1:numel(soas);   %soa levels to run
 end
 nsoa = numel(rsoa);
 

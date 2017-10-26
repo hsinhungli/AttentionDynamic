@@ -7,7 +7,6 @@ p.r   = zeros(p.ntheta,p.nt); %Firing Rate
 p.f   = zeros(p.ntheta,p.nt); %Estimated Asy firing rate
 p.a   = zeros(p.ntheta,p.nt); %Adaptation term
 p.d_n = zeros(p.ntheta,p.nt); %Noise
-p.rCascade = zeros(p.ntheta,p.nt,p.nRCascades); %Cascade for gamma-shaped r
 
 % sensory layer 1 transient
 p.dtr   = zeros(p.ntheta,p.nt); %Drive

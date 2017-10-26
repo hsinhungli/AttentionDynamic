@@ -13,11 +13,12 @@ nsoa = numel(rsoa);
 
 % att conds
 condnames  =  {'no-endo','endoT1','endoT2','endoT1T2','exoT1','exoT2','exoT1T2'};
-rcond = 2:4;
+rcond = 2:3; %2:4;
 ncond = numel(rcond);
 
 % seqs
-rseq = 1:4;
+stimseqs  = {[1 1],[1 2],[1 3],[1 4]};
+rseq = 3; %1:4;
 nseq = numel(rseq);
 
 %% run in parallel

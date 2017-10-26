@@ -83,7 +83,7 @@ for t = p.dt:p.dt:p.T
     
     %updating drives
     % directly from r
-    drive = p.r(:,idx);
+    drive = halfExp(p.r(:,idx),p.p);
     p.d2(:,idx) = drive;
     
     % normalization pool
@@ -114,7 +114,7 @@ for t = p.dt:p.dt:p.T
             case {3, 4}
                 rfresp(:,:,iStim) = p.rfresp(3:4,:);
         end
-        evidence = decodeEvidence(p.r2(:,idx)', rfresp(:,:,iStim)); % r2
+        evidence = decodeEvidence(p.r(:,idx)', rfresp(:,:,iStim)); % r2
         evidence = evidence*p.decisionWindows(iStim,idx); % only accumulate if in the decision window
         evidence(abs(evidence)<1e-3) = 0; % otherwise zero response will give a little evidence
         
