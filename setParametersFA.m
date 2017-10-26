@@ -11,7 +11,6 @@ end
 
 %% Model
 p.modelClass      = 'transient-span'; % 'span','transient-span'
-p.model         = 1; % 1 (IOR)
 p.rf            = 'rf/resp_stim4_rf6.mat'; % sensory RFs - encode stim and decode responses using saved RFs. [] for none.
 
 %% Temporal Parameters
@@ -135,14 +134,9 @@ if ~isempty(opt)
     end
     
     % update params that depend on opt params
-    switch p.model
-        case 1
-            aW        = repmat(makeBiphasic(0:p.dt/1000:0.8,p.biph1,round(p.biph2)),p.ntheta,1);
-            aW(aW>0)  = aW(aW>0)*p.aIE;
-            aW(aW<0)  = aW(aW<0)*p.aIOR;
-        otherwise
-            error('p.model not recognized')
-    end
+    aW        = repmat(makeBiphasic(0:p.dt/1000:0.8,p.biph1,round(p.biph2)),p.ntheta,1);
+    aW(aW>0)  = aW(aW>0)*p.aIE;
+    aW(aW<0)  = aW(aW<0)*p.aIOR;
     p.aW(:,:,1)      = aW;
     p.aW(:,:,2)      = -aW;
     
