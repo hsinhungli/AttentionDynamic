@@ -11,47 +11,46 @@ end
 
 %% Model
 p.modelClass      = 'transient-span'; % 'span','transient-span'
-p.rf            = 'rf/resp_stim4_rf6.mat'; % sensory RFs - encode stim and decode responses using saved RFs. [] for none.
+p.rf              = 'rf/resp_stim4_rf6.mat'; % sensory RFs - encode stim and decode responses using saved RFs. [] for none.
 
-%% Temporal Parameters
-%Expeirment parameters
-p.dt            = 2;                        %time-step (ms)
-p.T             = 2.1*1000;                  %duration (ms)
-p.nt            = p.T/p.dt+1;
-p.tlist         = 0:p.dt:p.T;
+%% Time
+p.dt              = 2;               %time-step (ms)
+p.T               = 2.1*1000;        %duration (ms)
+p.nt              = p.T/p.dt+1;
+p.tlist           = 0:p.dt:p.T;
 
-%Temporal dynamic of neurons
-p.tau             = 40;%40;  %2,90,20                   %time constant (ms)
+%% Space and feature space
+p.x               = 0;               %Sampling of space
+p.nx              = numel(p.x);
+p.ntheta          = 6;               % should match RF
+
+%% Sensory layer 1
 p.tautr           = 5;
-p.tau_a           = 99;                     %time constant adaptation (ms)
-p.tau_attI        = 50;  %50                %time constant involuntary attention (ms)
-p.tau_attV        = 50;  %50               %time constant voluntary attention (ms)
+p.tau             = 80;%40           %time constant (ms)
+p.sigma           = 1.8; %1.8; %.5 .1      %semisaturation constant
+p.p               = 2;               % exponent
+p.delay           = 50;              % delay before the start of the sustained sensory response
+
+% noise and adaptation are turned off
+p.tau_a           = 99;              %time constant adaptation (ms)
+p.tau_n           = 99; %100         %time constant noise (ms)
+p.d_noiseamp      = 0; % 0.0015;
+p.wa              = 0;               %weights of self-adaptation
+
+%% Sensory layer 2
+p.sigma2          = .1; %.1
 switch p.modelClass
     case 'transient-span'
-        p.tau_r2  = 2;  %80,120                   %time constant filter for firing rate (ms)
+        p.tau_r2  = 2;  %80,120      %time constant filter for firing rate (ms)
     case 'span'
-        p.tau_r2  = 70;  %120,80                   %time constant filter for firing rate (ms)
+        p.tau_r2  = 70;  %120,80     %time constant filter for firing rate (ms)
     otherwise
         error('modelClass not found')
 end
-p.tau_n           = 99; %100                   %time constant noise (ms)
-p.d_noiseamp      = 0; % 0.0015;
-p.delay           = 50;                     % delay before the start of the sustained sensory response
-
-%% Feature space parameters
-p.x             = 0;                %Sampling of space
-p.nx            = numel(p.x);
-p.ntheta        = 6;                % should match RF
-
-%% Sensory layer 1
-p.p             = 2;
-p.sigma         = 1.8; %.5 .1      %semisaturation constant
-p.wa            = 0;               %weights of self-adaptation
-
-%% Sensory layer 2
-p.sigma2        = .1; %.1
 
 %% Attention
+p.tau_attI        = 50;  %50         %time constant involuntary attention (ms)
+p.tau_attV        = 50;  %50         %time constant voluntary attention (ms)
 switch p.modelClass
     case 'transient-span'
         p.aMI     = 150; % 6 % .2 % 5 (spatial sim), 4 (stronger IOR), 4 (temporal sim)

@@ -18,7 +18,7 @@ ncond = numel(rcond);
 
 % seqs
 stimseqs  = {[1 1],[1 2],[1 3],[1 4]};
-rseq = 3; %1:4;
+rseq = 1:4; %1:4;
 nseq = numel(rseq);
 
 %% run in parallel

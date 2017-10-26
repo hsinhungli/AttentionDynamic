@@ -70,7 +70,7 @@ for t = p.dt:p.dt:p.T
     
     %update firing rates
     p.r(:,idx) = p.r(:,idx-1) + (p.dt/p.tau)*(-p.r(:,idx-1) + p.f(:,idx));
-    p.r(:,idx,:) = halfExp(p.r(:,idx,:) - sum(p.rtr(:,idx))); % subtract transient response
+    p.r(:,idx) = halfExp(p.r(:,idx) - sum(p.rtr(:,idx))); % subtract transient response
     
     %update adaptation
     p.a(:,idx) = p.a(:,idx-1) + (p.dt/p.tau_a)*(-p.a(:,idx-1) + p.r(:,idx));
@@ -118,47 +118,48 @@ for t = p.dt:p.dt:p.T
         evidence = evidence*p.decisionWindows(iStim,idx); % only accumulate if in the decision window
         evidence(abs(evidence)<1e-3) = 0; % otherwise zero response will give a little evidence
         
-        % drive
-        drive = evidence;
-        p.dd(iStim,idx) = drive;
+%         % drive
+%         drive = evidence;
+%         p.dd(iStim,idx) = drive;
+        
+        p.fd(iStim,idx) = evidence;
     end
     
-    %updating noise
-    p.dd_n(:,idx) = p.dd_n(:,idx-1) + (p.dt/p.tau_n)*...
-        (-p.dd_n(:,idx-1) + randn(p.nstim,p.nx)*p.d_noiseamp*sqrt(p.tau_n*2));
-    
-    % normalization pool
-    pool = p.dd(:,idx);
-    
-    %Compute Suppressive Drive
-    p.sd(:,idx) = abs(pool(:));
-    %         p.sd(:,idx) = sum(abs(pool(:))); %normalized across stimuli
-    sigma = p.sigmad;
-    
-    %Normalization
-    p.fd(:,idx) = p.dd(:,idx) ./ ...
-        (p.sd(:,idx) + halfExp(sigma, p.p) + halfExp(p.ad(:,idx-1)*p.wa, p.p));
+%     %updating noise
+%     p.dd_n(:,idx) = p.dd_n(:,idx-1) + (p.dt/p.tau_n)*...
+%         (-p.dd_n(:,idx-1) + randn(p.nstim,p.nx)*p.d_noiseamp*sqrt(p.tau_n*2));
+%     
+%     % normalization pool
+%     pool = p.dd(:,idx);
+%     
+%     %Compute Suppressive Drive
+%     p.sd(:,idx) = abs(pool(:));
+%     %         p.sd(:,idx) = sum(abs(pool(:))); %normalized across stimuli
+%     sigma = p.sigmad;
+%     
+%     %Normalization
+%     p.fd(:,idx) = p.dd(:,idx) ./ ...
+%         (p.sd(:,idx) + halfExp(sigma, p.p) + halfExp(p.ad(:,idx-1)*p.wa, p.p));
     
     %update firing rates
     p.rd(:,idx) = p.rd(:,idx-1) + (p.dt/p.tau_rd)*(-p.rd(:,idx-1) + p.fd(:,idx));
     %         p.rd(:,idx) = p.rd(:,idx-1) + p.fd(:,idx); % no leak
     
-    % ceiling on firing rate
-    for iStim = 1:p.nstim
-        if abs(p.rd(iStim,idx))>p.ceiling
-            p.rd(iStim,idx) = p.ceiling*sign(p.rd(iStim,idx));
-        end
-    end
+%     % ceiling on firing rate
+%     for iStim = 1:p.nstim
+%         if abs(p.rd(iStim,idx))>p.ceiling
+%             p.rd(iStim,idx) = p.ceiling*sign(p.rd(iStim,idx));
+%         end
+%     end
+%     
+%     %update adaptation
+%     p.ad(:,idx) = p.ad(:,idx-1) + (p.dt/p.tau_a)*(-p.ad(:,idx-1) + p.rd(:,idx));
     
-    %update adaptation
-    p.ad(:,idx) = p.ad(:,idx-1) + (p.dt/p.tau_a)*(-p.ad(:,idx-1) + p.rd(:,idx));
-    
-    %% Update attention layer
-    % voluntary
+    %% Update voluntary attention layer
     attnGainV = p.task(:,idx-1);
     p.attV(:,idx) = p.attV(:,idx-1) + (p.dt/p.tau_attV)*(-p.attV(:,idx-1) + attnGainV);
     
-    % involuntary
+    %% Update involuntary attention layer
     if idx > length(p.aW)
         r = p.rtr(:,idx-length(p.aW):idx-1);
     else
@@ -174,14 +175,15 @@ for t = p.dt:p.dt:p.T
     aDrive  = inp*p.aKernel; % on channel - off channel
     
     % feature-specific
-%     aE      = aDrive; 
+%     p.dai(:,idx)      = aDrive; 
     % not feature-specific (e.g. spatial)
-    aE      = repmat(sum(aDrive),p.ntheta,1);
+    p.dai(:,idx) = sum(aDrive);
     
-    aS      = repmat((sum(abs(aE)) + p.asigma^p.ap),p.ntheta,1); % S + sigma^2
+    p.sai(:,idx) = sum(abs(p.dai(:,idx)));
+    sigma = p.asigma;
     
-    p.aDrive(:,idx) = aDrive; p.aE(:,idx) = aE; p.aS(:,idx) = aS; % store things
+    p.fai(:,idx) = p.dai(:,idx) ./ (p.sai(:,idx) + halfExp(sigma, p.ap));
 
-    attnGainI = aE./aS;
+    attnGainI = p.fai(:,idx);
     p.attI(:,idx) = p.attI(:,idx-1) + (p.dt/p.tau_attI)*(-p.attI(:,idx-1) + attnGainI);
 end

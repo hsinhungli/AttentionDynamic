@@ -30,9 +30,13 @@ p.fd   = zeros(p.nstim,p.nt); %Estimated Asy firing rate
 p.ad   = zeros(p.nstim,p.nt); %Adaptation term
 p.dd_n = zeros(p.nstim,p.nt); %Noise
 
-% attention
-p.attI = zeros(p.ntheta,p.nt);  %Involuntary attentional gain factor
-p.attV = zeros(p.ntheta,p.nt);  %Voluntary attentional gain factor
-
+% involuntary attention
+p.dai  = zeros(p.ntheta,p.nt); %Drive
+p.sai  = zeros(p.ntheta,p.nt); %Suppressive Drive
+p.fai  = zeros(p.ntheta,p.nt); %Estimated Asy firing rate
+p.attI = zeros(p.ntheta,p.nt); %Involuntary attentional gain factor, equivalent to r
+    
+% voluntary attention
+p.attV = zeros(p.ntheta,p.nt); %Voluntary attentional gain factor, equivalent to r
 p.task = zeros(p.ntheta,p.nt); %Task
 
