@@ -16,30 +16,29 @@ condnames  =  {'no-endo','endoT1','endoT2','endoT1T2','exoT1','exoT2','exoT1T2'}
 plotFig    = 1;
 plotPerformance = 1;
 
-% Pick contrasts to run
-% logspace(-1.699,log10(.5),7)
-% 0.0200    0.0342    0.0585    0.1000    0.1710    0.2924    0.5000
+% Conditions
 contrasts = [0 .01 .02 .04 .08 0.16 0.32 0.64 1];
 soas      = [100:50:500 800];
-% soas     = [100:10:800];
-% stimseqs  = {[1 1],[1 2]};
 stimseqs  = {[1 1],[1 2],[1 3],[1 4]};
 
 % Pick conditions to run
-if ~exist('rcond','var') || isempty(rcond)
-    rcond     = 2:4;   %conditions to run
-end
-ncond     = numel(rcond);
 rcontrast = 8; %1:numel(contrasts);   %contrast levels to run
 ncontrast = numel(rcontrast);
+
+if ~exist('rcond','var') || isempty(rcond)
+    rcond = 2:4;   %conditions to run
+end
+ncond = numel(rcond);
+
 if ~exist('rsoa','var') || isempty(rsoa)
-    rsoa  = [1 4 10]; %1:numel(soas);   %soa levels to run
+    rsoa = [1 4 10]; %1:numel(soas);   %soa levels to run
 end
-nsoa      = numel(rsoa);
+nsoa = numel(rsoa);
+
 if ~exist('rseq','var') || isempty(rseq)
-    rseq      = 1:4; % 1:2 % sequences to run
+    rseq = 3; % 1:2 % sequences to run
 end
-nseq      = numel(rseq);
+nseq = numel(rseq);
 
 % Load rf
 if ~isempty(p.rf)
@@ -88,27 +87,10 @@ for icond = 1:numel(rcond)
                 p = setStimTA(condname,p);
                 p = setTaskTA(condname,p);
                 p = setDecisionWindowsTA(condname,p);
-                                
-                %Stimulus inputs
-                % convolve input with a temporal filter
-                p.i = [];
-                for i=1:size(p.stim,1)
-                    p.i(i,:) = conv(p.stim(i,:), p.filter_i);
-                end
-                p.i = p.i(:,1:p.nt);
-                
+
                 %run the model
                 p = n_model_FA(p);
-                
-                % convolve output with a temporal filter
-%                 if p.model==1
-%                     p.r2 = [];
-%                     for i=1:size(p.r,1)
-%                         p.r2(i,:) = conv(p.r(i,:), p.filter_r2);
-%                     end
-%                     p.r2 = p.r2(:,1:p.nt);
-%                 end
-                
+
                 %accumulate evidence
 %                 p = accumulateTA(p);
                 if isempty(p.rf)
@@ -124,16 +106,6 @@ for icond = 1:numel(rcond)
                     % take the first feature
 %                     p.ev = squeeze(p.evidence(1,end,:)); 
                 else
-%                     % decode just between CCW/CW for the appropriate axis
-%                     for iStim = 1:2
-%                         switch p.stimseq(iStim)
-%                             case {1, 2}
-%                                 rfresp(:,:,iStim) = p.rfresp(1:2,:);
-%                             case {3, 4}
-%                                 rfresp(:,:,iStim) = p.rfresp(3:4,:);
-%                         end
-%                         p.ev(iStim) = decodeEvidence(p.evidence(:,end,iStim)', rfresp(:,:,iStim));
-%                     end
                     for iStim = 1:2
                         p.evidence(:,:,iStim) = p.rd(iStim,:);
                     end
@@ -146,7 +118,6 @@ for icond = 1:numel(rcond)
                 
                 %% Draw time series
                 if plotFig
-                    % plotTA(condname, p)
                     plotFA2(condname, p)
                 end
             end
