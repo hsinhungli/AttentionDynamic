@@ -33,11 +33,11 @@ ncond     = numel(rcond);
 rcontrast = 8; %1:numel(contrasts);   %contrast levels to run
 ncontrast = numel(rcontrast);
 if ~exist('rsoa','var') || isempty(rsoa)
-    rsoa  = 1:numel(soas);   %soa levels to run
+    rsoa  = [1 4 10]; %1:numel(soas);   %soa levels to run
 end
 nsoa      = numel(rsoa);
 if ~exist('rseq','var') || isempty(rseq)
-    rseq      = 3; % 1:2 % sequences to run
+    rseq      = 1:4; % 1:2 % sequences to run
 end
 nseq      = numel(rseq);
 
@@ -144,7 +144,7 @@ for icond = 1:numel(rcond)
                 % store evidence
                 ev(:,isoa,icond,icontrast,iseq) = p.ev;
                 
-                %% Draw time series_1
+                %% Draw time series
                 if plotFig
                     % plotTA(condname, p)
                     plotFA2(condname, p)
