@@ -13,7 +13,7 @@ p          = setParametersFA(opt);
 
 %% Set conditions/contrasts to simulate
 condnames  =  {'no-endo','endoT1','endoT2','endoT1T2','exoT1','exoT2','exoT1T2'};
-plotFig    = 1;
+plotFig    = 0;
 plotPerformance = 1;
 
 % Conditions
@@ -93,24 +93,10 @@ for icond = 1:numel(rcond)
 
                 %accumulate evidence
 %                 p = accumulateTA(p);
-                if isempty(p.rf)
-                    % take the difference between evidence for the correct
-                    % vs. incorrect feature
-                    ev_s1 = squeeze(p.evidence(:,end,1)); % stim 1
-                    ev_s2 = squeeze(p.evidence(:,end,2)); % stim 2
-                    corr = p.stimseq;
-                    incorr = 3-p.stimseq;
-                    p.ev(1) = ev_s1(corr(1)) - ev_s1(incorr(1)); % stim 1
-                    p.ev(2) = ev_s2(corr(2)) - ev_s2(incorr(2)); % stim 2
-                    
-                    % take the first feature
-%                     p.ev = squeeze(p.evidence(1,end,:)); 
-                else
-                    for iStim = 1:2
-                        p.evidence(:,:,iStim) = p.rd(iStim,:);
-                    end
-                    p.ev = squeeze(p.evidence(:,end,:))';
+                for iStim = 1:2
+                    p.evidence(:,:,iStim) = p.rd(iStim,:);
                 end
+                p.ev = squeeze(p.evidence(:,end,:))';
                 % make evidence positive for the correct stimulus
                 p.ev = p.ev.*(-1).^p.stimseq; % flip sign for CCW (odd #s)
                 % store evidence

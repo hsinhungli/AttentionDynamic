@@ -10,14 +10,10 @@ for t = p.dt:p.dt:p.T
     inp = p.stim(:,idx);
     
     %updating drives
-    if isempty(p.rf) 
-        drive = halfExp(inp,p.p); %%% leaving out w and a
+    if any(inp)
+        drive = halfExp(p.rfresp(logical(inp),:),p.p)'*p.contrast*inp(logical(inp)); % select pre-calculated response
     else
-        if any(inp)
-            drive = halfExp(p.rfresp(logical(inp),:),p.p)'*p.contrast*inp(logical(inp)); % select pre-calculated response
-        else
-            drive = zeros(p.ntheta,1);
-        end
+        drive = zeros(p.ntheta,1);
     end
     p.dtr(:,idx) = drive; 
     
@@ -50,16 +46,12 @@ for t = p.dt:p.dt:p.T
         (-p.d_n(:,idx-1) + randn(p.ntheta,p.nx)*p.d_noiseamp*sqrt(p.tau_n*2));
     
     %updating drives
-    if isempty(p.rf) 
-        drive = halfExp(inp,p.p); %%% leaving out w and a
+    if any(inp)
+        drive = halfExp(p.rfresp(logical(inp),:),p.p)'*p.contrast*inp(logical(inp)); % select pre-calculated response
     else
-        if any(inp)
-            drive = halfExp(p.rfresp(logical(inp),:),p.p)'*p.contrast*inp(logical(inp)); % select pre-calculated response
-        else
-            drive = zeros(p.ntheta,1);
-        end
+        drive = zeros(p.ntheta,1);
     end
-%     drive = halfExp(drive - p.rtr(:,idx)); % subtract transient inhibition
+    %     drive = halfExp(drive - p.rtr(:,idx)); % subtract transient inhibition
 
     p.d(:,idx) = halfExp(1+p.attV(:,idx-1)*p.aMV).*halfExp(1+p.attI(:,idx-1)*p.aMI).*drive;
 
@@ -119,56 +111,52 @@ for t = p.dt:p.dt:p.T
     
     
     %% Computing the responses of the decision layer
-    if isempty(p.rf)
-        error('must have RF to decode at each time step')
-    else
-        % decode just between CCW/CW for the appropriate axis
-        for iStim = 1:2
-            switch p.stimseq(iStim)
-                case {1, 2}
-                    rfresp(:,:,iStim) = p.rfresp(1:2,:);
-                case {3, 4}
-                    rfresp(:,:,iStim) = p.rfresp(3:4,:);
-            end
-            evidence = decodeEvidence(p.r2(:,idx)', rfresp(:,:,iStim)); % r2
-            evidence = evidence*p.decisionWindows(iStim,idx); % only accumulate if in the decision window
-            evidence(abs(evidence)<1e-3) = 0; % otherwise zero response will give a little evidence
-
-            % drive
-            drive = evidence;
-            p.dd(iStim,idx) = drive;
+    % decode just between CCW/CW for the appropriate axis
+    for iStim = 1:2
+        switch p.stimseq(iStim)
+            case {1, 2}
+                rfresp(:,:,iStim) = p.rfresp(1:2,:);
+            case {3, 4}
+                rfresp(:,:,iStim) = p.rfresp(3:4,:);
         end
+        evidence = decodeEvidence(p.r2(:,idx)', rfresp(:,:,iStim)); % r2
+        evidence = evidence*p.decisionWindows(iStim,idx); % only accumulate if in the decision window
+        evidence(abs(evidence)<1e-3) = 0; % otherwise zero response will give a little evidence
         
-        %updating noise
-        p.dd_n(:,idx) = p.dd_n(:,idx-1) + (p.dt/p.tau_n)*...
-            (-p.dd_n(:,idx-1) + randn(p.nstim,p.nx)*p.d_noiseamp*sqrt(p.tau_n*2));
-
-        % normalization pool
-        pool = p.dd(:,idx);
-
-        %Compute Suppressive Drive
-        p.sd(:,idx) = abs(pool(:));
-%         p.sd(:,idx) = sum(abs(pool(:))); %normalized across stimuli
-        sigma = p.sigmad;
-
-        %Normalization
-        p.fd(:,idx) = p.dd(:,idx) ./ ...
-            (p.sd(:,idx) + halfExp(sigma, p.p) + halfExp(p.ad(:,idx-1)*p.wa, p.p));
-
-        %update firing rates
-        p.rd(:,idx) = p.rd(:,idx-1) + (p.dt/p.tau_rd)*(-p.rd(:,idx-1) + p.fd(:,idx));
-%         p.rd(:,idx) = p.rd(:,idx-1) + p.fd(:,idx); % no leak
-        
-        % ceiling on firing rate
-        for iStim = 1:p.nstim
-            if abs(p.rd(iStim,idx))>p.ceiling
-                p.rd(iStim,idx) = p.ceiling*sign(p.rd(iStim,idx));
-            end
-        end
-
-        %update adaptation
-        p.ad(:,idx) = p.ad(:,idx-1) + (p.dt/p.tau_a)*(-p.ad(:,idx-1) + p.rd(:,idx));
+        % drive
+        drive = evidence;
+        p.dd(iStim,idx) = drive;
     end
+    
+    %updating noise
+    p.dd_n(:,idx) = p.dd_n(:,idx-1) + (p.dt/p.tau_n)*...
+        (-p.dd_n(:,idx-1) + randn(p.nstim,p.nx)*p.d_noiseamp*sqrt(p.tau_n*2));
+    
+    % normalization pool
+    pool = p.dd(:,idx);
+    
+    %Compute Suppressive Drive
+    p.sd(:,idx) = abs(pool(:));
+    %         p.sd(:,idx) = sum(abs(pool(:))); %normalized across stimuli
+    sigma = p.sigmad;
+    
+    %Normalization
+    p.fd(:,idx) = p.dd(:,idx) ./ ...
+        (p.sd(:,idx) + halfExp(sigma, p.p) + halfExp(p.ad(:,idx-1)*p.wa, p.p));
+    
+    %update firing rates
+    p.rd(:,idx) = p.rd(:,idx-1) + (p.dt/p.tau_rd)*(-p.rd(:,idx-1) + p.fd(:,idx));
+    %         p.rd(:,idx) = p.rd(:,idx-1) + p.fd(:,idx); % no leak
+    
+    % ceiling on firing rate
+    for iStim = 1:p.nstim
+        if abs(p.rd(iStim,idx))>p.ceiling
+            p.rd(iStim,idx) = p.ceiling*sign(p.rd(iStim,idx));
+        end
+    end
+    
+    %update adaptation
+    p.ad(:,idx) = p.ad(:,idx-1) + (p.dt/p.tau_a)*(-p.ad(:,idx-1) + p.rd(:,idx));
     
     %% Update attention layer
     % voluntary

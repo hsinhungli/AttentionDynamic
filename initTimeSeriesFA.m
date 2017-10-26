@@ -32,10 +32,8 @@ p.ad   = zeros(p.nstim,p.nt); %Adaptation term
 p.dd_n = zeros(p.nstim,p.nt); %Noise
 
 % attention
-p.att = zeros(p.ntheta,p.nt);   %Attentional gain factor
 p.attI = zeros(p.ntheta,p.nt);  %Involuntary attentional gain factor
 p.attV = zeros(p.ntheta,p.nt);  %Voluntary attentional gain factor
-p.h = zeros(p.ntheta,p.nt);    %Involuntary attentional impulse response
 
 p.task = zeros(p.ntheta,p.nt); %Task
 

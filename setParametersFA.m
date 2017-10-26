@@ -42,11 +42,7 @@ p.delay           = 50;                     % delay before the start of the sust
 %% Feature space parameters
 p.x             = 0;                %Sampling of space
 p.nx            = numel(p.x);
-if isempty(p.rf)
-    p.ntheta    = 2;                %Sampling of orientation
-else
-    p.ntheta    = 6;
-end
+p.ntheta        = 6;                % should match RF
 
 %% Sensory layer 1
 p.p             = 2;
@@ -77,14 +73,9 @@ p.ap = 4;
 p.asigma  = .3;
 p.aKernel = [1; -1];
 
-switch p.model
-    case 1
-        aW        = repmat(makeBiphasic(0:p.dt/1000:0.8,p.biph1,round(p.biph2)),p.ntheta,1);
-        aW(aW>0)  = aW(aW>0)*p.aIE;
-        aW(aW<0)  = aW(aW<0)*p.aIOR;
-    otherwise
-        error('p.model not recognized')
-end
+aW        = repmat(makeBiphasic(0:p.dt/1000:0.8,p.biph1,round(p.biph2)),p.ntheta,1);
+aW(aW>0)  = aW(aW>0)*p.aIE;
+aW(aW<0)  = aW(aW<0)*p.aIOR;
 p.aW(:,:,1)      = aW;
 p.aW(:,:,2)      = -aW;
 
@@ -114,7 +105,7 @@ p.neutralAttOp = 'max';             % 'mean','max'; attention weight assigned in
 %% Decision
 p.sigmad            = 1;
 p.tau_rd            = 100000;
-p.bounds            = [0 0];                   % evidence accumulation bounds for perceptual decision (when measuring accuracy)
+% p.bounds            = [0 0];                   % evidence accumulation bounds for perceptual decision (when measuring accuracy)
 p.ceiling           = [];%3.6e-5;%3.54e-4; %3, 0.8, 7.8; %[];                     % evidence ceiling (when measuring eveidence)
 p.decisionWindowDur = 300; %[]
 p.decisionLatency   = -50;
