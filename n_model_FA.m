@@ -69,13 +69,8 @@ for t = p.dt:p.dt:p.T
     %p.f(:,idx) = halfExp(p.f(:,idx)+ p.f_n(:,idx),1); %Add niose at the firing rate
     
     %update firing rates
-    % orig
-%     p.r(:,idx) = p.r(:,idx-1) + (p.dt/p.tau)*(-p.r(:,idx-1) + p.f(:,idx));
-    % cascade
-    p.rCascade = cascadeExp(p.rCascade, p.f(:,idx), p.tau, p.dt, idx, p.nRCascades);
-    % subtract transient response
-    p.rCascade(:,idx,:) = halfExp(p.rCascade(:,idx,:) - sum(p.rtr(:,idx)));
-    p.r(:,idx) = p.rCascade(:,idx,end);
+    p.r(:,idx) = p.r(:,idx-1) + (p.dt/p.tau)*(-p.r(:,idx-1) + p.f(:,idx));
+    p.r(:,idx,:) = halfExp(p.r(:,idx,:) - sum(p.rtr(:,idx))); % subtract transient response
     
     %update adaptation
     p.a(:,idx) = p.a(:,idx-1) + (p.dt/p.tau_a)*(-p.a(:,idx-1) + p.r(:,idx));

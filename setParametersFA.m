@@ -36,7 +36,6 @@ switch p.modelClass
 end
 p.tau_n           = 99; %100                   %time constant noise (ms)
 p.d_noiseamp      = 0; % 0.0015;
-p.nRCascades      = 1;
 p.delay           = 50;                     % delay before the start of the sustained sensory response
 
 %% Feature space parameters
