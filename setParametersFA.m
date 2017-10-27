@@ -67,9 +67,9 @@ switch p.modelClass
     case 'span'
         p.aMI     = 3.9; % .2 % 5 (spatial sim), 4 (stronger IOR), 4 (temporal sim)
         p.aMV     = 1.6; %9, 200
-        p.aIE     = 0; % excitatory part of involuntary attention kernel
-        p.aIOR    = .32; %.4 % 1 (spatial sim), 1.3 (stronger IOR), 1.12 (temporal sim)
-        p.biph1   = 40; % 35,25
+        p.aIE     = 0; %0 % excitatory part of involuntary attention kernel
+        p.aIOR    = .4; %.32 %.4 % 1 (spatial sim), 1.3 (stronger IOR), 1.12 (temporal sim)
+        p.biph1   = 40; %40 % 35,25
         p.biph2   = 2;
 end
 p.ap = 4;
@@ -96,7 +96,7 @@ switch p.modelClass
         p.attOnset = -50; %-50                  % voluntary attention on, relative to stim onset (ms)
         p.attOffset = 100; %10                 % voluntary attention off, relative to stim offset (ms)
         p.vAttScale2 = .86;                  % scale the magnitude of voluntary attention to T2
-        p.span = 500;
+        p.span = 800;
 end
 p.vAttWeight1 = 1; %1
 p.vAttWeight2 = 0; %0
