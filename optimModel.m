@@ -2,7 +2,8 @@ function optimModel(dataDir, saveDir, jobID, D)
   
 %% setup
 if nargin==0
-    dataDir = '/Users/rachel/Documents/NYU/Projects/Temporal_Attention/Code/Expt_Scripts/Behav/data';
+%     dataDir = '/Users/rachel/Documents/NYU/Projects/Temporal_Attention/Code/Expt_Scripts/Behav/data';
+    dataDir = '/Local/Users/denison/Google Drive/NYU/Projects/Temporal_Attention/Code/Expt_Scripts/Behav/data';
     saveDir = 'fit';
 end
 if nargin<3
@@ -12,7 +13,7 @@ else
 end
 if nargin<4
     % load data
-    dataType = 'ave'; % 'ave','seq'
+    dataType = 'seq'; % 'ave','seq'
     switch dataType
         case 'ave'
             dataFile = 'E2_SOA_cbD6_run98_N4_workspace_20160128.mat';
@@ -28,14 +29,10 @@ if nargin<4
 end
 
 % store things for modelCost
-D.saveDir = saveDir;
+D(1).saveDir = saveDir;
 
 % load previous fit
 % prevfit = load(sprintf('%s/fit_workspace_20160429T0059.mat', saveDir));
-
-% prepare figure for plotting
-figure
-turnwhite
 
 %% optimization
 % initialize params

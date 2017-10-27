@@ -66,7 +66,7 @@ for t = p.dt:p.dt:p.T
     p.f(:,idx) = p.d(:,idx) ./ ...
         (p.s(:,idx) + halfExp(sigma, p.p) + halfExp(p.a(:,idx-1)*p.wa, p.p));
     %Adaptation, p.a, is implemented as Wilson 2003 here.
-    %p.f(:,idx) = halfExp(p.f(:,idx)+ p.f_n(:,idx),1); %Add niose at the firing rate
+    %p.f(:,idx) = halfExp(p.f(:,idx)+ p.d_n(:,idx),1); %Add noise at the firing rate
     
     %update firing rates
     p.r(:,idx) = p.r(:,idx-1) + (p.dt/p.tau)*(-p.r(:,idx-1) + p.f(:,idx));
@@ -83,6 +83,7 @@ for t = p.dt:p.dt:p.T
     
     %updating drives
     % directly from r
+%     drive = p.r(:,idx);
     drive = halfExp(p.r(:,idx),p.p);
     p.d2(:,idx) = drive;
     
@@ -96,7 +97,7 @@ for t = p.dt:p.dt:p.T
     %Normalization
     p.f2(:,idx) = p.d2(:,idx) ./ ...
         (p.s2(:,idx) + halfExp(sigma, p.p) + halfExp(p.a2(:,idx-1)*p.wa, p.p));
-    %p.f(:,idx) = halfExp(p.f(:,idx)+ p.f_n(:,idx),1); %Add niose at the firing rate
+    %p.f2(:,idx) = halfExp(p.f(:,idx)+ p.d2_n(:,idx),1); %Add noise at the firing rate
     
     %update firing rates
     p.r2(:,idx) = p.r2(:,idx-1) + (p.dt/p.tau_r2)*(-p.r2(:,idx-1) + p.f2(:,idx));
@@ -114,11 +115,11 @@ for t = p.dt:p.dt:p.T
             case {3, 4}
                 rfresp(:,:,iStim) = p.rfresp(3:4,:);
         end
-        evidence = decodeEvidence(p.r(:,idx)', rfresp(:,:,iStim)); % r2
+        evidence = decodeEvidence(p.r2(:,idx)', rfresp(:,:,iStim)); % r2
         evidence = evidence*p.decisionWindows(iStim,idx); % only accumulate if in the decision window
         evidence(abs(evidence)<1e-3) = 0; % otherwise zero response will give a little evidence
         
-%         % drive
+        % drive
 %         drive = evidence;
 %         p.dd(iStim,idx) = drive;
         
@@ -140,11 +141,11 @@ for t = p.dt:p.dt:p.T
 %     %Normalization
 %     p.fd(:,idx) = p.dd(:,idx) ./ ...
 %         (p.sd(:,idx) + halfExp(sigma, p.p) + halfExp(p.ad(:,idx-1)*p.wa, p.p));
-    
-    %update firing rates
-    p.rd(:,idx) = p.rd(:,idx-1) + (p.dt/p.tau_rd)*(-p.rd(:,idx-1) + p.fd(:,idx));
-    %         p.rd(:,idx) = p.rd(:,idx-1) + p.fd(:,idx); % no leak
-    
+%     
+%     %update firing rates
+%     p.rd(:,idx) = p.rd(:,idx-1) + (p.dt/p.tau_rd)*(-p.rd(:,idx-1) + p.fd(:,idx));
+%     %         p.rd(:,idx) = p.rd(:,idx-1) + p.fd(:,idx); % no leak
+%     
 %     % ceiling on firing rate
 %     for iStim = 1:p.nstim
 %         if abs(p.rd(iStim,idx))>p.ceiling

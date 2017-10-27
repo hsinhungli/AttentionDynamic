@@ -10,9 +10,11 @@ if iscell(p)
     par = 'seq';
     nseq = numel(p);
     figNames = {'seq1','seq2','seq3','seq4'};
+    modelScalingFactor = 10^5;
 else
     par = 'soa';
     figNames = {'fig'};
+    modelScalingFactor = 1;
 end
 
 switch par
@@ -41,8 +43,8 @@ switch par
         end
         
         %% scale fit
-        model(:,:,1,:) = model(:,:,1,:)*p.scaling1 + p.offset1;
-        model(:,:,2,:) = model(:,:,2,:)*p.scaling2 + p.offset2;
+        model(:,:,1,:) = model(:,:,1,:)*modelScalingFactor*p.scaling1 + p.offset1;
+        model(:,:,2,:) = model(:,:,2,:)*modelScalingFactor*p.scaling2 + p.offset2;
         model(:,:,:,[2 4]) = model(:,:,:,[2 4]) + p.diffOrientOffset;
         
         %% load data
@@ -109,6 +111,6 @@ switch par
 end
 
 %% save
-saveDir = D.saveDir;
+saveDir = D(1).saveDir;
 save(sprintf('%s/fit_workspace_%s_interim', saveDir, datestr(now,'yyyymmdd')))
 rd_saveAllFigs([],figNames, [], saveDir)
