@@ -4,7 +4,7 @@ function [perfv, p, ev] = runModelParallel(opt)
 % w = load('fit/fit_workspace_20160416T0400.mat');
 % opt = w.opt;
 
-par = 'seq'; % 'soa+attcond','soa','seq'
+par = 'soa+attcond'; % 'soa+attcond','soa','seq'
 
 % soas
 soas = [100:50:500 800];
@@ -18,7 +18,7 @@ ncond = numel(rcond);
 
 % seqs
 stimseqs  = {[1 1],[1 2],[1 3],[1 4]};
-rseq = 1:4; %1:4;
+rseq = 3; %1:4;
 nseq = numel(rseq);
 
 %% run in parallel

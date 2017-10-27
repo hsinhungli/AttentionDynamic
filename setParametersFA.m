@@ -10,7 +10,7 @@ if ~exist('opt','var')
 end
 
 %% Model
-p.modelClass      = 'transient-span'; % 'span','transient-span'
+p.modelClass      = 'span'; % 'span','transient-span'
 p.rf              = 'rf/resp_stim4_rf6.mat'; % sensory RFs - encode stim and decode responses using saved RFs. [] for none.
 
 %% Time
@@ -28,8 +28,15 @@ p.ntheta          = 6;               % should match RF
 p.tautr           = 5;
 p.tau             = 80;%40           %time constant (ms)
 p.sigma           = 1.8; %1.8; %.5 .1      %semisaturation constant
-p.p               = 2;               % exponent
-p.delay           = 50;              % delay before the start of the sustained sensory response
+p.p               = 1;               % exponent
+switch p.modelClass
+    case 'transient-span'
+        p.delay   = 50;              % delay before the start of the sustained sensory response
+    case 'span'
+        p.delay   = 0;
+    otherwise
+        error('modelClass not found')
+end
 
 % noise and adaptation are turned off
 p.tau_a           = 99;              %time constant adaptation (ms)
@@ -44,8 +51,6 @@ switch p.modelClass
         p.tau_r2  = 2;  %80,120      %time constant filter for firing rate (ms)
     case 'span'
         p.tau_r2  = 70;  %120,80     %time constant filter for firing rate (ms)
-    otherwise
-        error('modelClass not found')
 end
 
 %% Attention
@@ -105,8 +110,14 @@ p.sigmad            = 1;
 p.tau_rd            = 100000;
 % p.bounds            = [0 0];                   % evidence accumulation bounds for perceptual decision (when measuring accuracy)
 p.ceiling           = [];%3.6e-5;%3.54e-4; %3, 0.8, 7.8; %[];                     % evidence ceiling (when measuring eveidence)
-p.decisionWindowDur = 300; %[]
-p.decisionLatency   = -50;
+switch p.modelClass
+    case 'transient-span'
+        p.decisionWindowDur = 300;
+        p.decisionLatency   = -50;
+    case 'span'
+        p.decisionWindowDur = [];
+        p.decisionLatency = 0;
+end
 
 %% Scaling and offset (for fitting only)
 p.scaling1 = 4.6;

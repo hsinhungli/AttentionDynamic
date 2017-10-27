@@ -51,7 +51,6 @@ for t = p.dt:p.dt:p.T
     else
         drive = zeros(p.ntheta,1);
     end
-    %     drive = halfExp(drive - p.rtr(:,idx)); % subtract transient inhibition
 
     p.d(:,idx) = halfExp(1+p.attV(:,idx-1)*p.aMV).*halfExp(1+p.attI(:,idx-1)*p.aMI).*drive;
 
@@ -70,7 +69,10 @@ for t = p.dt:p.dt:p.T
     
     %update firing rates
     p.r(:,idx) = p.r(:,idx-1) + (p.dt/p.tau)*(-p.r(:,idx-1) + p.f(:,idx));
-    p.r(:,idx) = halfExp(p.r(:,idx) - sum(p.rtr(:,idx))); % subtract transient response
+    switch p.modelClass
+        case 'transient-span'
+            p.r(:,idx) = halfExp(p.r(:,idx) - sum(p.rtr(:,idx))); % subtract transient response (inhibition)
+    end
     
     %update adaptation
     p.a(:,idx) = p.a(:,idx-1) + (p.dt/p.tau_a)*(-p.a(:,idx-1) + p.r(:,idx));
@@ -161,11 +163,17 @@ for t = p.dt:p.dt:p.T
     p.attV(:,idx) = p.attV(:,idx-1) + (p.dt/p.tau_attV)*(-p.attV(:,idx-1) + attnGainV);
     
     %% Update involuntary attention layer
+    switch p.modelClass
+        case 'transient-span'
+            sr = p.rtr; % sensory response
+        otherwise
+            sr = p.r;
+    end
     if idx > length(p.aW)
-        r = p.rtr(:,idx-length(p.aW):idx-1);
+        r = sr(:,idx-length(p.aW):idx-1);
     else
         r = nan(size(p.aW(:,:,1)));
-        r(:,end-idx+2:end) = p.rtr(:,1:idx-1);
+        r(:,end-idx+2:end) = sr(:,1:idx-1);
     end
     inp = [];
     for iPhase = 1:2
