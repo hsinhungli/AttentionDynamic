@@ -13,7 +13,7 @@ else
 end
 if nargin<4
     % load data
-    dataType = 'seq'; % 'ave','seq'
+    dataType = 'ave'; % 'ave','seq'
     switch dataType
         case 'ave'
             dataFile = 'E2_SOA_cbD6_run98_N4_workspace_20160128.mat';

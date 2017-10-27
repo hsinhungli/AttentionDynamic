@@ -14,7 +14,7 @@ if iscell(p)
 else
     par = 'soa';
     figNames = {'fig'};
-    modelScalingFactor = 1;
+    modelScalingFactor = 10^5;
 end
 
 switch par
@@ -25,8 +25,8 @@ switch par
         end
         
         %% scale fit
-        model(:,:,1) = model(:,:,1)*p.scaling1 + p.offset1;
-        model(:,:,2) = model(:,:,2)*p.scaling2 + p.offset2;
+        model(:,:,1) = model(:,:,1)*modelScalingFactor*p.scaling1 + p.offset1;
+        model(:,:,2) = model(:,:,2)*modelScalingFactor*p.scaling2 + p.offset2;
         
         %% load data
         for iT = 1:2

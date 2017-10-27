@@ -26,8 +26,8 @@ p.ntheta          = 6;               % should match RF
 
 %% Sensory layer 1
 p.tautr           = 5;
-p.tau             = 80;%40           %time constant (ms)
-p.sigma           = 1.8; %1.8; %.5 .1      %semisaturation constant
+p.tau             = 74;%40           %time constant (ms)
+p.sigma           = 1.7; %1.8; %.5 .1      %semisaturation constant
 p.p               = 1;               % exponent
 switch p.modelClass
     case 'transient-span'
@@ -65,12 +65,12 @@ switch p.modelClass
         p.biph1   = 20; % 40,35,25
         p.biph2   = 2; % 2
     case 'span'
-        p.aMI     = 3.9; % .2 % 5 (spatial sim), 4 (stronger IOR), 4 (temporal sim)
-        p.aMV     = 1.6; %9, 200
+        p.aMI     = 2.5; % .2 % 5 (spatial sim), 4 (stronger IOR), 4 (temporal sim)
+        p.aMV     = 43; %1.6; %9, 200
         p.aIE     = 0; %0 % excitatory part of involuntary attention kernel
-        p.aIOR    = .4; %.32 %.4 % 1 (spatial sim), 1.3 (stronger IOR), 1.12 (temporal sim)
-        p.biph1   = 40; %40 % 35,25
-        p.biph2   = 2;
+        p.aIOR    = .37; %.32 %.4 % 1 (spatial sim), 1.3 (stronger IOR), 1.12 (temporal sim)
+        p.biph1   = 53; %40 % 35,25
+        p.biph2   = 4;
 end
 p.ap = 4;
 p.asigma  = .3;
@@ -93,10 +93,10 @@ switch p.modelClass
         p.vAttScale2 = 1;                  % scale the magnitude of voluntary attention to T2
         p.span = 680;
     case 'span'
-        p.attOnset = -50; %-50                  % voluntary attention on, relative to stim onset (ms)
-        p.attOffset = 100; %10                 % voluntary attention off, relative to stim offset (ms)
+        p.attOnset = -73; %-50                  % voluntary attention on, relative to stim onset (ms)
+        p.attOffset = 59; %10                 % voluntary attention off, relative to stim offset (ms)
         p.vAttScale2 = .86;                  % scale the magnitude of voluntary attention to T2
-        p.span = 800;
+        p.span = 850;
 end
 p.vAttWeight1 = 1; %1
 p.vAttWeight2 = 0; %0
@@ -120,7 +120,7 @@ switch p.modelClass
 end
 
 %% Scaling and offset (for fitting only)
-p.scaling1 = 4.6;
+p.scaling1 = 4.2;
 p.scaling2 = 3.6;
 p.offset1 = 0;
 p.offset2 = 0;
