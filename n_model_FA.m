@@ -83,8 +83,8 @@ for t = p.dt:p.dt:p.T
     
     %updating drives
     % directly from r
-%     drive = p.r(:,idx);
-    drive = halfExp(p.r(:,idx),p.p);
+    drive = p.r(:,idx);
+%     drive = halfExp(p.r(:,idx),p.p);
     p.d2(:,idx) = drive;
     
     % normalization pool
