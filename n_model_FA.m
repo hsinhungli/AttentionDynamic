@@ -142,9 +142,9 @@ for t = p.dt:p.dt:p.T
 %     p.fd(:,idx) = p.dd(:,idx) ./ ...
 %         (p.sd(:,idx) + halfExp(sigma, p.p) + halfExp(p.ad(:,idx-1)*p.wa, p.p));
 %     
-%     %update firing rates
-%     p.rd(:,idx) = p.rd(:,idx-1) + (p.dt/p.tau_rd)*(-p.rd(:,idx-1) + p.fd(:,idx));
-%     %         p.rd(:,idx) = p.rd(:,idx-1) + p.fd(:,idx); % no leak
+    %update firing rates
+    p.rd(:,idx) = p.rd(:,idx-1) + (p.dt/p.tau_rd)*(-p.rd(:,idx-1) + p.fd(:,idx));
+    %         p.rd(:,idx) = p.rd(:,idx-1) + p.fd(:,idx); % no leak
 %     
 %     % ceiling on firing rate
 %     for iStim = 1:p.nstim

@@ -74,6 +74,9 @@ switch par
         perfv = pperfv;
         p = pp;
         ev = pev;
+        for iseq = 1:nseq
+            plotPerformanceTA(condnames(rcond), soas(rsoa), ev{iseq});
+        end
     otherwise
         error('par not found')
 end

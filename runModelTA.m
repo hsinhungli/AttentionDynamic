@@ -31,7 +31,7 @@ end
 ncond = numel(rcond);
 
 if ~exist('rsoa','var') || isempty(rsoa)
-    rsoa = 1:numel(soas); %[1 3 5 7 9 10]; %1:numel(soas);   %soa levels to run
+    rsoa = 10; %1:numel(soas); %[1 3 5 7 9 10]; %1:numel(soas);   %soa levels to run
 end
 nsoa = numel(rsoa);
 

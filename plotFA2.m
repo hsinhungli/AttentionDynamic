@@ -69,7 +69,7 @@ plot(p.tlist/1000, zeros(size(p.tlist)), 'k')
 plot(p.tlist/1000,p.evidence(:,:,1)','color',[53 68 88]/255);
 plot(p.tlist/1000,p.evidence(:,:,2)','color',[53 68 88]/255);
 xlim(xlims)
-set(gca,'XTickLabel',[-0.5 0 0.5 1 1.5])
+set(gca,'XTick',[-0.5 0 0.5 1 1.5 2])
 ylabel('Decision')
 xlabel('Time (s)')
 
