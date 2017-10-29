@@ -14,16 +14,16 @@ switch modelClass
         p.tau_r2        = 2;  %80, 100            %time constant filter for firing rate (ms)
 %         p.sigma         = 1.8; % .5, .1         %semisaturation constant
     case 'span'
-        p.tau           = 73;  %70, 20         %time constant filter for excitatory response (ms)
-        p.tau_r2        = 71;  %100            %time constant filter for firing rate (ms)
-        p.sigma         = 1.7; % .5, .1         %semisaturation constant
+        p.tau           = 63;  %70, 20         %time constant filter for excitatory response (ms)
+        p.tau_r2        = 56;  %100            %time constant filter for firing rate (ms)
+        p.sigma         = 2.1; % .5, .1         %semisaturation constant
     otherwise
         error('modelClass not found')
 end
-p.p             = 1;
+p.p             = 1.2;
 
 % sensory 2
-p.sigma2        = .1; %.1
+p.sigma2        = .08; %.1
 
 
 % voluntary attention
@@ -38,15 +38,15 @@ switch modelClass
 %         p.vAttScale2    = .77;
 %         p.span          = 875;
     case 'span'
-        p.aMV           = 43; % 3.5,2.5
-        p.vAttScale2    = .42;
-        p.span          = 856;
+        p.aMV           = 36; % 3.5,2.5
+        p.vAttScale2    = .21;
+        p.span          = 1083;
 end
 % p.neutralT1Weight = .35;
 
 % involuntary attention
-p.biph1         = 52;
-p.biph2         = 4;
+p.biph1         = 48;
+p.biph2         = 3.3;
 switch modelClass
     case 'transient-span'
 %         p.aMI           = 150; % 5 (spatial sim), 4 (stronger IOR), 4 (temporal sim)
@@ -55,8 +55,9 @@ switch modelClass
 %         p.asigma        = .2;  %.3
     case 'span'
         p.aMI           = 2.5; % 5 (spatial sim), 4 (stronger IOR), 4 (temporal sim)
+        p.aIE           = 0;
         p.aIOR          = .36; % 1 (spatial sim), 1.3 (stronger IOR), 1.12 (temporal sim)
-        p.asigma        = .3;  %.3
+        p.asigma        = .22;  %.3
 end
 % p.tau_attI      = 50;  %50         %time constant involuntary attention (ms)
 
@@ -72,8 +73,8 @@ switch modelClass
         p.scaling1 = 7; %5*10^5; %77; % 4.2, 4.5
         p.scaling2 = 5; %4*10^5; %60; % 3.3
     case 'span'
-        p.scaling1 = .21; % 4.5
-        p.scaling2 = .18; % 3.6
+        p.scaling1 = .31; % 4.5
+        p.scaling2 = .31; % 3.6
 end
 % p.offset1  = 0;
 % p.offset2  = 0;

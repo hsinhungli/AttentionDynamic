@@ -26,9 +26,9 @@ p.ntheta          = 6;               % should match RF
 
 %% Sensory layer 1
 p.tautr           = 5;
-p.tau             = 74;%40           %time constant (ms)
-p.sigma           = 1.7; %1.8; %.5 .1      %semisaturation constant
-p.p               = 1;               % exponent
+p.tau             = 63;%74;%40           %time constant (ms)
+p.sigma           = 2.1; %1.8; %.5 .1      %semisaturation constant
+p.p               = 1.2;               % exponent
 switch p.modelClass
     case 'transient-span'
         p.delay   = 50;              % delay before the start of the sustained sensory response
@@ -45,7 +45,7 @@ p.d_noiseamp      = 0; % 0.0015;
 p.wa              = 0;               %weights of self-adaptation
 
 %% Sensory layer 2
-p.sigma2          = .1; %.1
+p.sigma2          = .08; %.1
 switch p.modelClass
     case 'transient-span'
         p.tau_r2  = 2;  %80,120      %time constant filter for firing rate (ms)
@@ -66,14 +66,14 @@ switch p.modelClass
         p.biph2   = 2; % 2
     case 'span'
         p.aMI     = 2.5; % .2 % 5 (spatial sim), 4 (stronger IOR), 4 (temporal sim)
-        p.aMV     = 43; %1.6; %9, 200
+        p.aMV     = 35; %43; %1.6; %9, 200
         p.aIE     = 0; %0 % excitatory part of involuntary attention kernel
         p.aIOR    = .37; %.32 %.4 % 1 (spatial sim), 1.3 (stronger IOR), 1.12 (temporal sim)
-        p.biph1   = 53; %40 % 35,25
-        p.biph2   = 4;
+        p.biph1   = 48;%53; %40 % 35,25
+        p.biph2   = 3.2;%4;
 end
 p.ap = 4;
-p.asigma  = .3;
+p.asigma  = .2;%.3;
 p.aKernel = [1; -1];
 
 aW        = repmat(makeBiphasic(0:p.dt/1000:0.8,p.biph1,round(p.biph2)),p.ntheta,1);
@@ -120,8 +120,8 @@ switch p.modelClass
 end
 
 %% Scaling and offset (for fitting only)
-p.scaling1 = 4.2;
-p.scaling2 = 3.6;
+p.scaling1 = .31;%4.2;
+p.scaling2 = .31;%3.6;
 p.offset1 = 0;
 p.offset2 = 0;
 p.diffOrientOffset = -0.5; % when the tilts are different, you get worse
