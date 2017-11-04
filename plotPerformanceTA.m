@@ -10,7 +10,7 @@ if numel(soas)==1
     return
 end
 
-plotOption = 2; % 1 = normal; 2 = during fitting; 0 = no plot
+plotOption = 1; % 1 = normal; 2 = during fitting; 0 = no plot
 
 %% re-sort endo condition data into valid, invalid, neutral
 if isequal(condnames,{'no-endo','endoT1','endoT2','endoT1T2'}) || isequal(condnames,{'no-endo','exoT1','exoT2','exoT1T2'})
@@ -58,8 +58,8 @@ end
 % sorted by validity
 intervalNames = {'T1','T2'};
 % ylims = [0 25]; % [0 12]
-ylims = [0 2];
-% ylims = [0 max([perfv{1}(:); perfv{2}(:)])*1.1];
+% ylims = [0 2];
+ylims = [0 max([perfv{1}(:); perfv{2}(:)])*1.1];
 xlims = [soas(1)-100 soas(end)+100];
 colors = get(0,'DefaultAxesColorOrder');
 axTitle = '';

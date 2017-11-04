@@ -13,7 +13,7 @@ p          = setParametersFA(opt);
 
 %% Set conditions/contrasts to simulate
 condnames  =  {'no-endo','endoT1','endoT2','endoT1T2','exoT1','exoT2','exoT1T2'};
-plotFig    = 0;
+plotFig    = 1;
 plotPerformance = 0;
 
 % Conditions
@@ -31,7 +31,7 @@ end
 ncond = numel(rcond);
 
 if ~exist('rsoa','var') || isempty(rsoa)
-    rsoa = 1:numel(soas); %[1 3 5 7 9 10]; %1:numel(soas);   %soa levels to run
+    rsoa = 8; % 1:numel(soas); %[1 3 5 7 9 10]; %1:numel(soas);   %soa levels to run
 end
 nsoa = numel(rsoa);
 
@@ -48,7 +48,7 @@ end
 
 %% all the setup (for debugging)
 % ev = zeros(2,nsoa,ncond,ncontrast);
-% icond = 1; icontrast = 1; isoa = 1; iseq = 1;
+% icond = 1; icontrast = 1; isoa = 5; iseq = 1;
 % cond = rcond(icond);
 % condname = condnames{cond};
 % c = rcontrast(icontrast);
@@ -94,6 +94,13 @@ for icond = 1:numel(rcond)
                             p.vAttWeight1 = p.vAttWeights(1);
                             p.vAttWeight2 = p.vAttWeights(2);
                     end
+                end
+                
+                % decision window latencies
+                switch p.modelClass
+                    case '1-attLat'
+                        p.decisionLatency = setDecisionLatencies(...
+                            p.decisionRefractoryPeriod, p.decisionWindowDur, p.soa, condname);
                 end
                 
                 % set time series

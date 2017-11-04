@@ -53,7 +53,7 @@ for t = p.dt:p.dt:p.T
     end
     
     switch p.modelClass
-        case {'1-att','1-attK'}
+        case {'1-att','1-attK','1-attLat'}
             attGain = halfExp(1+p.ra(:,idx-1));
         otherwise
             attGain = halfExp(1+p.attV(:,idx-1)*p.aMV).*halfExp(1+p.attI(:,idx-1)*p.aMI);
@@ -76,7 +76,7 @@ for t = p.dt:p.dt:p.T
     %update firing rates
     p.r(:,idx) = p.r(:,idx-1) + (p.dt/p.tau)*(-p.r(:,idx-1) + p.f(:,idx));
     switch p.modelClass
-        case 'transient-span'
+        case {'transient-span','1-attLat'}
             p.r(:,idx) = halfExp(p.r(:,idx) - sum(p.rtr(:,idx))); % subtract transient response (inhibition)
     end
     
@@ -204,7 +204,8 @@ for t = p.dt:p.dt:p.T
             
             % store for plotting
             p.attV(:,idx) = p.ra(:,idx);
-        case '1-att'
+            
+        case {'1-att','1-attLat'}
             %% Update single attention layer
             %use precalculated inputs, which depend on the span
             inp = p.task(:,idx-1) + p.attIInput(:,idx);
