@@ -51,8 +51,14 @@ for t = p.dt:p.dt:p.T
     else
         drive = zeros(p.ntheta,1);
     end
-
-    p.d(:,idx) = halfExp(1+p.attV(:,idx-1)*p.aMV).*halfExp(1+p.attI(:,idx-1)*p.aMI).*drive;
+    
+    switch p.modelClass
+        case '1-att'
+            attGain = halfExp(1+p.ra(:,idx-1));
+        otherwise
+            attGain = halfExp(1+p.attV(:,idx-1)*p.aMV).*halfExp(1+p.attI(:,idx-1)*p.aMI);
+    end
+    p.d(:,idx) = attGain.*drive;
 
     % normalization pool
     pool = p.d(:,idx);
@@ -157,42 +163,73 @@ for t = p.dt:p.dt:p.T
 %     
 %     %update adaptation
 %     p.ad(:,idx) = p.ad(:,idx-1) + (p.dt/p.tau_a)*(-p.ad(:,idx-1) + p.rd(:,idx));
-    
-    %% Update voluntary attention layer
-    attnGainV = p.task(:,idx-1);
-    p.attV(:,idx) = p.attV(:,idx-1) + (p.dt/p.tau_attV)*(-p.attV(:,idx-1) + attnGainV);
-    
-    %% Update involuntary attention layer
-    switch p.modelClass
-        case 'transient-span'
-            sr = p.rtr; % sensory response
-        otherwise
-            sr = p.r;
-    end
-    if idx > length(p.aW)
-        r = sr(:,idx-length(p.aW):idx-1);
-    else
-        r = nan(size(p.aW(:,:,1)));
-        r(:,end-idx+2:end) = sr(:,1:idx-1);
-    end
-    inp = [];
-    for iPhase = 1:2
-        inp0 =  r.*fliplr(p.aW(:,:,iPhase)); % convolve step 1 (multiply)
-        inp1 =  sum(inp0(:,max(end-idx+2,1):end),2)*p.dt; % convolve step 2 (integrate across time)
-        inp(:,iPhase)     = halfExp(inp1,p.ap); % rectify and raise to power
-    end
-    aDrive  = inp*p.aKernel; % on channel - off channel
-    
-    % feature-specific
-%     p.dai(:,idx)      = aDrive; 
-    % not feature-specific (e.g. spatial)
-    p.dai(:,idx) = sum(aDrive);
-    
-    p.sai(:,idx) = sum(abs(p.dai(:,idx)));
-    sigma = p.asigma;
-    
-    p.fai(:,idx) = p.dai(:,idx) ./ (p.sai(:,idx) + halfExp(sigma, p.ap));
 
-    attnGainI = p.fai(:,idx);
-    p.attI(:,idx) = p.attI(:,idx-1) + (p.dt/p.tau_attI)*(-p.attI(:,idx-1) + attnGainI);
+    %% Update attention layers
+    switch p.modelClass
+        case '1-att'
+            %% Update single attention layer
+            %use precalculated inputs, which depend on the span
+            inp = p.task(:,idx-1) + p.attIInput(:,idx);
+            
+            %updating drives
+            drive = halfExp(inp*p.aM, p.ap);
+            p.da(:,idx) = sum(drive); % not feature-specific
+            
+            % normalization pool
+            pool = p.da(:,idx);
+            
+            %Compute Suppressive Drive
+            p.sa(:,idx) = sum(pool(:)); %normalized across orientation
+            sigma = p.asigma;
+            
+            %Normalization
+            p.fa(:,idx) = p.da(:,idx) ./ ...
+                (p.sa(:,idx) + halfExp(sigma, p.p));
+            
+            %update firing rates (= attentional gain factor)
+            p.ra(:,idx) = p.ra(:,idx-1) + (p.dt/p.tau_ra)*(-p.ra(:,idx-1) + p.fa(:,idx));
+            
+            % store for plotting
+            p.attV(:,idx) = p.ra(:,idx);
+            
+        otherwise
+            %% Update voluntary attention layer
+            attnGainV = p.task(:,idx-1);
+            p.attV(:,idx) = p.attV(:,idx-1) + (p.dt/p.tau_attV)*(-p.attV(:,idx-1) + attnGainV);
+            
+            %% Update involuntary attention layer
+            switch p.modelClass
+                case 'transient-span'
+                    sr = p.rtr; % sensory response
+                otherwise
+                    sr = p.r;
+            end
+            if idx > length(p.aW)
+                r = sr(:,idx-length(p.aW):idx-1);
+            else
+                r = nan(size(p.aW(:,:,1)));
+                r(:,end-idx+2:end) = sr(:,1:idx-1);
+            end
+            inp = [];
+            for iPhase = 1:2
+                inp0 =  r.*fliplr(p.aW(:,:,iPhase)); % convolve step 1 (multiply)
+                inp1 =  sum(inp0(:,max(end-idx+2,1):end),2)*p.dt; % convolve step 2 (integrate across time)
+                inp(:,iPhase)     = halfExp(inp1,p.ap); % rectify and raise to power
+            end
+            aDrive  = inp*p.aKernel; % on channel - off channel
+            
+            % feature-specific
+            %     p.dai(:,idx)      = aDrive;
+            % not feature-specific (e.g. spatial)
+            p.dai(:,idx) = sum(aDrive);
+            
+            p.sai(:,idx) = sum(abs(p.dai(:,idx)));
+            sigma = p.asigma;
+            
+            p.fai(:,idx) = p.dai(:,idx) ./ (p.sai(:,idx) + halfExp(sigma, p.ap));
+            
+            attnGainI = p.fai(:,idx);
+            p.attI(:,idx) = p.attI(:,idx-1) + (p.dt/p.tau_attI)*(-p.attI(:,idx-1) + attnGainI);
+    end
+
 end

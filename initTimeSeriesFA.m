@@ -40,3 +40,10 @@ p.attI = zeros(p.ntheta,p.nt); %Involuntary attentional gain factor, equivalent 
 p.attV = zeros(p.ntheta,p.nt); %Voluntary attentional gain factor, equivalent to r
 p.task = zeros(p.ntheta,p.nt); %Task
 
+% attention (single layer)
+p.da  = zeros(p.ntheta,p.nt); %Drive
+p.sa  = zeros(p.ntheta,p.nt); %Suppressive Drive
+p.fa  = zeros(p.ntheta,p.nt); %Estimated Asy firing rate
+p.ra  = zeros(p.ntheta,p.nt);  %Firing rate = attentional gain factor
+p.attIInput = zeros(p.ntheta,p.nt); %Precalculated involuntary input
+

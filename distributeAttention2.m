@@ -1,4 +1,4 @@
-function [attn, attnExo] = distributeAttention2(span, cuedTime, soa, neutralT1Weight, exoSOA, exoProp)
+function [attn, attnExo] = distributeAttention2(span, condname, soa, neutralT1Weight, exoSOA, exoProp)
 %
 % function attn = distributeAttention2(span, cuedTime, soa, neutralT1Weight)
 %
@@ -20,8 +20,8 @@ function [attn, attnExo] = distributeAttention2(span, cuedTime, soa, neutralT1We
 if nargin<1 || isempty(span)
     span = 1000;
 end
-if nargin<2 || isempty(cuedTime)
-    cuedTime = 1;
+if nargin<2 || isempty(condname)
+    condname = 'endoT1';
 end
 if nargin<3 || isempty(soa)
     soa = 300;
@@ -37,6 +37,18 @@ if nargin<6 || isempty(exoProp)
 end
 
 totalAttn = 1;
+
+%% determine cuedTime
+switch condname
+    case 'endoT1'
+        cuedTime = 1;
+    case 'endoT2'
+        cuedTime = 2;
+    case 'endoT1T2'
+        cuedTime = 0;
+    otherwise
+        error('cond not recognized. note distributeAttention2 does not currently handle no-endo.')
+end
 
 %% times of attention events
 timeT1 = 0;

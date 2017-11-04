@@ -4,7 +4,7 @@ if nargin==0
     x = [];
 end
 
-modelClass = 'span';
+modelClass = '1-att';
 
 %% initial param vals
 % sensory
@@ -17,6 +17,10 @@ switch modelClass
         p.tau           = 63;  %70, 20         %time constant filter for excitatory response (ms)
         p.tau_r2        = 56;  %100            %time constant filter for firing rate (ms)
         p.sigma         = 2.1; % .5, .1         %semisaturation constant
+    case '1-att'
+        p.tau           = 63;
+        p.tau_r2        = 56;
+        p.sigma         = 1.6;
     otherwise
         error('modelClass not found')
 end
@@ -41,12 +45,18 @@ switch modelClass
         p.aMV           = 36; % 3.5,2.5
         p.vAttScale2    = .21;
         p.span          = 1083;
+    case '1-att'
+        p.tau_ra  = 50;
+        p.aM      = 1;
+%         p.exoSOA  = 120;
+        p.exoDur  = 50;
+        p.exoProp = 1;
 end
 % p.neutralT1Weight = .35;
 
 % involuntary attention
-p.biph1         = 48;
-p.biph2         = 3.3;
+% p.biph1         = 48;
+% p.biph2         = 3.3;
 switch modelClass
     case 'transient-span'
 %         p.aMI           = 150; % 5 (spatial sim), 4 (stronger IOR), 4 (temporal sim)
@@ -58,6 +68,9 @@ switch modelClass
         p.aIE           = 0;
         p.aIOR          = .36; % 1 (spatial sim), 1.3 (stronger IOR), 1.12 (temporal sim)
         p.asigma        = .22;  %.3
+    case '1-att'
+        p.ap            = 4;
+        p.asigma        = 1;
 end
 % p.tau_attI      = 50;  %50         %time constant involuntary attention (ms)
 
@@ -75,6 +88,9 @@ switch modelClass
     case 'span'
         p.scaling1 = .31; % 4.5
         p.scaling2 = .31; % 3.6
+    case '1-att'
+        p.scaling1 = .5; % 4.5
+        p.scaling2 = .5; % 3.6
 end
 % p.offset1  = 0;
 % p.offset2  = 0;
@@ -111,14 +127,22 @@ b.attOffset     = [0 500];
 b.biph1         = [1 100];
 b.biph2         = [1 10];
 
+b.p             = [0 10];
 b.sigma         = [0 10];
 b.vAttWeight1   = [0 1];
 b.vAttWeight2   = [0 1];
 b.aMV           = [0 Inf];
 b.aMI           = [0 Inf];
 b.aIOR          = [0 Inf];
+b.ap            = [0 10];
 b.asigma        = [0 10];
 b.fitScaling    = [0 Inf];
+
+b.tau_ra        = [0 1000];
+b.aM            = [0 Inf];
+b.exoDur        = [0 300];
+b.exoProp       = [0 1];
+
 
 for iF = 1:numel(pFields)
     f = pFields{iF};

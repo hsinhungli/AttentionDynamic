@@ -10,7 +10,7 @@ if ~exist('opt','var')
 end
 
 %% Model
-p.modelClass      = 'span'; % 'span','transient-span'
+p.modelClass      = '1-att'; % 'span','transient-span', '1-att'
 p.rf              = 'rf/resp_stim4_rf6.mat'; % sensory RFs - encode stim and decode responses using saved RFs. [] for none.
 
 %% Time
@@ -28,14 +28,12 @@ p.ntheta          = 6;               % should match RF
 p.tautr           = 5;
 p.tau             = 63;%74;%40           %time constant (ms)
 p.sigma           = 2.1; %1.8; %.5 .1      %semisaturation constant
-p.p               = 1.2;               % exponent
+p.p               = 1.6;%1.2;               % exponent
 switch p.modelClass
     case 'transient-span'
         p.delay   = 50;              % delay before the start of the sustained sensory response
-    case 'span'
-        p.delay   = 0;
     otherwise
-        error('modelClass not found')
+        p.delay   = 0;
 end
 
 % noise and adaptation are turned off
@@ -49,7 +47,7 @@ p.sigma2          = .08; %.1
 switch p.modelClass
     case 'transient-span'
         p.tau_r2  = 2;  %80,120      %time constant filter for firing rate (ms)
-    case 'span'
+    otherwise
         p.tau_r2  = 70;  %120,80     %time constant filter for firing rate (ms)
 end
 
@@ -71,16 +69,26 @@ switch p.modelClass
         p.aIOR    = .37; %.32 %.4 % 1 (spatial sim), 1.3 (stronger IOR), 1.12 (temporal sim)
         p.biph1   = 48;%53; %40 % 35,25
         p.biph2   = 3.2;%4;
+    case '1-att'
+        p.tau_ra  = 50;
+        p.aM      = 1;
+        p.exoSOA  = 120;
+        p.exoDur  = 50;
+        p.exoProp = 1;
+    otherwise
+        error('p.modelClass not recognized')
 end
 p.ap = 4;
-p.asigma  = .2;%.3;
+p.asigma  = 1;%.3;
 p.aKernel = [1; -1];
 
-aW        = repmat(makeBiphasic(0:p.dt/1000:0.8,p.biph1,round(p.biph2)),p.ntheta,1);
-aW(aW>0)  = aW(aW>0)*p.aIE;
-aW(aW<0)  = aW(aW<0)*p.aIOR;
-p.aW(:,:,1)      = aW;
-p.aW(:,:,2)      = -aW;
+if ~strcmp(p.modelClass,'1-att')
+    aW        = repmat(makeBiphasic(0:p.dt/1000:0.8,p.biph1,round(p.biph2)),p.ntheta,1);
+    aW(aW>0)  = aW(aW>0)*p.aIE;
+    aW(aW<0)  = aW(aW<0)*p.aIOR;
+    p.aW(:,:,1)      = aW;
+    p.aW(:,:,2)      = -aW;
+end
 
 %% Stimulus and task parameters
 p.stimOnset = 500;                  % relative to start of trial (ms)
@@ -92,7 +100,7 @@ switch p.modelClass
         p.attOffset = 10 + p.delay; %10                 % voluntary attention off, relative to stim offset (ms)
         p.vAttScale2 = 1;                  % scale the magnitude of voluntary attention to T2
         p.span = 680;
-    case 'span'
+    otherwise
         p.attOnset = -73; %-50                  % voluntary attention on, relative to stim onset (ms)
         p.attOffset = 59; %10                 % voluntary attention off, relative to stim offset (ms)
         p.vAttScale2 = .86;                  % scale the magnitude of voluntary attention to T2
@@ -114,7 +122,7 @@ switch p.modelClass
     case 'transient-span'
         p.decisionWindowDur = 300;
         p.decisionLatency   = -50;
-    case 'span'
+    otherwise
         p.decisionWindowDur = [];
         p.decisionLatency = 0;
 end
@@ -135,11 +143,13 @@ if ~isempty(opt)
     end
     
     % update params that depend on opt params
-    aW        = repmat(makeBiphasic(0:p.dt/1000:0.8,p.biph1,round(p.biph2)),p.ntheta,1);
-    aW(aW>0)  = aW(aW>0)*p.aIE;
-    aW(aW<0)  = aW(aW<0)*p.aIOR;
-    p.aW(:,:,1)      = aW;
-    p.aW(:,:,2)      = -aW;
+    if ~strcmp(p.modelClass,'1-att')
+        aW        = repmat(makeBiphasic(0:p.dt/1000:0.8,p.biph1,round(p.biph2)),p.ntheta,1);
+        aW(aW>0)  = aW(aW>0)*p.aIE;
+        aW(aW<0)  = aW(aW<0)*p.aIOR;
+        p.aW(:,:,1)      = aW;
+        p.aW(:,:,2)      = -aW;
+    end
     
     p.vAttWeights    = [p.vAttWeight1 p.vAttWeight2];
 end

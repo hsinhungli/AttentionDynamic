@@ -13,7 +13,7 @@ p          = setParametersFA(opt);
 
 %% Set conditions/contrasts to simulate
 condnames  =  {'no-endo','endoT1','endoT2','endoT1T2','exoT1','exoT2','exoT1T2'};
-plotFig    = 1;
+plotFig    = 0;
 plotPerformance = 0;
 
 % Conditions
@@ -69,17 +69,23 @@ for icond = 1:numel(rcond)
                 
                 % distribute voluntary attention
                 if p.distributeVoluntary
-                    totalAtt = 1 + p.soa/p.span;
-                    if totalAtt>2
-                        totalAtt = 2;
+                    switch p.modelClass
+                        case '1-att'
+                            [p.vAttWeights, p.iAttWeights] = ...
+                                distributeAttention2(p.span, condname, p.soa, p.neutralT1Weight, p.exoSOA, p.exoProp);
+                        otherwise
+                            totalAtt = 1 + p.soa/p.span;
+                            if totalAtt>2
+                                totalAtt = 2;
+                            end
+                            if strcmp(condname, 'endoT1T2')
+                                p.vAttWeights = distributeAttention(totalAtt, 0, [], p.neutralT1Weight);
+                            else
+                                p.vAttWeights = distributeAttention(totalAtt, 1, 1);
+                            end
+                            p.vAttWeight1 = p.vAttWeights(1);
+                            p.vAttWeight2 = p.vAttWeights(2);
                     end
-                    if strcmp(condname, 'endoT1T2')
-                        p.vAttWeights = distributeAttention(totalAtt, 0, [], p.neutralT1Weight);
-                    else
-                        p.vAttWeights = distributeAttention(totalAtt, 1, 1);
-                    end
-                    p.vAttWeight1 = p.vAttWeights(1);
-                    p.vAttWeight2 = p.vAttWeights(2);
                 end
                 
                 % set time series
