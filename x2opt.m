@@ -4,7 +4,7 @@ if nargin==0
     x = [];
 end
 
-modelClass = '1-att';
+modelClass = '1-attK';
 
 %% initial param vals
 % sensory
@@ -21,10 +21,14 @@ switch modelClass
         p.tau           = 63;
         p.tau_r2        = 56;
         p.sigma         = 1.6;
+    case '1-attK'
+        p.tau           = 63;
+        p.tau_r2        = 100;
+        p.sigma         = 2.1;
     otherwise
         error('modelClass not found')
 end
-p.p             = 1.2;
+p.p             = 1.5;
 
 % sensory 2
 p.sigma2        = .08; %.1
@@ -51,6 +55,12 @@ switch modelClass
 %         p.exoSOA  = 120;
         p.exoDur  = 50;
         p.exoProp = 1;
+    case '1-attK'
+        p.tau_ra  = 50;
+        p.aMI     = 25;
+        p.aMV     = 1;
+        p.aIE     = .4;
+        p.aIOR    = .4;
 end
 % p.neutralT1Weight = .35;
 
@@ -68,7 +78,7 @@ switch modelClass
         p.aIE           = 0;
         p.aIOR          = .36; % 1 (spatial sim), 1.3 (stronger IOR), 1.12 (temporal sim)
         p.asigma        = .22;  %.3
-    case '1-att'
+    case {'1-att','1-attK'}
         p.ap            = 4;
         p.asigma        = 1;
 end
@@ -91,6 +101,9 @@ switch modelClass
     case '1-att'
         p.scaling1 = .5; % 4.5
         p.scaling2 = .5; % 3.6
+    case '1-attK'
+        p.scaling1 = 2.2; 
+        p.scaling2 = 2; 
 end
 % p.offset1  = 0;
 % p.offset2  = 0;

@@ -10,7 +10,7 @@ if ~exist('opt','var')
 end
 
 %% Model
-p.modelClass      = '1-att'; % 'span','transient-span', '1-att'
+p.modelClass      = '1-attK'; % 'span','transient-span','1-att','1-attK'
 p.rf              = 'rf/resp_stim4_rf6.mat'; % sensory RFs - encode stim and decode responses using saved RFs. [] for none.
 
 %% Time
@@ -27,8 +27,8 @@ p.ntheta          = 6;               % should match RF
 %% Sensory layer 1
 p.tautr           = 5;
 p.tau             = 63;%74;%40           %time constant (ms)
-p.sigma           = 2.1; %1.8; %.5 .1      %semisaturation constant
-p.p               = 1.6;%1.2;               % exponent
+p.sigma           = 2.1; %2.1; %1.8; %.5 .1      %semisaturation constant
+p.p               = 1.5; %1.6;%1.2;               % exponent
 switch p.modelClass
     case 'transient-span'
         p.delay   = 50;              % delay before the start of the sustained sensory response
@@ -48,7 +48,7 @@ switch p.modelClass
     case 'transient-span'
         p.tau_r2  = 2;  %80,120      %time constant filter for firing rate (ms)
     otherwise
-        p.tau_r2  = 70;  %120,80     %time constant filter for firing rate (ms)
+        p.tau_r2  = 100;  %70 %120,80     %time constant filter for firing rate (ms)
 end
 
 %% Attention
@@ -75,6 +75,14 @@ switch p.modelClass
         p.exoSOA  = 120;
         p.exoDur  = 50;
         p.exoProp = 1;
+    case '1-attK'
+        p.tau_ra  = 50;
+        p.aMI     = 25; 
+        p.aMV     = 1; 
+        p.aIE     = .4; 
+        p.aIOR    = .4; 
+        p.biph1   = 48;
+        p.biph2   = 3.2;
     otherwise
         error('p.modelClass not recognized')
 end
@@ -100,16 +108,23 @@ switch p.modelClass
         p.attOffset = 10 + p.delay; %10                 % voluntary attention off, relative to stim offset (ms)
         p.vAttScale2 = 1;                  % scale the magnitude of voluntary attention to T2
         p.span = 680;
+        p.distributeVoluntary = 1;
+    case '1-attK'
+        p.attOnset = -73; %-50                  % voluntary attention on, relative to stim onset (ms)
+        p.attOffset = 59; %10                 % voluntary attention off, relative to stim offset (ms)
+        p.vAttScale2 = .86;                  % scale the magnitude of voluntary attention to T2
+        p.span = 850;
+        p.distributeVoluntary = 1;
     otherwise
         p.attOnset = -73; %-50                  % voluntary attention on, relative to stim onset (ms)
         p.attOffset = 59; %10                 % voluntary attention off, relative to stim offset (ms)
         p.vAttScale2 = .86;                  % scale the magnitude of voluntary attention to T2
         p.span = 850;
+        p.distributeVoluntary = 1;
 end
 p.vAttWeight1 = 1; %1
 p.vAttWeight2 = 0; %0
 p.vAttWeights = [p.vAttWeight1 p.vAttWeight2]; % [1 0]            % [high low]
-p.distributeVoluntary = 1;
 p.neutralT1Weight = .5;             % bias to treat neutral like attend to T1. 0.5 is no bias
 p.neutralAttOp = 'max';             % 'mean','max'; attention weight assigned in the neutral condition
 

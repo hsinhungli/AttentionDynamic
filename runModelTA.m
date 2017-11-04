@@ -46,6 +46,14 @@ if ~isempty(p.rf)
     p.rfresp = rf.resp;
 end
 
+%% all the setup (for debugging)
+% ev = zeros(2,nsoa,ncond,ncontrast);
+% icond = 1; icontrast = 1; isoa = 1; iseq = 1;
+% cond = rcond(icond);
+% condname = condnames{cond};
+% c = rcontrast(icontrast);
+% s = rsoa(isoa);
+
 %% loop through all conditions to run
 ev = zeros(2,nsoa,ncond,ncontrast);
 for icond = 1:numel(rcond)
