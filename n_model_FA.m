@@ -128,28 +128,28 @@ for t = p.dt:p.dt:p.T
         evidence(abs(evidence)<1e-3) = 0; % otherwise zero response will give a little evidence
         
         % drive
-%         drive = evidence;
-%         p.dd(iStim,idx) = drive;
+        drive = evidence;
+        p.dd(iStim,idx) = drive;
         
-        p.fd(iStim,idx) = evidence;
+%         p.fd(iStim,idx) = evidence;
     end
     
-%     %updating noise
-%     p.dd_n(:,idx) = p.dd_n(:,idx-1) + (p.dt/p.tau_n)*...
-%         (-p.dd_n(:,idx-1) + randn(p.nstim,p.nx)*p.d_noiseamp*sqrt(p.tau_n*2));
-%     
-%     % normalization pool
-%     pool = p.dd(:,idx);
-%     
-%     %Compute Suppressive Drive
-%     p.sd(:,idx) = abs(pool(:));
-%     %         p.sd(:,idx) = sum(abs(pool(:))); %normalized across stimuli
-%     sigma = p.sigmad;
-%     
-%     %Normalization
-%     p.fd(:,idx) = p.dd(:,idx) ./ ...
-%         (p.sd(:,idx) + halfExp(sigma, p.p) + halfExp(p.ad(:,idx-1)*p.wa, p.p));
-%     
+    %updating noise
+    p.dd_n(:,idx) = p.dd_n(:,idx-1) + (p.dt/p.tau_n)*...
+        (-p.dd_n(:,idx-1) + randn(p.nstim,p.nx)*p.d_noiseamp*sqrt(p.tau_n*2));
+    
+    % normalization pool
+    pool = p.dd(:,idx);
+    
+    %Compute Suppressive Drive
+    p.sd(:,idx) = abs(pool(:));
+    %         p.sd(:,idx) = sum(abs(pool(:))); %normalized across stimuli
+    sigma = p.sigmad;
+    
+    %Normalization
+    p.fd(:,idx) = p.dd(:,idx) ./ ...
+        (p.sd(:,idx) + halfExp(sigma, p.p) + halfExp(p.ad(:,idx-1)*p.wa, p.p));
+    
     %update firing rates
     p.rd(:,idx) = p.rd(:,idx-1) + (p.dt/p.tau_rd)*(-p.rd(:,idx-1) + p.fd(:,idx));
     %         p.rd(:,idx) = p.rd(:,idx-1) + p.fd(:,idx); % no leak

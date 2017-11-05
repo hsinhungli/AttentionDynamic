@@ -45,10 +45,10 @@ p.wa              = 0;               %weights of self-adaptation
 %% Sensory layer 2
 p.sigma2          = .08; %.1
 switch p.modelClass
-    case {'transient-span','1-attLat'}
+    case {'transient-span'}
         p.tau_r2  = 2;  %80,120      %time constant filter for firing rate (ms)
     otherwise
-        p.tau_r2  = 100;  %70 %120,80     %time constant filter for firing rate (ms)
+        p.tau_r2  = 200;  %100 %70 %120,80     %time constant filter for firing rate (ms)
 end
 
 %% Attention
@@ -123,9 +123,9 @@ switch p.modelClass
         p.distributeVoluntary = 1;
     case '1-attLat'
         p.attOnset = -50 + p.delay; %-50                  % voluntary attention on, relative to stim onset (ms)
-        p.attOffset = 10 + p.delay; %10                 % voluntary attention off, relative to stim offset (ms)
+        p.attOffset = 100 + p.delay; %10                 % voluntary attention off, relative to stim offset (ms)
         p.vAttScale2 = 1;                  % scale the magnitude of voluntary attention to T2
-        p.span = 680;
+        p.span = 850;
         p.distributeVoluntary = 1;    
     otherwise
         p.attOnset = -73; %-50                  % voluntary attention on, relative to stim onset (ms)
@@ -141,7 +141,7 @@ p.neutralT1Weight = .5;             % bias to treat neutral like attend to T1. 0
 p.neutralAttOp = 'max';             % 'mean','max'; attention weight assigned in the neutral condition
 
 %% Decision
-p.sigmad            = 1;
+p.sigmad            = .1;
 p.tau_rd            = 100000;
 % p.bounds            = [0 0];                   % evidence accumulation bounds for perceptual decision (when measuring accuracy)
 p.ceiling           = [];%3.6e-5;%3.54e-4; %3, 0.8, 7.8; %[];                     % evidence ceiling (when measuring eveidence)
@@ -151,11 +151,12 @@ switch p.modelClass
         p.decisionLatency   = -50;
     case '1-attLat'
         p.decisionWindowDur = 500;
-        p.decisionRefractoryPeriod = 50;
-        p.decisionLatency = []; % set this outside, depends on cond and soa
+        p.decisionRefractoryPeriod = 0;
+        p.singleWindowSOA   = 300; % use a single decision window for this SOA or below
+        p.decisionLatency   = []; % set this outside, depends on cond and soa
     otherwise
         p.decisionWindowDur = [];
-        p.decisionLatency = 0;
+        p.decisionLatency   = 0;
 end
 
 %% Scaling and offset (for fitting only)

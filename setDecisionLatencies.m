@@ -1,18 +1,22 @@
-function decisionLatencies = setDecisionLatencies(decisionRefractoryPeriod, decisionWindowDur, soa, condname)
+function p = setDecisionLatencies(p)
 
 if nargin==0
-    decisionRefractoryPeriod = 250;
-    decisionWindowDur = 300;
-    soa = 250;
-    condname = 'endoT1';
+    p.decisionRefractoryPeriod = 250;
+    p.decisionWindowDur = 300;
+    p.delay = 0;
+    p.soa = 250;
+    p.singleWindowSOA = 150;
+%     condname = 'endoT1';
 end
 
-if soa > decisionWindowDur + decisionRefractoryPeriod
+if p.soa > p.decisionWindowDur + p.decisionRefractoryPeriod
     % read out at the time of the stimuli if possible
-    decisionLatencies = [0 0];
-elseif soa < decisionWindowDur
+    p.decisionLatency = [0 0];
+elseif p.soa <= p.singleWindowSOA
     % same decision window
-    decisionLatencies = [0 -soa];
+    p.decisionLatency = [0 -p.soa];
 else
-    decisionLatencies = [0 -soa+decisionWindowDur+decisionRefractoryPeriod];
+    p.decisionLatency = [0 -p.soa+p.decisionWindowDur+p.decisionRefractoryPeriod];
 end
+
+p.decisionLatency = p.decisionLatency + p.delay;
