@@ -3,7 +3,7 @@
 % calculate responses of raised cosine RFs to stimuli
 
 %% setup
-nRF = 6;
+nRF = 12;
 tilt = 2*pi/180;
 step = .001;
 
@@ -44,7 +44,7 @@ ndimtoplot = '3d';
 switch ndimtoplot
     case '2d'
         % example with just 2 RFs
-        resp2 = resp(:,[2 4]);
+        resp2 = resp(1:2,[2 4]);
         center = mean(resp2,1);
         sampleResp = rand(1,2);
         
@@ -60,12 +60,12 @@ switch ndimtoplot
         
         figure
         hold on
-        plot(resp2(:,1),resp2(:,2),'.');
+        plot(resp2(:,1),resp2(:,2),'.','MarkerSize',20);
         % plot(x1, y1);
-        plot(center(1),center(2),'.k')
-        plot(extreme(:,1),extreme(:,2),'.')
-        plot(sampleResp(1),sampleResp(2),'.r')
-        plot(sampleProj(1),sampleProj(2),'.r')
+        plot(center(1),center(2),'.k','MarkerSize',20)
+        plot(extreme(:,1),extreme(:,2),'.','MarkerSize',20)
+        plot(sampleResp(1),sampleResp(2),'.r','MarkerSize',20)
+        plot(sampleProj(1),sampleProj(2),'.r','MarkerSize',20)
         axis equal
         
         % in direction of stim 1 or stim 2?

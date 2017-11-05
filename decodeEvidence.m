@@ -20,6 +20,9 @@ end
 distCenter = norm(center-sampleProj);
 sampleDir = sign(sampleProj(1)-center(1));
 respDir = sign(resp(:,1)-center(1));
+% [~,idx] = max(center);
+% sampleDir = sign(sampleProj(idx)-center(idx));
+% respDir = sign(resp(:,idx)-center(idx));
 
 % negative favors stim 1, positive favors stim 2
 decisionEvidence = (-1)^(find(respDir==sampleDir))*distCenter; 

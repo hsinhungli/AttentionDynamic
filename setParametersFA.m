@@ -11,7 +11,8 @@ end
 
 %% Model
 p.modelClass      = '1-attLat'; % 'span','transient-span','1-att','1-attK','1-attLat'
-p.rf              = 'rf/resp_stim4_rf6.mat'; % sensory RFs - encode stim and decode responses using saved RFs. [] for none.
+p.rf              = 'rf/resp_stim4_rf12.mat'; % sensory RFs - encode stim and decode responses using saved RFs. [] for none.
+p.rfDecoding      = 'rf/resp_stim4_rf12.mat'; %'rf/resp_stim4_rf6_empirical_r2.mat';
 
 %% Time
 p.dt              = 2;               %time-step (ms)
@@ -22,7 +23,7 @@ p.tlist           = 0:p.dt:p.T;
 %% Space and feature space
 p.x               = 0;               %Sampling of space
 p.nx              = numel(p.x);
-p.ntheta          = 6;               % should match RF
+p.ntheta          = 12;               % should match RF
 
 %% Sensory layer 1
 p.tautr           = 5;

@@ -44,6 +44,9 @@ nseq = numel(rseq);
 if ~isempty(p.rf)
     rf = load(p.rf,'resp');
     p.rfresp = rf.resp;
+    
+    rfDec = load(p.rfDecoding,'resp');
+    p.rfrespDec = rfDec.resp;
 end
 
 %% all the setup (for debugging)

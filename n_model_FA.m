@@ -119,9 +119,11 @@ for t = p.dt:p.dt:p.T
     for iStim = 1:2
         switch p.stimseq(iStim)
             case {1, 2}
-                rfresp(:,:,iStim) = p.rfresp(1:2,:);
+%                 rfresp(:,:,iStim) = p.rfresp(1:2,:);
+                rfresp(:,:,iStim) = p.rfrespDec(1:2,:);
             case {3, 4}
-                rfresp(:,:,iStim) = p.rfresp(3:4,:);
+%                 rfresp(:,:,iStim) = p.rfresp(3:4,:);
+                rfresp(:,:,iStim) = p.rfrespDec(3:4,:);
         end
         evidence = decodeEvidence(p.r2(:,idx)', rfresp(:,:,iStim)); % r2
         evidence = evidence*p.decisionWindows(iStim,idx); % only accumulate if in the decision window
