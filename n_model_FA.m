@@ -54,7 +54,7 @@ for t = p.dt:p.dt:p.T
     
     switch p.modelClass
         case {'1-att','1-attK','1-attLat'}
-            attGain = halfExp(1+p.ra(:,idx-1));
+            attGain = halfExp(1+p.ra(:,idx-1)*p.aM);
         otherwise
             attGain = halfExp(1+p.attV(:,idx-1)*p.aMV).*halfExp(1+p.attI(:,idx-1)*p.aMI);
     end
@@ -213,7 +213,7 @@ for t = p.dt:p.dt:p.T
             inp = p.task(:,idx-1) + p.attIInput(:,idx);
 
             %updating drives
-            drive = halfExp(inp*p.aM, p.ap);
+            drive = halfExp(inp, p.ap);
             p.da(:,idx) = sum(drive); % not feature-specific
             
             % normalization pool

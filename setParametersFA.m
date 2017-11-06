@@ -27,7 +27,7 @@ p.ntheta          = 12;               % should match RF
 
 %% Sensory layer 1
 p.tautr           = 5;
-p.tau             = 63;%74;%40           %time constant (ms)
+p.tau             = 150;%63  %74;%40           %time constant (ms)
 p.sigma           = 2.1; %2.1; %1.8; %.5 .1      %semisaturation constant
 p.p               = 1.5; %1.6;%1.2;               % exponent
 switch p.modelClass
@@ -86,7 +86,7 @@ switch p.modelClass
         p.biph2   = 3.2;
     case '1-attLat'
         p.tau_ra  = 50;
-        p.aM      = 1;
+        p.aM      = 100;
     otherwise
         error('p.modelClass not recognized')
 end
@@ -153,7 +153,7 @@ switch p.modelClass
     case '1-attLat'
         p.decisionWindowDur = 500;
         p.decisionRefractoryPeriod = 0;
-        p.singleWindowSOA   = 300; % use a single decision window for this SOA or below
+        p.singleWindowSOA   = 250; % use a single decision window for this SOA or below
         p.decisionLatency   = []; % set this outside, depends on cond and soa
     otherwise
         p.decisionWindowDur = [];
