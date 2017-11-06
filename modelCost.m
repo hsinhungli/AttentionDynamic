@@ -32,6 +32,7 @@ switch par
         %% load data
         for iT = 1:2
             data(:,:,iT) = D.dpMean{iT}(1:2,:);
+%             data(:,:,iT) = D.dpMean{iT};
         end
     case 'seq'
         p = p{1};

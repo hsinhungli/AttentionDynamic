@@ -76,7 +76,7 @@ switch modelClass
         p.vAttScale2    = 1;
         p.span          = 1000;
 end
-% p.neutralT1Weight = .35;
+p.neutralT1Weight = .35;
 
 % involuntary attention
 % p.biph1         = 48;
@@ -126,7 +126,7 @@ switch modelClass
         p.scaling1 = 2.2; 
         p.scaling2 = 2; 
     case '1-attLat'
-        p.scaling1 = .5; 
+        p.scaling1 = .6; 
         p.scaling2 = .5;
 end
 % p.offset1  = 0;
