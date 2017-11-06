@@ -27,7 +27,7 @@ p.ntheta          = 12;               % should match RF
 
 %% Sensory layer 1
 p.tautr           = 5;
-p.tau             = 150;%63  %74;%40           %time constant (ms)
+p.tau             = 100;%63  %74;%40           %time constant (ms)
 p.sigma           = 2.1; %2.1; %1.8; %.5 .1      %semisaturation constant
 p.p               = 1.5; %1.6;%1.2;               % exponent
 switch p.modelClass
@@ -44,12 +44,12 @@ p.d_noiseamp      = 0; % 0.0015;
 p.wa              = 0;               %weights of self-adaptation
 
 %% Sensory layer 2
-p.sigma2          = .08; %.1
+p.sigma2          = .04; %.1
 switch p.modelClass
     case {'transient-span'}
         p.tau_r2  = 2;  %80,120      %time constant filter for firing rate (ms)
     otherwise
-        p.tau_r2  = 200;  %100 %70 %120,80     %time constant filter for firing rate (ms)
+        p.tau_r2  = 150;  %100 %70 %120,80     %time constant filter for firing rate (ms)
 end
 
 %% Attention
@@ -123,10 +123,10 @@ switch p.modelClass
         p.span = 850;
         p.distributeVoluntary = 1;
     case '1-attLat'
-        p.attOnset = -50 + p.delay; %-50                  % voluntary attention on, relative to stim onset (ms)
+        p.attOnset = -100 + p.delay; %-50                  % voluntary attention on, relative to stim onset (ms)
         p.attOffset = 100 + p.delay; %10                 % voluntary attention off, relative to stim offset (ms)
         p.vAttScale2 = 1;                  % scale the magnitude of voluntary attention to T2
-        p.span = 850;
+        p.span = 1000;
         p.distributeVoluntary = 1;    
     otherwise
         p.attOnset = -73; %-50                  % voluntary attention on, relative to stim onset (ms)
@@ -151,9 +151,9 @@ switch p.modelClass
         p.decisionWindowDur = 300;
         p.decisionLatency   = -50;
     case '1-attLat'
-        p.decisionWindowDur = 500;
-        p.decisionRefractoryPeriod = 0;
-        p.singleWindowSOA   = 250; % use a single decision window for this SOA or below
+        p.decisionWindowDur = 800;
+        p.decisionRefractoryPeriod = -400;
+        p.singleWindowSOA   = 300; % use a single decision window for this SOA or below
         p.decisionLatency   = []; % set this outside, depends on cond and soa
     otherwise
         p.decisionWindowDur = [];

@@ -4,7 +4,7 @@ if nargin==0
     x = [];
 end
 
-modelClass = '1-attK';
+modelClass = '1-attLat';
 
 %% initial param vals
 % sensory
@@ -25,13 +25,22 @@ switch modelClass
         p.tau           = 63;
         p.tau_r2        = 100;
         p.sigma         = 2.1;
+    case '1-attLat'
+        p.tau           = 100;
+        p.tau_r2        = 150;
+        p.sigma         = 2.1;
     otherwise
         error('modelClass not found')
 end
-p.p             = 1.5;
+% p.p             = 1.5;
 
 % sensory 2
-p.sigma2        = .08; %.1
+switch modelClass
+    case '1-attLat'
+        p.sigma2        = .04; 
+    otherwise
+        p.sigma2        = .08; %.1
+end
 
 
 % voluntary attention
@@ -61,6 +70,11 @@ switch modelClass
         p.aMV     = 1;
         p.aIE     = .4;
         p.aIOR    = .4;
+    case '1-attLat'
+%         p.tau_ra  = 50;
+        p.aM      = 100;
+        p.vAttScale2    = 1;
+        p.span          = 1000;
 end
 % p.neutralT1Weight = .35;
 
@@ -78,8 +92,8 @@ switch modelClass
         p.aIE           = 0;
         p.aIOR          = .36; % 1 (spatial sim), 1.3 (stronger IOR), 1.12 (temporal sim)
         p.asigma        = .22;  %.3
-    case {'1-att','1-attK'}
-        p.ap            = 4;
+    case {'1-att','1-attK','1-attLat'}
+%         p.ap            = 4;
         p.asigma        = 1;
 end
 % p.tau_attI      = 50;  %50         %time constant involuntary attention (ms)
@@ -87,8 +101,15 @@ end
 % decision
 % p.sigmad = 1;
 % p.ceiling = 0.82; %.85
+switch modelClass
+    case '1-attLat'
+        p.decisionWindowDur         = 800;
+        p.decisionRefractoryPeriod  = -400;
+        p.singleWindowSOA           = 300; 
+    otherwise
 % p.decisionWindowDur = 284;
 % p.decisionLatency   = -62;
+end
 
 % fitting
 switch modelClass
@@ -104,6 +125,9 @@ switch modelClass
     case '1-attK'
         p.scaling1 = 2.2; 
         p.scaling2 = 2; 
+    case '1-attLat'
+        p.scaling1 = .5; 
+        p.scaling2 = .5;
 end
 % p.offset1  = 0;
 % p.offset2  = 0;

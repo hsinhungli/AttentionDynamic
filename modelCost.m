@@ -14,7 +14,8 @@ if iscell(p)
 else
     par = 'soa';
     figNames = {'fig'};
-    modelScalingFactor = 10^5;
+%     modelScalingFactor = 10^5;
+    modelScalingFactor = 10^3;
 end
 
 switch par

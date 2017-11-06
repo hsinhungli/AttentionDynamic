@@ -2,8 +2,8 @@ function optimModel(dataDir, saveDir, jobID, D)
   
 %% setup
 if nargin==0
-%     dataDir = '/Users/rachel/Documents/NYU/Projects/Temporal_Attention/Code/Expt_Scripts/Behav/data';
-    dataDir = '/Local/Users/denison/Google Drive/NYU/Projects/Temporal_Attention/Code/Expt_Scripts/Behav/data';
+    dataDir = '/Users/rachel/Documents/NYU/Projects/Temporal_Attention/Code/Expt_Scripts/Behav/data';
+%     dataDir = '/Local/Users/denison/Google Drive/NYU/Projects/Temporal_Attention/Code/Expt_Scripts/Behav/data';
     saveDir = 'fit';
 end
 if nargin<3
