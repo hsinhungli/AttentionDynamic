@@ -114,5 +114,6 @@ end
 
 %% save
 saveDir = D(1).saveDir;
-save(sprintf('%s/fit_workspace_%s_interim', saveDir, datestr(now,'yyyymmdd')))
-rd_saveAllFigs([],figNames, [], saveDir)
+jobStr = D(1).jobStr;
+save(sprintf('%s/fit_workspace_%s%s_interim', saveDir, datestr(now,'yyyymmdd'), jobStr))
+rd_saveAllFigs([],figNames, jobStr(2:end), saveDir)
