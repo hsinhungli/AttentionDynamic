@@ -14,7 +14,7 @@ model(:,:,2) = model(:,:,2)*p.scaling2 + p.offset2;
 
 %% load data
 for iT = 1:2
-    data(:,:,iT) = D.dpMean{iT}(1:2,:);
+    data(:,:,iT) = D.dpMean{iT}(1:size(model,1),:);
 end
 
 %% compare model to data

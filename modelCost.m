@@ -14,8 +14,8 @@ if iscell(p)
 else
     par = 'soa';
     figNames = {'fig'};
-%     modelScalingFactor = 10^5;
-    modelScalingFactor = 10^3;
+    modelScalingFactor = 10^4;
+%     modelScalingFactor = 10^3;
 end
 
 switch par
@@ -31,7 +31,7 @@ switch par
         
         %% load data
         for iT = 1:2
-            data(:,:,iT) = D.dpMean{iT}(1:2,:);
+            data(:,:,iT) = D.dpMean{iT}(1:size(model,1),:);
 %             data(:,:,iT) = D.dpMean{iT};
         end
     case 'seq'

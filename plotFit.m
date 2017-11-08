@@ -3,7 +3,9 @@
 %% load a fit
 % load fit/fit_workspace_20160504T0032_job82376421.mat % span
 % load fit/fit_workspace_20160504T0404_job82414651.mat % no span
-load fit/fit_workspace_20160503T0855.mat % transient-span
+% load fit/fit_workspace_20160503T0855.mat % transient-span
+% load fit/fit_workspace_20171106_interim.mat % 1-attLat
+load fit/fit_workspace_20171107_interim.mat % transient-span
 
 %% setup
 plotErrorBar = 0;
@@ -13,7 +15,7 @@ nSeq = numel(D);
 %% get error bar
 for iSeq = 1:nSeq
     for iT = 1:2
-        eb(:,:,iT,iSeq) = D(iSeq).dpSte{iT}(1:3,:);
+        eb(:,:,iT,iSeq) = D(iSeq).dpSte{iT}(1:2,:);
     end
 end
 
@@ -22,22 +24,24 @@ dataCueEff = squeeze(data(1,:,:,:) - data(2,:,:,:));
 modelCueEff = squeeze(model(1,:,:,:) - model(2,:,:,:));
 
 %% plot
-ylims = [-.5 3]; % [0 2]
+ylims = [0 2]; %[-.5 3]; % [0 2]
 soas = D.t1t2soa;
 for iSeq = 1:nSeq
     figure('Position',[100 100 580 550])
     colors = get(gcf,'DefaultAxesColorOrder');
+    colors(3,:) = [.5 .5 .5];
     for iT = 1:2
         subplot(3,2,[iT iT+2])
         hold on
-        plot(soas, model(:,:,iT,iSeq)','LineWidth',3)
+        p0 = plot(soas, model(:,:,iT,iSeq)','LineWidth',3);
         if plotErrorBar
-            p1 = errorbar(repmat(soas',1,3), data(:,:,iT,iSeq)', eb(:,:,iT,iSeq)','o',...
+            p1 = errorbar(repmat(soas',1,2), data(:,:,iT,iSeq)', eb(:,:,iT,iSeq)','o',...
                 'MarkerSize',7,'LineWidth',2,'MarkerFaceColor','w');
         else
             p1 = plot(soas, data(:,:,iT,iSeq)','o','MarkerSize',7,'LineWidth',2,'MarkerFaceColor','w');
         end
         for i = 1:numel(p1)
+            set(p0(i),'color',colors(i,:))
             set(p1(i),'color',colors(i,:))
         end
         xlim(xlims)
@@ -45,6 +49,7 @@ for iSeq = 1:nSeq
         xlabel('soa')
         ylabel('dprime')
         title(sprintf('T%d',iT))
+        set(gca,'LineWidth',1)
     end
     if numel(p1)==2
         legend('valid','invalid')
@@ -63,6 +68,12 @@ for iSeq = 1:nSeq
         ylim([-.4 .8])
         xlabel('soa')
         ylabel('dprime valid-invalid')
+        set(gca,'LineWidth',1)
     end
-    rd_supertitle2(sprintf('Seq %d', iSeq))
+    if nSeq>1
+        rd_supertitle2(sprintf('Seq %d', iSeq))
+    end
 end
+
+%% save fig
+print_pdf(sprintf('fit/plot_%s',datestr(now,'yyyymmdd')))

@@ -86,12 +86,12 @@ switch p.modelClass
         p.biph2   = 3.2;
     case '1-attLat'
         p.tau_ra  = 50;
-        p.aM      = 100;
+        p.aM      = 10; % 100
     otherwise
         error('p.modelClass not recognized')
 end
 p.ap = 4;
-p.asigma  = 1;%.3;
+p.asigma  = 5;%1;%.3;
 p.aKernel = [1; -1];
 
 switch p.modelClass
@@ -138,7 +138,7 @@ end
 p.vAttWeight1 = 1; %1
 p.vAttWeight2 = 0; %0
 p.vAttWeights = [p.vAttWeight1 p.vAttWeight2]; % [1 0]            % [high low]
-p.neutralT1Weight = .5;             % bias to treat neutral like attend to T1. 0.5 is no bias
+p.neutralT1Weight = .4;             % bias to treat neutral like attend to T1. 0.5 is no bias
 p.neutralAttOp = 'max';             % 'mean','max'; attention weight assigned in the neutral condition
 
 %% Decision

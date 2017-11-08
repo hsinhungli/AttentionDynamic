@@ -26,12 +26,12 @@ rcontrast = 8; %1:numel(contrasts);   %contrast levels to run
 ncontrast = numel(rcontrast);
 
 if ~exist('rcond','var') || isempty(rcond)
-    rcond = 2:3; %2:4;   %conditions to run
+    rcond = 2:4; %2:4;   %conditions to run
 end
 ncond = numel(rcond);
 
 if ~exist('rsoa','var') || isempty(rsoa)
-    rsoa = 1:numel(soas); %[1 3 5 7 9 10]; %1:numel(soas);   %soa levels to run
+    rsoa = 4; %1:numel(soas); %[1 3 5 7 9 10]; %1:numel(soas);   %soa levels to run
 end
 nsoa = numel(rsoa);
 
@@ -51,7 +51,7 @@ end
 
 %% all the setup (for debugging)
 % ev = zeros(2,nsoa,ncond,ncontrast);
-% icond = 1; icontrast = 1; isoa = 5; iseq = 1;
+% icond = 3; icontrast = 1; isoa = 5; iseq = 1;
 % cond = rcond(icond);
 % condname = condnames{cond};
 % c = rcontrast(icontrast);
