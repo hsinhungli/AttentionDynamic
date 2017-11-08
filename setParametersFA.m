@@ -165,7 +165,7 @@ p.scaling1 = .31;%4.2;
 p.scaling2 = .31;%3.6;
 p.offset1 = 0;
 p.offset2 = 0;
-p.diffOrientOffset = -0.5; % when the tilts are different, you get worse
+p.diffOrientOffset = -0.45; % when the tilts are different, you get worse
 
 %% Set params from opt
 if ~isempty(opt)

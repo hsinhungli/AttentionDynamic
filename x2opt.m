@@ -27,9 +27,9 @@ switch modelClass
         p.tau_r2        = 100;
         p.sigma         = 2.1;
     case '1-attLat'
-        p.tau           = 100;
-        p.tau_r2        = 150;
-        p.sigma         = 2.1;
+        p.tau           = 78;
+        p.tau_r2        = 164;
+        p.sigma         = 1.9;
     otherwise
         error('modelClass not found')
 end
@@ -38,7 +38,7 @@ end
 % sensory 2
 switch modelClass
     case '1-attLat'
-        p.sigma2        = .04; 
+        p.sigma2        = .035; 
     otherwise
         p.sigma2        = .1; %.1
 end
@@ -74,10 +74,10 @@ switch modelClass
     case '1-attLat'
 %         p.tau_ra  = 50;
         p.aM      = 100;
-        p.vAttScale2    = 1;
-        p.span          = 1000;
+        p.vAttScale2    = .65;
+        p.span          = 1200;
 end
-% p.neutralT1Weight = .35;
+p.neutralT1Weight = .15;
 
 % involuntary attention
 % p.biph1         = 48;
@@ -95,7 +95,7 @@ switch modelClass
         p.asigma        = .22;  %.3
     case {'1-att','1-attK','1-attLat'}
 %         p.ap            = 4;
-        p.asigma        = 1;
+        p.asigma        = 1.2;
 end
 % p.tau_attI      = 50;  %50         %time constant involuntary attention (ms)
 
@@ -105,8 +105,8 @@ p.sigmad = 1;
 switch modelClass
     case '1-attLat'
         p.decisionWindowDur         = 800;
-        p.decisionRefractoryPeriod  = -400;
-        p.singleWindowSOA           = 300; 
+        p.decisionRefractoryPeriod  = -470;
+        p.singleWindowSOA           = 350; 
     otherwise
         p.decisionWindowDur = 302;
         p.decisionLatency   = -64;
@@ -127,12 +127,12 @@ switch modelClass
         p.scaling1 = 2.2; 
         p.scaling2 = 2; 
     case '1-attLat'
-        p.scaling1 = .6; 
-        p.scaling2 = .5;
+        p.scaling1 = .63; 
+        p.scaling2 = .51;
 end
 % p.offset1  = 0;
 % p.offset2  = 0;
-p.diffOrientOffset = -0.45;
+% p.diffOrientOffset = -0.45;
 
 %% initialize x if needed
 pFields = fields(p);
