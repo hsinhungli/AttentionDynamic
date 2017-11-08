@@ -13,7 +13,7 @@ switch modelClass
     case 'transient-span'
         % p.tau           = 90;  %70, 20         %time constant filter for excitatory response (ms)
 %         p.tau_r2        = 2;  %80, 100            %time constant filter for firing rate (ms)
-        p.sigma         = 1.8; % .5, .1         %semisaturation constant
+        p.sigma         = 1.86; % .5, .1         %semisaturation constant
     case 'span'
         p.tau           = 63;  %70, 20         %time constant filter for excitatory response (ms)
         p.tau_r2        = 56;  %100            %time constant filter for firing rate (ms)
@@ -52,9 +52,9 @@ end
 % p.tau_attV      = 50;  %50         %time constant voluntary attention (ms)
 switch modelClass
     case 'transient-span'
-        p.aMV           = 5.6; % 3.5,2.5
-        p.vAttScale2    = .77;
-        p.span          = 875;
+        p.aMV           = 5.8; % 3.5,2.5
+        p.vAttScale2    = .78;
+        p.span          = 827;
     case 'span'
         p.aMV           = 36; % 3.5,2.5
         p.vAttScale2    = .21;
@@ -86,8 +86,8 @@ switch modelClass
     case 'transient-span'
         p.aMI           = 150; % 5 (spatial sim), 4 (stronger IOR), 4 (temporal sim)
         p.aIE            = .2;
-        p.aIOR          = .2; % 1 (spatial sim), 1.3 (stronger IOR), 1.12 (temporal sim)
-        p.asigma        = .2;  %.3
+        p.aIOR          = .15; % 1 (spatial sim), 1.3 (stronger IOR), 1.12 (temporal sim)
+        p.asigma        = .21;  %.3
     case 'span'
         p.aMI           = 2.5; % 5 (spatial sim), 4 (stronger IOR), 4 (temporal sim)
         p.aIE           = 0;
@@ -108,15 +108,15 @@ switch modelClass
         p.decisionRefractoryPeriod  = -400;
         p.singleWindowSOA           = 300; 
     otherwise
-        p.decisionWindowDur = 284;
-        p.decisionLatency   = -62;
+        p.decisionWindowDur = 302;
+        p.decisionLatency   = -64;
 end
 
 % fitting
 switch modelClass
     case 'transient-span'
-        p.scaling1 = 2.3; %5*10^5; %77; % 4.2, 4.5
-        p.scaling2 = 2.1; %4*10^5; %60; % 3.3
+        p.scaling1 = 2.4; %5*10^5; %77; % 4.2, 4.5
+        p.scaling2 = 1.9; %4*10^5; %60; % 3.3
     case 'span'
         p.scaling1 = .31; % 4.5
         p.scaling2 = .31; % 3.6
@@ -132,7 +132,7 @@ switch modelClass
 end
 % p.offset1  = 0;
 % p.offset2  = 0;
-p.diffOrientOffset = -0.46;
+p.diffOrientOffset = -0.45;
 
 %% initialize x if needed
 pFields = fields(p);

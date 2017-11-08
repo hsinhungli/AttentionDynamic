@@ -10,7 +10,7 @@ if ~exist('opt','var')
 end
 
 %% Model
-p.modelClass      = '1-attLat'; % 'span','transient-span','1-att','1-attK','1-attLat'
+p.modelClass      = 'transient-span'; % 'span','transient-span','1-att','1-attK','1-attLat'
 p.rf              = 'rf/resp_stim4_rf12.mat'; % sensory RFs - encode stim and decode responses using saved RFs. [] for none.
 p.rfDecoding      = 'rf/resp_stim4_rf12.mat'; %'rf/resp_stim4_rf6_empirical_r2.mat';
 
