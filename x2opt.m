@@ -4,8 +4,8 @@ if nargin==0
     x = [];
 end
 
-% modelClass = '1-attLat';
-modelClass = 'transient-span';
+modelClass = '1-attLat';
+% modelClass = 'transient-span';
 
 %% initial param vals
 % sensory
@@ -127,8 +127,8 @@ switch modelClass
         p.scaling1 = 2.2; 
         p.scaling2 = 2; 
     case '1-attLat'
-        p.scaling1 = .63; 
-        p.scaling2 = .51;
+        p.scaling1 = 1.2; 
+        p.scaling2 = 1;
 end
 % p.offset1  = 0;
 % p.offset2  = 0;
