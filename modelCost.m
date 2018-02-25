@@ -2,8 +2,8 @@ function [cost, model, data, R2] = modelCost(x, D)
 
 %% run model
 opt = x2opt(x);
-[perf, p] = runModelTA(opt);
-% [perf, p] = runModelParallel(opt);
+% [perf, p] = runModelTA(opt);
+[perf, p] = runModelParallel(opt);
 
 %% format model and data
 if iscell(p)

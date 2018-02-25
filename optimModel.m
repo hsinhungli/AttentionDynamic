@@ -1,5 +1,7 @@
 function optimModel(dataDir, saveDir, jobID, D)
   
+parpool('SpmdEnabled',false)
+
 %% setup
 if nargin==0
 %     dataDir = '/Users/rachel/Documents/NYU/Projects/Temporal_Attention/Code/Expt_Scripts/Behav/data';
@@ -34,13 +36,14 @@ D(1).jobStr = jobStr;
 
 % load previous fit
 % prevfit = load(sprintf('%s/fit_workspace_20160429T0059.mat', saveDir));
+prevfit = load(sprintf('%s/fit_workspace_20171108_interim.mat', saveDir));
 
 %% optimization
 % initialize params
-[opt0, x0] = x2opt;
+% [opt0, x0] = x2opt;
 % [opt0, x0, lb, ub] = x2opt;
-% opt0 = prevfit.opt;
-% x0 = prevfit.x;
+opt0 = prevfit.opt;
+x0 = prevfit.x;
 
 % make function to take extra params
 f = @(x)modelCost(x,D);

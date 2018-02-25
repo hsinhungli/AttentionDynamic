@@ -1,11 +1,16 @@
-% plotFit.m
+function plotFit(D, fitFile)
 
-%% load a fit
+%% inputs
+if nargin<2
 % load fit/fit_workspace_20160504T0032_job82376421.mat % span
 % load fit/fit_workspace_20160504T0404_job82414651.mat % no span
 % load fit/fit_workspace_20160503T0855.mat % transient-span
 % load fit/fit_workspace_20171106_interim.mat % 1-attLat
-load fit/fit_workspace_20171107_interim.mat % transient-span
+fitFile = 'fit/fit_workspace_20171107_interim.mat'; % transient-span
+end
+
+%% load a fit
+load(fitFile, 'data', 'model')
 
 %% setup
 plotErrorBar = 0;
@@ -15,7 +20,10 @@ nSeq = numel(D);
 %% get error bar
 for iSeq = 1:nSeq
     for iT = 1:2
-        eb(:,:,iT,iSeq) = D(iSeq).dpSte{iT}(1:2,:);
+        eb(:,:,iT,iSeq) = D(iSeq).dpSte{iT}(1:3,:);
+        
+        cueEff = D(iSeq).dpDataCueEff{iT};
+        ebCueEff(:,iT,iSeq) = std(cueEff,0,2)./sqrt(D.nSubjects);
     end
 end
 
@@ -23,26 +31,40 @@ end
 dataCueEff = squeeze(data(1,:,:,:) - data(2,:,:,:));
 modelCueEff = squeeze(model(1,:,:,:) - model(2,:,:,:));
 
+%% colors
+colors = get(gcf,'DefaultAxesColorOrder');
+colors(3,:) = [.5 .5 .5];
+c = rgb2hsv(colors);
+c(1:2,2) = .2;
+c(1:2,3) = .95;
+c(3,3) = .9;
+ebcolors = hsv2rgb(c);
+
 %% plot
 ylims = [0 2]; %[-.5 3]; % [0 2]
 soas = D.t1t2soa;
+plotOrder = [3 2 1];
 for iSeq = 1:nSeq
     figure('Position',[100 100 580 550])
-    colors = get(gcf,'DefaultAxesColorOrder');
-    colors(3,:) = [.5 .5 .5];
     for iT = 1:2
         subplot(3,2,[iT iT+2])
         hold on
-        p0 = plot(soas, model(:,:,iT,iSeq)','LineWidth',3);
         if plotErrorBar
-            p1 = errorbar(repmat(soas',1,2), data(:,:,iT,iSeq)', eb(:,:,iT,iSeq)','o',...
-                'MarkerSize',7,'LineWidth',2,'MarkerFaceColor','w');
-        else
-            p1 = plot(soas, data(:,:,iT,iSeq)','o','MarkerSize',7,'LineWidth',2,'MarkerFaceColor','w');
+%             p1 = errorbar(repmat(soas,3,1)', data(plotOrder,:,iT,iSeq)', eb(plotOrder,:,iT,iSeq)','o',...
+%                 'MarkerSize',7,'LineWidth',1,'MarkerFaceColor','w');
+            p1 = [];
+            for iV = 1:size(eb,1)
+                y = squeeze(data(plotOrder(iV),:,iT,iSeq));
+                e = squeeze(eb(plotOrder(iV),:,iT,iSeq));
+                p1{iV} = errbar(soas, y, e,...
+                    'LineWidth',7,'Color',ebcolors(plotOrder(iV),:));
+            end
         end
-        for i = 1:numel(p1)
-            set(p0(i),'color',colors(i,:))
-            set(p1(i),'color',colors(i,:))
+        p0 = plot(soas, model(plotOrder,:,iT,iSeq)','LineWidth',3);
+%         p2 = plot(soas, data(plotOrder,:,iT,iSeq)','o','MarkerSize',8,'LineWidth',2,'MarkerFaceColor','w');
+        for i = 1:numel(p0)
+            set(p0(i),'color',colors(plotOrder(i),:))
+%             set(p2(i),'color',colors(plotOrder(i),:))
         end
         xlim(xlims)
         ylim(ylims)
@@ -51,10 +73,11 @@ for iSeq = 1:nSeq
         title(sprintf('T%d',iT))
         set(gca,'LineWidth',1)
     end
-    if numel(p1)==2
+    condNames = {'valid','invalid','neutral'};
+    if numel(p0)==2
         legend('valid','invalid')
-    elseif numel(p1)==3
-        legend('valid','invalid','neutral')
+    elseif numel(p0)==3
+        legend(condNames(plotOrder))
     end
     legend boxoff
     
@@ -62,8 +85,14 @@ for iSeq = 1:nSeq
         subplot(3,2,iT+4)
         hold on
         plot(xlims, [0 0], '--k')
-        p1 = plot(soas, modelCueEff(:,iT,iSeq),'Color','k','LineWidth',3);
-        p2 = plot(soas, dataCueEff(:,iT,iSeq),'.','MarkerSize',25,'Color','k','MarkerFaceColor','w');
+        if plotErrorBar
+%             p1 = errorbar(soas, dataCueEff(:,iT,iSeq), ebCueEff(:,iT,iSeq),...
+%                 '.','MarkerSize',25,'Color','k','MarkerFaceColor','w');
+            p1 = errbar(soas, dataCueEff(:,iT,iSeq), ebCueEff(:,iT,iSeq),...
+                'LineWidth',7,'Color',[.8 .8 .8]);
+        end
+        p0 = plot(soas, modelCueEff(:,iT,iSeq),'Color','k','LineWidth',3);
+%         p2 = plot(soas, dataCueEff(:,iT,iSeq),'.','MarkerSize',30,'Color','k','MarkerFaceColor','w');
         xlim(xlims)
         ylim([-.4 .8])
         xlabel('soa')
@@ -76,4 +105,4 @@ for iSeq = 1:nSeq
 end
 
 %% save fig
-print_pdf(sprintf('fit/plot_%s',datestr(now,'yyyymmdd')))
+% print_pdf(sprintf('fit/plot_%s',datestr(now,'yyyymmdd')))

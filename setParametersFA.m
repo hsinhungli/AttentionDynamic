@@ -123,10 +123,10 @@ switch p.modelClass
         p.span = 850;
         p.distributeVoluntary = 1;
     case '1-attLat'
-        p.attOnset = -100 + p.delay; %-50                  % voluntary attention on, relative to stim onset (ms)
-        p.attOffset = 100 + p.delay; %10                 % voluntary attention off, relative to stim offset (ms)
+        p.attOnset = 0; %-100 + p.delay; %-50                  % voluntary attention on, relative to stim onset (ms)
+        p.attOffset = 100; %100 + p.delay; %10                 % voluntary attention off, relative to stim offset (ms)
         p.vAttScale2 = 1;                  % scale the magnitude of voluntary attention to T2
-        p.span = 1000;
+        p.span = 800; % 1000
         p.distributeVoluntary = 1;    
     otherwise
         p.attOnset = -73; %-50                  % voluntary attention on, relative to stim onset (ms)
@@ -138,7 +138,7 @@ end
 p.vAttWeight1 = 1; %1
 p.vAttWeight2 = 0; %0
 p.vAttWeights = [p.vAttWeight1 p.vAttWeight2]; % [1 0]            % [high low]
-p.neutralT1Weight = .4;             % bias to treat neutral like attend to T1. 0.5 is no bias
+p.neutralT1Weight = .5;             % bias to treat neutral like attend to T1. 0.5 is no bias
 p.neutralAttOp = 'max';             % 'mean','max'; attention weight assigned in the neutral condition
 
 %% Decision

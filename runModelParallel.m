@@ -4,7 +4,7 @@ function [perfv, p, ev] = runModelParallel(opt)
 % w = load('fit/fit_workspace_20160416T0400.mat');
 % opt = w.opt;
 
-par = 'soa'; % 'soa+attcond','soa','seq'
+par = 'soa+attcond'; % 'soa+attcond','soa','seq'
 
 % soas
 soas = [100:50:500 800];
