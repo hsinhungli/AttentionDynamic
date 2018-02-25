@@ -2,7 +2,8 @@ function [perfv, p, ev] = runModelParallel(opt)
 
 % opt = [];
 % w = load('fit/fit_workspace_20160416T0400.mat');
-% opt = w.opt;
+w = load('fit/fit_workspace_20171108T2029_job2922634_transientSpan.mat');
+opt = w.opt;
 
 par = 'soa+attcond'; % 'soa+attcond','soa','seq'
 

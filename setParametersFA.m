@@ -10,7 +10,7 @@ if ~exist('opt','var')
 end
 
 %% Model
-p.modelClass      = '1-attLat'; % 'span','transient-span','1-att','1-attK','1-attLat'
+p.modelClass      = 'transient-span'; % 'span','transient-span','1-att','1-attK','1-attLat'
 p.rf              = 'rf/resp_stim4_rf12.mat'; % sensory RFs - encode stim and decode responses using saved RFs. [] for none.
 p.rfDecoding      = 'rf/resp_stim4_rf12.mat'; %'rf/resp_stim4_rf6_empirical_r2.mat';
 
@@ -28,7 +28,7 @@ p.ntheta          = 12;               % should match RF
 %% Sensory layer 1
 p.tautr           = 5;
 p.tau             = 100;%63  %74;%40           %time constant (ms)
-p.sigma           = 2.1; %2.1; %1.8; %.5 .1      %semisaturation constant
+p.sigma           = 1.2; %2.1; %1.8; %.5 .1      %semisaturation constant
 p.p               = 1.5; %1.6;%1.2;               % exponent
 switch p.modelClass
     case {'transient-span','1-attLat'}
@@ -44,10 +44,10 @@ p.d_noiseamp      = 0; % 0.0015;
 p.wa              = 0;               %weights of self-adaptation
 
 %% Sensory layer 2
-p.sigma2          = .04; %.1
+p.sigma2          = 1; %.08; %.04; %.1
 switch p.modelClass
     case {'transient-span'}
-        p.tau_r2  = 2;  %80,120      %time constant filter for firing rate (ms)
+        p.tau_r2  = 200; %2;  %80,120      %time constant filter for firing rate (ms)
     otherwise
         p.tau_r2  = 150;  %100 %70 %120,80     %time constant filter for firing rate (ms)
 end
@@ -57,10 +57,10 @@ p.tau_attI        = 50;  %50         %time constant involuntary attention (ms)
 p.tau_attV        = 50;  %50         %time constant voluntary attention (ms)
 switch p.modelClass
     case 'transient-span'
-        p.aMI     = 150; % 6 % .2 % 5 (spatial sim), 4 (stronger IOR), 4 (temporal sim)
-        p.aMV     = 3.9; %3.9, 9, 200
-        p.aIE     = .2; % excitatory part of involuntary attention kernel
-        p.aIOR    = .2; %.4 % 1 (spatial sim), 1.3 (stronger IOR), 1.12 (temporal sim)
+        p.aMI     = 265; %150; % 6 % .2 % 5 (spatial sim), 4 (stronger IOR), 4 (temporal sim)
+        p.aMV     = 18.7; %3.9, 9, 200
+        p.aIE     = 0;%.1; %.2; % excitatory part of involuntary attention kernel
+        p.aIOR    = 0; %.13; %.2; %.4 % 1 (spatial sim), 1.3 (stronger IOR), 1.12 (temporal sim)
         p.biph1   = 20; % 40,35,25
         p.biph2   = 2; % 2
     case 'span'
@@ -91,7 +91,7 @@ switch p.modelClass
         error('p.modelClass not recognized')
 end
 p.ap = 4;
-p.asigma  = 5;%1;%.3;
+p.asigma  = .3; %5;%1;%.3;
 p.aKernel = [1; -1];
 
 switch p.modelClass
@@ -114,8 +114,8 @@ switch p.modelClass
         p.attOnset = -50 + p.delay; %-50                  % voluntary attention on, relative to stim onset (ms)
         p.attOffset = 10 + p.delay; %10                 % voluntary attention off, relative to stim offset (ms)
         p.vAttScale2 = 1;                  % scale the magnitude of voluntary attention to T2
-        p.span = 680;
-        p.distributeVoluntary = 1;
+        p.span = 1522; %680;
+        p.distributeVoluntary = 0;%1;
     case '1-attK'
         p.attOnset = -73; %-50                  % voluntary attention on, relative to stim onset (ms)
         p.attOffset = 59; %10                 % voluntary attention off, relative to stim offset (ms)
@@ -138,18 +138,18 @@ end
 p.vAttWeight1 = 1; %1
 p.vAttWeight2 = 0; %0
 p.vAttWeights = [p.vAttWeight1 p.vAttWeight2]; % [1 0]            % [high low]
-p.neutralT1Weight = .5;             % bias to treat neutral like attend to T1. 0.5 is no bias
+p.neutralT1Weight = 0.5; %.5;             % bias to treat neutral like attend to T1. 0.5 is no bias
 p.neutralAttOp = 'max';             % 'mean','max'; attention weight assigned in the neutral condition
 
 %% Decision
-p.sigmad            = .1;
+p.sigmad            = .7; %.1;
 p.tau_rd            = 100000;
 % p.bounds            = [0 0];                   % evidence accumulation bounds for perceptual decision (when measuring accuracy)
 p.ceiling           = [];%3.6e-5;%3.54e-4; %3, 0.8, 7.8; %[];                     % evidence ceiling (when measuring eveidence)
 switch p.modelClass
     case 'transient-span'
-        p.decisionWindowDur = 300;
-        p.decisionLatency   = -50;
+        p.decisionWindowDur = 384; %300
+        p.decisionLatency   = -37; %-50
     case '1-attLat'
         p.decisionWindowDur = 800;
         p.decisionRefractoryPeriod = -400;
@@ -161,8 +161,8 @@ switch p.modelClass
 end
 
 %% Scaling and offset (for fitting only)
-p.scaling1 = .31;%4.2;
-p.scaling2 = .31;%3.6;
+p.scaling1 = 1.1; %.31;%4.2;
+p.scaling2 = .8; %.31;%3.6;
 p.offset1 = 0;
 p.offset2 = 0;
 p.diffOrientOffset = -0.45; % when the tilts are different, you get worse

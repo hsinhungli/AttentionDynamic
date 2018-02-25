@@ -26,7 +26,7 @@ rcontrast = 8; %1:numel(contrasts);   %contrast levels to run
 ncontrast = numel(rcontrast);
 
 if ~exist('rcond','var') || isempty(rcond)
-    rcond = 2:4; %2:4;   %conditions to run
+    rcond = 2:4;   %conditions to run
 end
 ncond = numel(rcond);
 
