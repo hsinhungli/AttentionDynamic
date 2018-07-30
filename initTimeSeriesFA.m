@@ -23,12 +23,12 @@ p.a2   = zeros(p.ntheta,p.nt); %Adaptation term
 p.d2_n = zeros(p.ntheta,p.nt); %Noise
 
 % sensory layer 3
-p.d3   = zeros(p.ntheta,p.nt); %Drive
-p.s3   = zeros(p.ntheta,p.nt); %Suppressive Drive
-p.r3   = zeros(p.ntheta,p.nt); %Firing Rate
-p.f3   = zeros(p.ntheta,p.nt); %Estimated Asy firing rate
-p.a3   = zeros(p.ntheta,p.nt); %Adaptation term
-p.d3_n = zeros(p.ntheta,p.nt); %Noise
+% p.d3   = zeros(p.ntheta,p.nt); %Drive
+% p.s3   = zeros(p.ntheta,p.nt); %Suppressive Drive
+% p.r3   = zeros(p.ntheta,p.nt); %Firing Rate
+% p.f3   = zeros(p.ntheta,p.nt); %Estimated Asy firing rate
+% p.a3   = zeros(p.ntheta,p.nt); %Adaptation term
+% p.d3_n = zeros(p.ntheta,p.nt); %Noise
 
 % decision
 p.dd   = zeros(p.nstim,p.nt); %Drive

@@ -47,15 +47,15 @@ p.wa              = 0;               %weights of self-adaptation
 p.sigma2          = .08; %.08; %.04; %.1
 switch p.modelClass
     case {'transient-span'}
-        p.tau_r2  = 100; %2;  %80,120      %time constant filter for firing rate (ms)
+        p.tau_r2  = 2; %2;  %80,120      %time constant filter for firing rate (ms)
     otherwise
         p.tau_r2  = 150;  %100 %70 %120,80     %time constant filter for firing rate (ms)
 end
 
 %% Sensory layer 3
-p.p3              = 1.5;
-p.sigma3          = 1.2;
-p.tau_r3          = 100;
+% p.p3              = 1.5;
+% p.sigma3          = 1.2;
+% p.tau_r3          = 100;
 
 %% Attention
 p.tau_attI        = 50;  %50         %time constant involuntary attention (ms)
@@ -64,8 +64,8 @@ switch p.modelClass
     case 'transient-span'
         p.aMI     = 265; %150; % 6 % .2 % 5 (spatial sim), 4 (stronger IOR), 4 (temporal sim)
         p.aMV     = 18.7; %3.9, 9, 200
-        p.aIE     = 0;%.1; %.2; % excitatory part of involuntary attention kernel
-        p.aIOR    = 0; %.13; %.2; %.4 % 1 (spatial sim), 1.3 (stronger IOR), 1.12 (temporal sim)
+        p.aIE     = .1; %.2; % excitatory part of involuntary attention kernel
+        p.aIOR    = .13; %.2; %.4 % 1 (spatial sim), 1.3 (stronger IOR), 1.12 (temporal sim)
         p.biph1   = 20; % 40,35,25
         p.biph2   = 2; % 2
     case 'span'
@@ -118,9 +118,9 @@ switch p.modelClass
     case 'transient-span'
         p.attOnset = -50 + p.delay; %-50                  % voluntary attention on, relative to stim onset (ms)
         p.attOffset = 10 + p.delay; %10                 % voluntary attention off, relative to stim offset (ms)
-        p.vAttScale2 = 1;                  % scale the magnitude of voluntary attention to T2
+        p.vAttScale2 = 1.3;                  % scale the magnitude of voluntary attention to T2
         p.span = 1522; %680;
-        p.distributeVoluntary = 0;%1;
+        p.distributeVoluntary = 1;
     case '1-attK'
         p.attOnset = -73; %-50                  % voluntary attention on, relative to stim onset (ms)
         p.attOffset = 59; %10                 % voluntary attention off, relative to stim offset (ms)
