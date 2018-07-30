@@ -11,7 +11,8 @@ for t = p.dt:p.dt:p.T
     
     %updating drives
     if any(inp)
-        drive = halfExp(p.rfresp(logical(inp),:),p.p)'*p.contrast*inp(logical(inp)); % select pre-calculated response
+%         drive = halfExp(p.rfresp(logical(inp),:),p.p)'*p.contrast*inp(logical(inp)); % select pre-calculated response
+        drive = p.rfresp(logical(inp),:)'*halfExp(p.contrast,p.p);
     else
         drive = zeros(p.ntheta,1);
     end
@@ -47,7 +48,8 @@ for t = p.dt:p.dt:p.T
     
     %updating drives
     if any(inp)
-        drive = halfExp(p.rfresp(logical(inp),:),p.p)'*p.contrast*inp(logical(inp)); % select pre-calculated response
+%         drive = halfExp(p.rfresp(logical(inp),:),p.p)'*p.contrast*inp(logical(inp)); % select pre-calculated response
+        drive = p.rfresp(logical(inp),:)'*halfExp(p.contrast,p.p);
     else
         drive = zeros(p.ntheta,1);
     end
@@ -74,6 +76,7 @@ for t = p.dt:p.dt:p.T
     %p.f(:,idx) = halfExp(p.f(:,idx)+ p.d_n(:,idx),1); %Add noise at the firing rate
     
     %update firing rates
+    %%% if changing conductance, p.tau should be p.tau(idx)
     p.r(:,idx) = p.r(:,idx-1) + (p.dt/p.tau)*(-p.r(:,idx-1) + p.f(:,idx));
     switch p.modelClass
         case {'transient-span','1-attLat'}
@@ -82,7 +85,11 @@ for t = p.dt:p.dt:p.T
     
     %update adaptation
     p.a(:,idx) = p.a(:,idx-1) + (p.dt/p.tau_a)*(-p.a(:,idx-1) + p.r(:,idx));
- 
+    
+    %%% if changing conductance, update tau
+    % update tau 
+    % p.tau = tauk*1/sum(pool(:)); % possibly + sigma^p, possibly to pth root
+    
     
     %% Computing the responses of sensory layer 2 (S2)
     %updating noise
@@ -105,13 +112,41 @@ for t = p.dt:p.dt:p.T
     %Normalization
     p.f2(:,idx) = p.d2(:,idx) ./ ...
         (p.s2(:,idx) + halfExp(sigma, p.p) + halfExp(p.a2(:,idx-1)*p.wa, p.p));
-    %p.f2(:,idx) = halfExp(p.f(:,idx)+ p.d2_n(:,idx),1); %Add noise at the firing rate
+    %p.f2(:,idx) = halfExp(p.f2(:,idx)+ p.d2_n(:,idx),1); %Add noise at the firing rate
     
     %update firing rates
     p.r2(:,idx) = p.r2(:,idx-1) + (p.dt/p.tau_r2)*(-p.r2(:,idx-1) + p.f2(:,idx));
     
     %update adaptation
     p.a2(:,idx) = p.a2(:,idx-1) + (p.dt/p.tau_a)*(-p.a2(:,idx-1) + p.r2(:,idx));
+    
+    
+    %% Computing the responses of sensory layer 3 (S3)
+    %updating noise
+    p.d3_n(:,idx) = p.d3_n(:,idx-1) + (p.dt/p.tau_n)*...
+        (-p.d3_n(:,idx-1) + randn(p.ntheta,p.nx)*p.d_noiseamp*sqrt(p.tau_n*2));
+    
+    %updating drives
+    drive = halfExp(p.r2(:,idx),p.p3);
+    p.d3(:,idx) = drive;
+    
+    % normalization pool
+    pool = p.d3(:,idx);
+    
+    %Compute Suppressive Drive
+    p.s3(:,idx) = sum(pool(:)); %normalized across orientation
+    sigma = p.sigma3;
+    
+    %Normalization
+    p.f3(:,idx) = p.d3(:,idx) ./ ...
+        (p.s3(:,idx) + halfExp(sigma, p.p3) + halfExp(p.a3(:,idx-1)*p.wa, p.p));
+    %p.f3(:,idx) = halfExp(p.f3(:,idx)+ p.d3_n(:,idx),1); %Add noise at the firing rate
+    
+    %update firing rates
+    p.r3(:,idx) = p.r3(:,idx-1) + (p.dt/p.tau_r3)*(-p.r3(:,idx-1) + p.f3(:,idx));
+    
+    %update adaptation
+    p.a3(:,idx) = p.a3(:,idx-1) + (p.dt/p.tau_a)*(-p.a3(:,idx-1) + p.r3(:,idx));
     
     
     %% Computing the responses of the decision layer
@@ -125,7 +160,7 @@ for t = p.dt:p.dt:p.T
 %                 rfresp(:,:,iStim) = p.rfresp(3:4,:);
                 rfresp(:,:,iStim) = p.rfrespDec(3:4,:);
         end
-        evidence = decodeEvidence(p.r2(:,idx)', rfresp(:,:,iStim)); % r2
+        evidence = decodeEvidence(p.r3(:,idx)', rfresp(:,:,iStim)); % r2
         evidence = evidence*p.decisionWindows(iStim,idx); % only accumulate if in the decision window
         evidence(abs(evidence)<1e-3) = 0; % otherwise zero response will give a little evidence
         

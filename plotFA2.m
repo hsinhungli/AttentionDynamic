@@ -9,7 +9,7 @@ figTitle = sprintf('%s contrast: %1.2f soa: %d seq: %d %d', condname, p.contrast
 % panel 1
 cpsFigure(.5,1.2);
 set(gcf,'Name',figTitle);
-nr = 6;
+nr = 7;
 nc = 1;
 xlims = [0 2];
 
@@ -42,17 +42,25 @@ hold on
 plot(p.tlist/1000,p.r','color',[112 191 65]/255);
 plot(p.tlist/1000,p.rtr','color',[34 139 34]/255);
 xlim(xlims)
+ylim([0 max(p.r(:))*1.1])
 set(gca,'XTickLabel',[])
 ylabel('S1')
-set(gca,'YLim',[0 max(p.r(:))+.1]);
 
 subplot(nr,nc,5)
 hold on
 plot(p.tlist/1000,p.r2','color',[58 154 217]/255);
 xlim(xlims)
+ylim([0 max(p.r2(:))*1.1])
 set(gca,'XTickLabel',[])
 ylabel('S2')
-set(gca,'YLim',[0 max(p.r2(:))+.1]);
+
+subplot(nr,nc,6)
+hold on
+plot(p.tlist/1000,p.r3','color',[110 119 143]/255);
+xlim(xlims)
+ylim([0 max(p.r3(:))*1.1])
+set(gca,'XTickLabel',[])
+ylabel('S3')
 
 % subplot(nr,nc,6)
 % hold on
@@ -63,7 +71,7 @@ set(gca,'YLim',[0 max(p.r2(:))+.1]);
 % ylabel('WM')
 % set(gca,'YLim',[0 max(p.rwm(:))+.1]);
 
-subplot(nr,nc,6)
+subplot(nr,nc,7)
 hold on
 plot(p.tlist/1000, zeros(size(p.tlist)), 'k')
 plot(p.tlist/1000,p.evidence(:,:,1)','color',[53 68 88]/255);

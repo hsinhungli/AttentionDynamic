@@ -1,19 +1,25 @@
 function plotFit(D, fitFile)
 
 %% inputs
+if nargin<1
+    dataDir = '/Local/Users/denison/Google Drive/NYU/Projects/Temporal_Attention/Code/Expt_Scripts/Behav/data';
+    dataFile = 'E2_SOA_cbD6_run98_N4_norm_workspace_20171108.mat';
+    D = load(sprintf('%s/%s', dataDir, dataFile));
+end
+
 if nargin<2
-% load fit/fit_workspace_20160504T0032_job82376421.mat % span
+fitFile = 'fit/fit_workspace_20160504T0032_job82376421.mat'; % % span
 % load fit/fit_workspace_20160504T0404_job82414651.mat % no span
 % load fit/fit_workspace_20160503T0855.mat % transient-span
 % load fit/fit_workspace_20171106_interim.mat % 1-attLat
-fitFile = 'fit/fit_workspace_20171107_interim.mat'; % transient-span
+% fitFile = 'fit/fit_workspace_20171107_interim.mat'; % transient-span
 end
 
 %% load a fit
 load(fitFile, 'data', 'model')
 
 %% setup
-plotErrorBar = 0;
+plotErrorBar = 1;
 xlims = [0 900];
 nSeq = numel(D);
 
@@ -61,17 +67,22 @@ for iSeq = 1:nSeq
             end
         end
         p0 = plot(soas, model(plotOrder,:,iT,iSeq)','LineWidth',3);
-%         p2 = plot(soas, data(plotOrder,:,iT,iSeq)','o','MarkerSize',8,'LineWidth',2,'MarkerFaceColor','w');
+        p2 = plot(soas, data(plotOrder,:,iT,iSeq)','o','MarkerSize',8,'LineWidth',2,'MarkerFaceColor','w');
         for i = 1:numel(p0)
             set(p0(i),'color',colors(plotOrder(i),:))
-%             set(p2(i),'color',colors(plotOrder(i),:))
+            set(p2(i),'color',colors(plotOrder(i),:))
         end
         xlim(xlims)
         ylim(ylims)
-        xlabel('soa')
-        ylabel('dprime')
+%         xlabel('SOA')
+        if iT==1
+            ylabel('\it d''')
+        end
         title(sprintf('T%d',iT))
         set(gca,'LineWidth',1)
+        set(gca,'FontSize',18)
+        set(gca,'TickDir','out')
+        set(gca,'XTick',0:200:800)
     end
     condNames = {'valid','invalid','neutral'};
     if numel(p0)==2
@@ -92,12 +103,18 @@ for iSeq = 1:nSeq
                 'LineWidth',7,'Color',[.8 .8 .8]);
         end
         p0 = plot(soas, modelCueEff(:,iT,iSeq),'Color','k','LineWidth',3);
-%         p2 = plot(soas, dataCueEff(:,iT,iSeq),'.','MarkerSize',30,'Color','k','MarkerFaceColor','w');
+        p2 = plot(soas, dataCueEff(:,iT,iSeq),'.','MarkerSize',30,'Color','k','MarkerFaceColor','w');
         xlim(xlims)
         ylim([-.4 .8])
-        xlabel('soa')
-        ylabel('dprime valid-invalid')
+        xlabel('SOA (ms)')
+        if iT==1
+            ylabel('\Delta{\itd''} (valid-invalid)')
+        end
         set(gca,'LineWidth',1)
+        set(gca,'FontSize',18)
+        set(gca,'TickDir','out')
+        set(gca,'XTick',0:200:800)
+        set(gca,'YTick',-.4:.4:.8)
     end
     if nSeq>1
         rd_supertitle2(sprintf('Seq %d', iSeq))

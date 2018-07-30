@@ -20,4 +20,5 @@ switch cond
 end
 
 % scale by contrast
-p.stim = timeSeries .* p.contrast;
+% p.stim = timeSeries .* p.contrast;
+p.stim = timeSeries;

@@ -44,13 +44,18 @@ p.d_noiseamp      = 0; % 0.0015;
 p.wa              = 0;               %weights of self-adaptation
 
 %% Sensory layer 2
-p.sigma2          = 1; %.08; %.04; %.1
+p.sigma2          = .08; %.08; %.04; %.1
 switch p.modelClass
     case {'transient-span'}
-        p.tau_r2  = 200; %2;  %80,120      %time constant filter for firing rate (ms)
+        p.tau_r2  = 100; %2;  %80,120      %time constant filter for firing rate (ms)
     otherwise
         p.tau_r2  = 150;  %100 %70 %120,80     %time constant filter for firing rate (ms)
 end
+
+%% Sensory layer 3
+p.p3              = 1.5;
+p.sigma3          = 1.2;
+p.tau_r3          = 100;
 
 %% Attention
 p.tau_attI        = 50;  %50         %time constant involuntary attention (ms)
