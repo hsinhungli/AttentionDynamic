@@ -1,18 +1,18 @@
-function [opt, x, lb, ub] = x2opt(x)
+function [opt, x, lb, ub, ranges] = x2opt(x)
 
 if nargin==0
     x = [];
 end
 
-modelClass = '1-attLat';
-% modelClass = 'transient-span';
+% modelClass = '1-attLat';
+modelClass = 'transient-span';
 
 %% initial param vals
 % sensory
 switch modelClass
     case 'transient-span'
-        % p.tau           = 90;  %70, 20         %time constant filter for excitatory response (ms)
-%         p.tau_r2        = 2;  %80, 100            %time constant filter for firing rate (ms)
+        p.tau           = 90;  %70, 20         %time constant filter for excitatory response (ms)
+        p.tau_r2        = 2;  %80, 100            %time constant filter for firing rate (ms)
         p.sigma         = 1.86; % .5, .1         %semisaturation constant
     case 'span'
         p.tau           = 63;  %70, 20         %time constant filter for excitatory response (ms)
@@ -187,6 +187,39 @@ for iF = 1:numel(pFields)
     if isfield(b, f)
         lb(iF) = b.(f)(1);
         ub(iF) = b.(f)(2);
+    end
+end
+
+%% set ranges for x samples
+r.tau           = [1 300]; 
+r.tau_r2        = [1 300]; 
+r.sigma         = [.05 5];
+r.sigma2        = [.05 5];
+r.p             = [1 4];
+
+r.aMV           = [0 50];
+r.aMI           = [10 1000];
+r.aIE           = [.02 2];
+r.aIOR          = [.02 2];
+r.asigma        = [.02 2];
+
+r.vAttScale2    = [.3 3];
+r.span          = [200 2000];
+r.neutralT1Weight = [0 1];
+
+r.sigmad        = [.05 5];
+
+r.decisionWindowDur = [100 1000];
+r.decisionLatency = [-100 100];
+
+r.scaling1      = [.1 10];
+r.scaling2      = [.1 10];
+
+for iF = 1:numel(pFields)
+    f = pFields{iF};
+    if isfield(r, f)
+        ranges(iF,1) = r.(f)(1);
+        ranges(iF,2) = r.(f)(2);
     end
 end
 

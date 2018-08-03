@@ -82,7 +82,9 @@ if plotOption~=0
         ylabel('evidence')
         title(intervalNames{iT})
         xlim(xlims)
-        ylim(ylims)
+        try
+            ylim(ylims)
+        end
         
         if iT==1
             legend(p1, cueValidityNames,'location','northeast')

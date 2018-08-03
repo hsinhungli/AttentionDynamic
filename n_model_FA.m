@@ -76,20 +76,21 @@ for t = p.dt:p.dt:p.T
     %p.f(:,idx) = halfExp(p.f(:,idx)+ p.d_n(:,idx),1); %Add noise at the firing rate
     
     %update firing rates
-    %%% if changing conductance, p.tau should be p.tau(idx)
-    p.r(:,idx) = p.r(:,idx-1) + (p.dt/p.tau)*(-p.r(:,idx-1) + p.f(:,idx));
+    p.r(:,idx) = p.r(:,idx-1) + (p.dt/p.tau(idx-1))*(-p.r(:,idx-1) + p.f(:,idx));
     switch p.modelClass
         case {'transient-span','1-attLat'}
-            p.r(:,idx) = halfExp(p.r(:,idx) - sum(p.rtr(:,idx))); % subtract transient response (inhibition)
+             p.r(:,idx) = halfExp(p.r(:,idx) - sum(p.rtr(:,idx))); % subtract transient response (inhibition)
     end
     
     %update adaptation
     p.a(:,idx) = p.a(:,idx-1) + (p.dt/p.tau_a)*(-p.a(:,idx-1) + p.r(:,idx));
     
-    %%% if changing conductance, update tau
     % update tau 
-    % p.tau = tauk*1/sum(pool(:)); % possibly + sigma^p, possibly to pth root
-    
+    if p.timeVaryingTau && sum(pool(:))>0
+        p.tau(idx) = p.tauk*1/sum(pool(:)); % possibly + sigma^p, possibly to pth root
+    else
+        p.tau(idx) = p.tau(1);
+    end
     
     %% Computing the responses of sensory layer 2 (S2)
     %updating noise

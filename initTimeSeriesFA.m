@@ -55,3 +55,10 @@ p.fa  = zeros(p.ntheta,p.nt); %Estimated Asy firing rate
 p.ra  = zeros(p.ntheta,p.nt);  %Firing rate = attentional gain factor
 p.attIInput = zeros(p.ntheta,p.nt); %Precalculated involuntary input
 
+% time constants
+if p.timeVaryingTau
+    p.tau = [p.tau zeros(1,p.nt-1)]; % Sensory layer 1
+%     p.tau_r2 = [p.tau_r2 zeros(1,p.nt-1)]; % Sensory layer 2
+end
+
+
