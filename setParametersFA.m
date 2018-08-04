@@ -10,7 +10,7 @@ if ~exist('opt','var')
 end
 
 %% Model
-p.modelClass      = 'span'; % 'span','transient-span','1-att','1-attK','1-attLat'
+p.modelClass      = '1-attK'; % 'span','transient-span','1-att','1-attK','1-attLat'
 p.rf              = 'rf/resp_stim4_rf12.mat'; % sensory RFs - encode stim and decode responses using saved RFs. [] for none.
 p.rfDecoding      = 'rf/resp_stim4_rf12.mat'; %'rf/resp_stim4_rf6_empirical_r2.mat';
 p.timeVaryingTau  = false; % if true, then tau, tau_r2 are only initial values
@@ -70,6 +70,7 @@ switch p.modelClass
         p.aIOR    = .13; %.2; %.4 % 1 (spatial sim), 1.3 (stronger IOR), 1.12 (temporal sim)
         p.biph1   = 20; % 40,35,25
         p.biph2   = 2; % 2
+        p.asigma  = .3; 
     case 'span'
         p.aMI     = 10; %2.5; % .2 % 5 (spatial sim), 4 (stronger IOR), 4 (temporal sim)
         p.aMV     = 20;%35; %43; %1.6; %9, 200
@@ -77,28 +78,32 @@ switch p.modelClass
         p.aIOR    = 1; %.32 %.4 % 1 (spatial sim), 1.3 (stronger IOR), 1.12 (temporal sim)
         p.biph1   = 53;%48;%53; %40 % 35,25
         p.biph2   = 4;%3.2;%4;
+        p.asigma  = .3;
     case '1-att'
         p.tau_ra  = 50;
         p.aM      = 1;
         p.exoSOA  = 120;
         p.exoDur  = 50;
         p.exoProp = 1;
+        p.asigma  = .3;
     case '1-attK'
         p.tau_ra  = 50;
-        p.aMI     = 25; 
-        p.aMV     = 1; 
-        p.aIE     = .4; 
-        p.aIOR    = .4; 
-        p.biph1   = 48;
-        p.biph2   = 3.2;
+%         p.aMI     = 25; 
+%         p.aMV     = 1;
+        p.aM      = 30;
+        p.aIE     = 1; 
+        p.aIOR    = .1; 
+        p.biph1   = 30;%48;
+        p.biph2   = 3;%3.2;
+        p.asigma  = 20;
     case '1-attLat'
         p.tau_ra  = 50;
         p.aM      = 10; % 100
+        p.asigma  = .3;
     otherwise
         error('p.modelClass not recognized')
 end
-p.ap = 4;
-p.asigma  = .3; %5;%1;%.3;
+p.ap      = 1.5;%4
 p.aKernel = [1; -1];
 
 switch p.modelClass
@@ -124,10 +129,10 @@ switch p.modelClass
         p.span = 1522; %680;
         p.distributeVoluntary = 1;
     case '1-attK'
-        p.attOnset = -73; %-50                  % voluntary attention on, relative to stim onset (ms)
-        p.attOffset = 59; %10                 % voluntary attention off, relative to stim offset (ms)
-        p.vAttScale2 = .86;                  % scale the magnitude of voluntary attention to T2
-        p.span = 850;
+        p.attOnset = -50;%-73; %-50                  % voluntary attention on, relative to stim onset (ms)
+        p.attOffset = 10;%59; %10                 % voluntary attention off, relative to stim offset (ms)
+        p.vAttScale2 = 1;                  % scale the magnitude of voluntary attention to T2
+        p.span = 650;
         p.distributeVoluntary = 1;
     case '1-attLat'
         p.attOnset = 0; %-100 + p.delay; %-50                  % voluntary attention on, relative to stim onset (ms)

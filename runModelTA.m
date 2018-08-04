@@ -13,8 +13,8 @@ p          = setParametersFA(opt);
 
 %% Set conditions/contrasts to simulate
 condnames  =  {'no-endo','endoT1','endoT2','endoT1T2','exoT1','exoT2','exoT1T2'};
-plotFig    = 0;
-plotPerformance = 1;
+plotFig    = 1;
+plotPerformance = 0;
 
 % Conditions
 contrasts = [0 .01 .02 .04 .08 0.16 0.32 0.64 1];

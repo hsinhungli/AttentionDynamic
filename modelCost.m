@@ -1,14 +1,14 @@
-function [cost, model, data, R2] = modelCost(x, D, save)
+function [cost, model, data, R2] = modelCost(x, D, saveFit)
 
 %% inputs
 if nargin < 3
-    save = 1;
+    saveFit = 1;
 end
 
 %% run model
 opt = x2opt(x);
-[perf, p] = runModelTA(opt);
-% [perf, p] = runModelParallel(opt);
+% [perf, p] = runModelTA(opt);
+[perf, p] = runModelParallel(opt);
 
 %% format model and data
 if iscell(p)
@@ -118,7 +118,7 @@ switch par
 end
 
 %% save
-if save
+if saveFit
     saveDir = D(1).saveDir;
     jobStr = D(1).jobStr;
     save(sprintf('%s/fit_workspace_%s%s_interim', saveDir, datestr(now,'yyyymmdd'), jobStr))

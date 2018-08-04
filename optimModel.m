@@ -1,11 +1,11 @@
 function optimModel(dataDir, saveDir, jobID, D)
   
-parpool('SpmdEnabled',false)
+% parpool('SpmdEnabled',false)
 
 %% setup
 if nargin==0
-%     dataDir = '/Users/rachel/Documents/NYU/Projects/Temporal_Attention/Code/Expt_Scripts/Behav/data';
-    dataDir = '/Local/Users/denison/Google Drive/NYU/Projects/Temporal_Attention/Code/Expt_Scripts/Behav/data';
+    dataDir = '/Users/rachel/Documents/NYU/Projects/Temporal_Attention/Code/Expt_Scripts/Behav/data';
+%     dataDir = '/Local/Users/denison/Google Drive/NYU/Projects/Temporal_Attention/Code/Expt_Scripts/Behav/data';
     saveDir = 'fit';
 end
 if nargin<3
@@ -45,21 +45,24 @@ if usePreviousFit
 end
 
 %% initial grid search
-nSamples = 10;
-
-[opt0, x0, lb, ub, ranges] = x2opt;
-xSamples = [];
-xSamplesCosts = [];
-for iSample = 1:nSamples
-    xSample = nan(size(x0));
-    for iParam = 1:numel(x0)
-        r = ranges(iParam,:);
-        xSample(iParam) = r(1) + (r(2)-r(1)).*rand;
-    end
-    [cost, model, data, R2] = modelCost(xSample, D, 0);
+doGridSearch = false;
+if doGridSearch
+    nSamples = 10;
     
-    xSamples(iSample,:) = xSample;
-    xSamplesCosts(iSample,1) = cost;
+    [opt0, x0, lb, ub, ranges] = x2opt;
+    xSamples = [];
+    xSamplesCosts = [];
+    for iSample = 1:nSamples
+        xSample = nan(size(x0));
+        for iParam = 1:numel(x0)
+            r = ranges(iParam,:);
+            xSample(iParam) = r(1) + (r(2)-r(1)).*rand;
+        end
+        [cost, model, data, R2] = modelCost(xSample, D, 0);
+        
+        xSamples(iSample,:) = xSample;
+        xSamplesCosts(iSample,1) = cost;
+    end
 end
 
 %% optimization

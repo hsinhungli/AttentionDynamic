@@ -25,7 +25,8 @@ subplot(nr,nc,2)
 hold on
 plot(p.tlist/1000,p.attV','color',[153 124 107]/255);
 xlim(xlims)
-ylim([0 1])
+% ylim([0 1])
+ylim([-.1 .1])
 set(gca,'XTickLabel',[])
 ylabel('AV')
 

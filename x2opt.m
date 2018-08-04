@@ -5,7 +5,8 @@ if nargin==0
 end
 
 % modelClass = '1-attLat';
-modelClass = 'transient-span';
+% modelClass = 'transient-span';
+modelClass = '1-attK';
 
 %% initial param vals
 % sensory
@@ -23,9 +24,9 @@ switch modelClass
         p.tau_r2        = 56;
         p.sigma         = 1.6;
     case '1-attK'
-        p.tau           = 63;
-        p.tau_r2        = 100;
-        p.sigma         = 2.1;
+        p.tau           = 74;
+        p.tau_r2        = 70;
+        p.sigma         = 1.7;
     case '1-attLat'
         p.tau           = 78;
         p.tau_r2        = 164;
@@ -40,13 +41,13 @@ switch modelClass
     case '1-attLat'
         p.sigma2        = .035; 
     otherwise
-        p.sigma2        = .1; %.1
+        p.sigma2        = .08; %.1
 end
 
 
 % voluntary attention
-% p.attOnset      = -73;             % voluntary attention on, relative to stim onset (ms)
-% p.attOffset     = 59;              % voluntary attention off, relative to stim offset (ms)
+p.attOnset      = -50;             % voluntary attention on, relative to stim onset (ms)
+p.attOffsett     = 10;              % voluntary attention off, relative to stim offset (ms)
 % p.vAttWeight1   = 1;               % high
 % p.vAttWeight2   = 0;               % low
 % p.tau_attV      = 50;  %50         %time constant voluntary attention (ms)
@@ -67,17 +68,16 @@ switch modelClass
         p.exoProp = 1;
     case '1-attK'
         p.tau_ra  = 50;
-        p.aMI     = 25;
-        p.aMV     = 1;
-        p.aIE     = .4;
-        p.aIOR    = .4;
+        p.aM      = 30;
+        p.aIOR    = .1;
+        p.span    = 650;
     case '1-attLat'
 %         p.tau_ra  = 50;
         p.aM      = 100;
         p.vAttScale2    = .65;
         p.span          = 1200;
 end
-p.neutralT1Weight = .15;
+% p.neutralT1Weight = .15;
 
 % involuntary attention
 % p.biph1         = 48;
@@ -93,24 +93,27 @@ switch modelClass
         p.aIE           = 0;
         p.aIOR          = .36; % 1 (spatial sim), 1.3 (stronger IOR), 1.12 (temporal sim)
         p.asigma        = .22;  %.3
-    case {'1-att','1-attK','1-attLat'}
+    case {'1-att','1-attLat'}
 %         p.ap            = 4;
         p.asigma        = 1.2;
+    case '1-attK'
+        p.asigma = 20;
 end
 % p.tau_attI      = 50;  %50         %time constant involuntary attention (ms)
 
 % decision
-p.sigmad = 1;
+% p.sigmad = 1;
 % p.ceiling = 0.82; %.85
 switch modelClass
+    case 'transient-span'
+        p.decisionWindowDur = 384; %300
+        p.decisionLatency   = -37; %-50
     case '1-attLat'
-        p.decisionWindowDur         = 800;
-        p.decisionRefractoryPeriod  = -470;
-        p.singleWindowSOA           = 350; 
-    otherwise
-        p.decisionWindowDur = 302;
-        p.decisionLatency   = -64;
+        p.decisionWindowDur = 800;
+        p.decisionRefractoryPeriod = -400;
+        p.singleWindowSOA   = 300; % use a single decision window for this SOA or below
 end
+
 
 % fitting
 switch modelClass
@@ -124,8 +127,8 @@ switch modelClass
         p.scaling1 = .5; % 4.5
         p.scaling2 = .5; % 3.6
     case '1-attK'
-        p.scaling1 = 2.2; 
-        p.scaling2 = 2; 
+        p.scaling1 = 1.7; 
+        p.scaling2 = 1.5; 
     case '1-attLat'
         p.scaling1 = 1.2; 
         p.scaling2 = 1;

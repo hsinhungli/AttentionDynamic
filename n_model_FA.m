@@ -207,7 +207,8 @@ for t = p.dt:p.dt:p.T
         case '1-attK'
             %% Update single attention layer with kernel
             % calculate drive
-            sr = p.aMV*p.task + p.aMI*p.r;
+%             sr = p.aMV*p.task + p.aMI*p.r;
+            sr = p.task;
             
             if idx > length(p.aW)
                 r = sr(:,idx-length(p.aW):idx-1);
