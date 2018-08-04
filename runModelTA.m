@@ -1,4 +1,4 @@
-function [perfv, p, ev] = runModelTA(opt, rsoa, rseq, rcond)
+function [perfv, p, ev] = runModelTA(opt, modelClass, rsoa, rseq, rcond)
 
 % modified from runModel.m
 % 2015-09-28 (RD)
@@ -6,10 +6,11 @@ function [perfv, p, ev] = runModelTA(opt, rsoa, rseq, rcond)
 % clear all
 if nargin==0
     opt = [];
+    modelClass = [];
 end
 
 %% Set params
-p          = setParametersFA(opt);
+p          = setParametersFA(opt, modelClass);
 
 %% Set conditions/contrasts to simulate
 condnames  =  {'no-endo','endoT1','endoT2','endoT1T2','exoT1','exoT2','exoT1T2'};

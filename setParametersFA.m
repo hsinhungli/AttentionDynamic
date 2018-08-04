@@ -1,6 +1,6 @@
-function p = setParametersFA(opt)
+function p = setParametersFA(opt, modelClass)
 
-% function p = setParametersFA(opt)
+% function p = setParametersFA(opt, modelClass)
 %
 % opt is a structure containing values of p fields. will overwrite existing values. 
 
@@ -8,9 +8,16 @@ function p = setParametersFA(opt)
 if ~exist('opt','var')
     opt = [];
 end
+if ~exist('modelClass','var')
+    modelClass = [];
+end
 
 %% Model
-p.modelClass      = 'span'; % 'span','transient-span','1-att','1-attK','1-attLat'
+if ~isempty(modelClass)
+    p.modelClass = modelClass;
+else
+    p.modelClass  = '1-attK'; % 'span','transient-span','1-att','1-attK','1-attLat'
+end
 p.rf              = 'rf/resp_stim4_rf12.mat'; % sensory RFs - encode stim and decode responses using saved RFs. [] for none.
 p.rfDecoding      = 'rf/resp_stim4_rf12.mat'; %'rf/resp_stim4_rf6_empirical_r2.mat';
 p.timeVaryingTau  = false; % if true, then tau, tau_r2 are only initial values

@@ -1,4 +1,11 @@
-function [perfv, p, ev] = runModelParallel(opt)
+function [perfv, p, ev] = runModelParallel(opt, modelClass)
+
+if nargin < 1
+    opt = [];
+end
+if nargin < 2
+    modelClass = [];
+end
 
 % opt = [];
 % w = load('fit/fit_workspace_20160416T0400.mat');
@@ -30,15 +37,15 @@ switch par
         parfor ipc = 1:nparconds
             isoa = parconds(ipc,1);
             icond = parconds(ipc,2);
-            [pperfv{ipc}, pp{ipc}, pev{ipc}] = runModelTA(opt, rsoa(isoa), [], rcond(icond));
+            [pperfv{ipc}, pp{ipc}, pev{ipc}] = runModelTA(opt, modelClass, rsoa(isoa), [], rcond(icond));
         end
     case 'soa'
         parfor isoa = 1:nsoa
-            [pperfv{isoa}, pp{isoa}, pev{isoa}] = runModelTA(opt, rsoa(isoa));
+            [pperfv{isoa}, pp{isoa}, pev{isoa}] = runModelTA(opt, modelClass, rsoa(isoa));
         end
     case 'seq'
         parfor iseq = 1:nseq
-            [pperfv{iseq}, pp{iseq}, pev{iseq}] = runModelTA(opt, [], rseq(iseq));
+            [pperfv{iseq}, pp{iseq}, pev{iseq}] = runModelTA(opt, modelClass, [], rseq(iseq));
         end
     otherwise
         error('par not found')

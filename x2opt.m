@@ -1,13 +1,18 @@
-function [opt, x, lb, ub, ranges] = x2opt(x)
+function [opt, x, lb, ub, ranges] = x2opt(x, modelClass)
 
-if nargin==0
+if nargin<1
     x = [];
 end
+if nargin<2
+    modelClass = [];
+end
 
-% modelClass = '1-attLat';
-% modelClass = 'transient-span';
-% modelClass = '1-attK';
-modelClass = 'span';
+if isempty(modelClass)
+    % modelClass = '1-attLat';
+    % modelClass = 'transient-span';
+    % modelClass = '1-attK';
+    modelClass = '1-attK';
+end
 
 %% initial param vals
 % sensory
