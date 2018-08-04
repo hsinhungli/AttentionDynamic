@@ -10,7 +10,7 @@ if ~exist('opt','var')
 end
 
 %% Model
-p.modelClass      = '1-attK'; % 'span','transient-span','1-att','1-attK','1-attLat'
+p.modelClass      = 'span'; % 'span','transient-span','1-att','1-attK','1-attLat'
 p.rf              = 'rf/resp_stim4_rf12.mat'; % sensory RFs - encode stim and decode responses using saved RFs. [] for none.
 p.rfDecoding      = 'rf/resp_stim4_rf12.mat'; %'rf/resp_stim4_rf6_empirical_r2.mat';
 p.timeVaryingTau  = false; % if true, then tau, tau_r2 are only initial values
@@ -72,13 +72,13 @@ switch p.modelClass
         p.biph2   = 2; % 2
         p.asigma  = .3; 
     case 'span'
-        p.aMI     = 10; %2.5; % .2 % 5 (spatial sim), 4 (stronger IOR), 4 (temporal sim)
+        p.aMI     = 100; %2.5; % .2 % 5 (spatial sim), 4 (stronger IOR), 4 (temporal sim)
         p.aMV     = 20;%35; %43; %1.6; %9, 200
         p.aIE     = 1; %0 % excitatory part of involuntary attention kernel
-        p.aIOR    = 1; %.32 %.4 % 1 (spatial sim), 1.3 (stronger IOR), 1.12 (temporal sim)
-        p.biph1   = 53;%48;%53; %40 % 35,25
-        p.biph2   = 4;%3.2;%4;
-        p.asigma  = .3;
+        p.aIOR    = 2; %.32 %.4 % 1 (spatial sim), 1.3 (stronger IOR), 1.12 (temporal sim)
+        p.biph1   = 40;%53;%48;%53; %40 % 35,25
+        p.biph2   = 4;%4;%3.2;%4;
+        p.asigma  = 30;%.3;
     case '1-att'
         p.tau_ra  = 50;
         p.aM      = 1;
@@ -144,7 +144,7 @@ switch p.modelClass
         p.attOnset = -73; %-50                  % voluntary attention on, relative to stim onset (ms)
         p.attOffset = 59; %10                 % voluntary attention off, relative to stim offset (ms)
         p.vAttScale2 = 1;%.43;%.86;                  % scale the magnitude of voluntary attention to T2
-        p.span = 850;
+        p.span = 650;
         p.distributeVoluntary = 1;
 end
 p.vAttWeight1 = 1; %1

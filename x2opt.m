@@ -6,7 +6,8 @@ end
 
 % modelClass = '1-attLat';
 % modelClass = 'transient-span';
-modelClass = '1-attK';
+% modelClass = '1-attK';
+modelClass = 'span';
 
 %% initial param vals
 % sensory
@@ -16,9 +17,9 @@ switch modelClass
         p.tau_r2        = 2;  %80, 100            %time constant filter for firing rate (ms)
         p.sigma         = 1.86; % .5, .1         %semisaturation constant
     case 'span'
-        p.tau           = 63;  %70, 20         %time constant filter for excitatory response (ms)
-        p.tau_r2        = 56;  %100            %time constant filter for firing rate (ms)
-        p.sigma         = 2.1; % .5, .1         %semisaturation constant
+        p.tau           = 74;%63;  %70, 20         %time constant filter for excitatory response (ms)
+        p.tau_r2        = 70;%56;  %100            %time constant filter for firing rate (ms)
+        p.sigma         = 1.7;%2.1; % .5, .1         %semisaturation constant
     case '1-att'
         p.tau           = 63;
         p.tau_r2        = 56;
@@ -46,8 +47,8 @@ end
 
 
 % voluntary attention
-p.attOnset      = -50;             % voluntary attention on, relative to stim onset (ms)
-p.attOffsett     = 10;              % voluntary attention off, relative to stim offset (ms)
+% p.attOnset      = -50;             % voluntary attention on, relative to stim onset (ms)
+% p.attOffsett     = 10;              % voluntary attention off, relative to stim offset (ms)
 % p.vAttWeight1   = 1;               % high
 % p.vAttWeight2   = 0;               % low
 % p.tau_attV      = 50;  %50         %time constant voluntary attention (ms)
@@ -57,20 +58,25 @@ switch modelClass
         p.vAttScale2    = .78;
         p.span          = 827;
     case 'span'
-        p.aMV           = 36; % 3.5,2.5
-        p.vAttScale2    = .21;
-        p.span          = 1083;
+        p.tau_attV      = 50;
+        p.aMV           = 20; % 3.5,2.5
+%         p.vAttScale2    = .21;
+        p.span          = 650;
+        p.attOnset      = -70;
+        p.attOffsett    = 60;
     case '1-att'
-        p.tau_ra  = 50;
-        p.aM      = 1;
+        p.tau_ra        = 50;
+        p.aM            = 1;
 %         p.exoSOA  = 120;
-        p.exoDur  = 50;
-        p.exoProp = 1;
+        p.exoDur        = 50;
+        p.exoProp       = 1;
     case '1-attK'
-        p.tau_ra  = 50;
-        p.aM      = 30;
-        p.aIOR    = .1;
-        p.span    = 650;
+        p.tau_ra        = 50;
+        p.aM            = 30;
+        p.aIOR          = .1;
+        p.span          = 650;
+        p.attOnset      = -50;
+        p.attOffsett    = 10;
     case '1-attLat'
 %         p.tau_ra  = 50;
         p.aM      = 100;
@@ -89,10 +95,10 @@ switch modelClass
         p.aIOR          = .15; % 1 (spatial sim), 1.3 (stronger IOR), 1.12 (temporal sim)
         p.asigma        = .21;  %.3
     case 'span'
-        p.aMI           = 2.5; % 5 (spatial sim), 4 (stronger IOR), 4 (temporal sim)
-        p.aIE           = 0;
-        p.aIOR          = .36; % 1 (spatial sim), 1.3 (stronger IOR), 1.12 (temporal sim)
-        p.asigma        = .22;  %.3
+        p.aMI           = 100;%2.5; % 5 (spatial sim), 4 (stronger IOR), 4 (temporal sim)
+%         p.aIE           = 0;
+        p.aIOR          = 2;%.36; % 1 (spatial sim), 1.3 (stronger IOR), 1.12 (temporal sim)
+        p.asigma        = 30;%.22;  %.3
     case {'1-att','1-attLat'}
 %         p.ap            = 4;
         p.asigma        = 1.2;
@@ -121,8 +127,8 @@ switch modelClass
         p.scaling1 = 2.4; %5*10^5; %77; % 4.2, 4.5
         p.scaling2 = 1.9; %4*10^5; %60; % 3.3
     case 'span'
-        p.scaling1 = .31; % 4.5
-        p.scaling2 = .31; % 3.6
+        p.scaling1 = 1.9;%.31; % 4.5
+        p.scaling2 = 1.6;%.31; % 3.6
     case '1-att'
         p.scaling1 = .5; % 4.5
         p.scaling2 = .5; % 3.6

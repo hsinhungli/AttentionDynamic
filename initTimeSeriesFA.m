@@ -45,6 +45,9 @@ p.fai  = zeros(p.ntheta,p.nt); %Estimated Asy firing rate
 p.attI = zeros(p.ntheta,p.nt); %Involuntary attentional gain factor, equivalent to r
     
 % voluntary attention
+p.dav  = zeros(p.ntheta,p.nt); %Drive
+p.sav  = zeros(p.ntheta,p.nt); %Suppressive Drive
+p.fav  = zeros(p.ntheta,p.nt); %Estimated Asy firing rate
 p.attV = zeros(p.ntheta,p.nt); %Voluntary attentional gain factor, equivalent to r
 p.task = zeros(p.ntheta,p.nt); %Task
 

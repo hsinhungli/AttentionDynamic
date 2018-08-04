@@ -236,7 +236,7 @@ for t = p.dt:p.dt:p.T
             
             %Normalization
             p.fa(:,idx) = p.da(:,idx) ./ ...
-                (p.sa(:,idx) + halfExp(sigma, p.p));
+                (p.sa(:,idx) + halfExp(sigma, p.ap));
             
             %update firing rates (= attentional gain factor)
             p.ra(:,idx) = p.ra(:,idx-1) + (p.dt/p.tau_ra)*(-p.ra(:,idx-1) + p.fa(:,idx));
@@ -262,7 +262,7 @@ for t = p.dt:p.dt:p.T
             
             %Normalization
             p.fa(:,idx) = p.da(:,idx) ./ ...
-                (p.sa(:,idx) + halfExp(sigma, p.p));
+                (p.sa(:,idx) + halfExp(sigma, p.ap));
             
             %update firing rates (= attentional gain factor)
             p.ra(:,idx) = p.ra(:,idx-1) + (p.dt/p.tau_ra)*(-p.ra(:,idx-1) + p.fa(:,idx));
@@ -272,8 +272,30 @@ for t = p.dt:p.dt:p.T
             
         otherwise
             %% Update voluntary attention layer
-            attnGainV = p.task(:,idx-1);
-            p.attV(:,idx) = p.attV(:,idx-1) + (p.dt/p.tau_attV)*(-p.attV(:,idx-1) + attnGainV);
+            % inputs
+            inp = p.task(:,idx-1);
+            
+            % updating drives
+            drive = halfExp(inp, p.ap);
+            p.dav(:,idx) = sum(drive); % not feature-specific
+            
+            % normalization pool
+            pool = p.dav(:,idx); 
+            
+            % Compute Suppressive Drive
+            p.sav(:,idx) = sum(pool(:)); %normalized across orientation
+            sigma = p.asigma;
+            
+            % Normalization
+            p.fav(:,idx) = p.dav(:,idx) ./ ...
+                (p.sav(:,idx) + halfExp(sigma, p.ap));
+            
+            % update firing rates (= attentional gain factor)
+            p.attV(:,idx) = p.attV(:,idx-1) + (p.dt/p.tau_attV)*(-p.attV(:,idx-1) + p.fav(:,idx));
+            
+            % old version
+%             attnGainV = p.task(:,idx-1);
+%             p.attV(:,idx) = p.attV(:,idx-1) + (p.dt/p.tau_attV)*(-p.attV(:,idx-1) + attnGainV);
             
             %% Update involuntary attention layer
             switch p.modelClass
