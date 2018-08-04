@@ -1,6 +1,6 @@
 function optimModel(dataDir, saveDir, jobID, D)
   
-% parpool('SpmdEnabled',false)
+parpool('SpmdEnabled',false)
 
 %% setup
 if nargin==0
