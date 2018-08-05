@@ -16,7 +16,9 @@ end
 if ~isempty(modelClass)
     p.modelClass = modelClass;
 else
-    p.modelClass  = '1-attK'; % 'span','transient-span','1-att','1-attK','1-attLat'
+    % in the span family: 'span', '1-att', '1-attK', 't2DecRef'
+    % in the transient-span family: 'transient-span', '1-attLat'
+    p.modelClass  = 't2DecRef';
 end
 p.rf              = 'rf/resp_stim4_rf12.mat'; % sensory RFs - encode stim and decode responses using saved RFs. [] for none.
 p.rfDecoding      = 'rf/resp_stim4_rf12.mat'; %'rf/resp_stim4_rf6_empirical_r2.mat';
@@ -35,7 +37,12 @@ p.ntheta          = 12;               % should match RF
 
 %% Sensory layer 1
 p.tautr           = 5;
-p.tau             = 74;%100;%63  %74;%40           %time constant (ms)
+switch p.modelClass
+    case 't2DecRef'
+        p.tau     = 20;
+    otherwise
+        p.tau     = 74;%100;%63  %74;%40           %time constant (ms)
+end
 p.tauk            = 99;                          % proportionality constant for time varying tau
 p.sigma           = 1.7;%1.2; %2.1; %1.8; %.5 .1      %semisaturation constant
 p.p               = 1.5; %1.6;%1.2;               % exponent
@@ -53,12 +60,16 @@ p.d_noiseamp      = 0; % 0.0015;
 p.wa              = 0;               %weights of self-adaptation
 
 %% Sensory layer 2
-p.sigma2          = .08; %.08; %.04; %.1
 switch p.modelClass
-    case {'transient-span'}
+    case 'transient-span'
         p.tau_r2  = 2; %2;  %80,120      %time constant filter for firing rate (ms)
+        p.sigma2  = .08;
+    case 't2DecRef'
+        p.tau_r2  = 300;
+        p.sigma2  = .5;
     otherwise
         p.tau_r2  = 70;%150;  %100 %70 %120,80     %time constant filter for firing rate (ms)
+        p.sigma2  = .08; %.08; %.04; %.1
 end
 
 %% Sensory layer 3
@@ -67,8 +78,14 @@ end
 % p.tau_r3          = 100;
 
 %% Attention
-p.tau_attI        = 50;  %50         %time constant involuntary attention (ms)
+switch p.modelClass
+    case 't2DecRef'
+        p.tau_attI        = 2;
+    otherwise
+        p.tau_attI        = 50;  %50         %time constant involuntary attention (ms)
+end
 p.tau_attV        = 50;  %50         %time constant voluntary attention (ms)
+
 switch p.modelClass
     case 'transient-span'
         p.aMI     = 265; %150; % 6 % .2 % 5 (spatial sim), 4 (stronger IOR), 4 (temporal sim)
@@ -107,6 +124,14 @@ switch p.modelClass
         p.tau_ra  = 50;
         p.aM      = 10; % 100
         p.asigma  = .3;
+    case 't2DecRef'
+        p.aMI     = 100000; 
+        p.aMV     = 20;
+        p.aIE     = 1; % fixed
+        p.aIOR    = 0; % fixed 
+        p.biph1   = 40; % biphasic could be replaced with a gamma (excitatory only)
+        p.biph2   = 4;
+        p.asigma  = 30;        
     otherwise
         error('p.modelClass not recognized')
 end
@@ -174,6 +199,10 @@ switch p.modelClass
         p.decisionRefractoryPeriod = -400;
         p.singleWindowSOA   = 300; % use a single decision window for this SOA or below
         p.decisionLatency   = []; % set this outside, depends on cond and soa
+    case 't2DecRef'
+        p.decisionRefractoryPeriod = 450;
+        p.decisionWindowDur = [];
+        p.decisionLatency   = []; % set this outside, depends on soa
     otherwise
         p.decisionWindowDur = [];
         p.decisionLatency   = 0;

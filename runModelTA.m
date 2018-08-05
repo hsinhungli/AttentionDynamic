@@ -104,6 +104,12 @@ for icond = 1:numel(rcond)
                 switch p.modelClass
                     case '1-attLat'
                         p = setDecisionLatencies(p);
+                    case 't2DecRef'
+                        if p.soa < p.decisionRefractoryPeriod
+                            p.decisionLatency = [0 p.decisionRefractoryPeriod-p.soa];
+                        else
+                            p.decisionLatency = 0;
+                        end
                 end
                 
                 % set time series

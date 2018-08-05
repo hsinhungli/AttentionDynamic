@@ -8,10 +8,8 @@ if nargin<2
 end
 
 if isempty(modelClass)
-    % modelClass = '1-attLat';
-    % modelClass = 'transient-span';
-    % modelClass = '1-attK';
-    modelClass = '1-attK';
+    % 'span','transient-span','1-attLat','1-attK','t2DecRef'
+    modelClass = 't2DecRef';
 end
 
 %% initial param vals
@@ -37,6 +35,10 @@ switch modelClass
         p.tau           = 78;
         p.tau_r2        = 164;
         p.sigma         = 1.9;
+    case 't2DecRef'
+        p.tau           = 20;
+        p.tau_r2        = 300;
+        p.sigma         = 1.7;
     otherwise
         error('modelClass not found')
 end
@@ -46,6 +48,8 @@ end
 switch modelClass
     case '1-attLat'
         p.sigma2        = .035; 
+    case 't2DecRef'
+        p.sigma2        = .5;
     otherwise
         p.sigma2        = .08; %.1
 end
@@ -87,6 +91,13 @@ switch modelClass
         p.aM      = 100;
         p.vAttScale2    = .65;
         p.span          = 1200;
+    case 't2DecRef'
+        p.tau_attV      = 50;
+        p.aMV           = 20; 
+%         p.vAttScale2    = .21;
+        p.span          = 650;
+        p.attOnset      = -70;
+        p.attOffsett    = 60;        
 end
 % p.neutralT1Weight = .15;
 
@@ -109,6 +120,10 @@ switch modelClass
         p.asigma        = 1.2;
     case '1-attK'
         p.asigma = 20;
+    case 't2DecRef'
+        p.aMI           = 100000;
+        p.tau_attI      = 2;
+        p.asigma        = 30;
 end
 % p.tau_attI      = 50;  %50         %time constant involuntary attention (ms)
 
@@ -123,6 +138,8 @@ switch modelClass
         p.decisionWindowDur = 800;
         p.decisionRefractoryPeriod = -400;
         p.singleWindowSOA   = 300; % use a single decision window for this SOA or below
+    case 't2DecRef'
+        p.decisionRefractoryPeriod = 450;
 end
 
 
@@ -143,6 +160,9 @@ switch modelClass
     case '1-attLat'
         p.scaling1 = 1.2; 
         p.scaling2 = 1;
+    case 't2DecRef'
+        p.scaling1 = 19;
+        p.scaling2 = 16;
 end
 % p.offset1  = 0;
 % p.offset2  = 0;
