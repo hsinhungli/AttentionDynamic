@@ -28,9 +28,9 @@ switch modelClass
         p.tau_r2        = 56;
         p.sigma         = 1.6;
     case '1-attK'
-        p.tau           = 74;
-        p.tau_r2        = 70;
-        p.sigma         = 1.7;
+        p.tau           = 90;
+        p.tau_r2        = 63;
+        p.sigma         = 1.4;
     case '1-attLat'
         p.tau           = 78;
         p.tau_r2        = 164;
@@ -47,7 +47,9 @@ end
 % sensory 2
 switch modelClass
     case '1-attLat'
-        p.sigma2        = .035; 
+        p.sigma2        = .035;
+    case '1-attK'
+        p.sigma2        = .1;
     case 't2DecRef'
         p.sigma2        = .5;
     otherwise
@@ -80,12 +82,12 @@ switch modelClass
         p.exoDur        = 50;
         p.exoProp       = 1;
     case '1-attK'
-        p.tau_ra        = 50;
+        p.tau_ra        = 24;
         p.aM            = 30;
-        p.aIOR          = .1;
-        p.span          = 650;
+        p.aIOR          = .02;
+        p.span          = 1030;
         p.attOnset      = -50;
-        p.attOffsett    = 10;
+        p.attOffsett    = 16;
     case '1-attLat'
 %         p.tau_ra  = 50;
         p.aM      = 100;
@@ -119,7 +121,7 @@ switch modelClass
 %         p.ap            = 4;
         p.asigma        = 1.2;
     case '1-attK'
-        p.asigma = 20;
+        p.asigma        = 27;
     case 't2DecRef'
         p.aMI           = 100000;
         p.tau_attI      = 2;
@@ -155,7 +157,7 @@ switch modelClass
         p.scaling1 = .5; % 4.5
         p.scaling2 = .5; % 3.6
     case '1-attK'
-        p.scaling1 = 1.7; 
+        p.scaling1 = 1.8; 
         p.scaling2 = 1.5; 
     case '1-attLat'
         p.scaling1 = 1.2; 
