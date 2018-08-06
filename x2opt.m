@@ -8,8 +8,8 @@ if nargin<2
 end
 
 if isempty(modelClass)
-    % 'span','transient-span','1-attLat','1-attK','t2DecRef'
-    modelClass = 't2DecRef';
+    % 'span','transient-span','1-attLat','1-attK','t2DecRef','3S'
+    modelClass = '3S';
 end
 
 %% initial param vals
@@ -186,8 +186,8 @@ switch modelClass
         p.scaling1 = 19;
         p.scaling2 = 16;
     case '3S'
-        p.scaling1 = 19;
-        p.scaling2 = 16;
+        p.scaling1 = .65;
+        p.scaling2 = .5;
 end
 % p.offset1  = 0;
 % p.offset2  = 0;
