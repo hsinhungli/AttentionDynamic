@@ -39,6 +39,10 @@ switch modelClass
         p.tau           = 20;
         p.tau_r2        = 300;
         p.sigma         = 1.7;
+    case '3S'
+        p.tau           = 74;
+        p.tau_r2        = 300;
+        p.sigma         = 1.7;       
     otherwise
         error('modelClass not found')
 end
@@ -56,6 +60,11 @@ switch modelClass
         p.sigma2        = .08; %.1
 end
 
+% sensory 3
+switch modelClass
+    case '3S'
+        p.sigma3        = .1;
+end
 
 % voluntary attention
 % p.attOnset      = -50;             % voluntary attention on, relative to stim onset (ms)
@@ -99,7 +108,14 @@ switch modelClass
 %         p.vAttScale2    = .21;
         p.span          = 650;
         p.attOnset      = -70;
-        p.attOffsett    = 60;        
+        p.attOffsett    = 60;       
+    case '3S'
+        p.tau_attV      = 50;
+        p.aMV           = 20; 
+%         p.vAttScale2    = .21;
+        p.span          = 650;
+        p.attOnset      = -70;
+        p.attOffsett    = 60; 
 end
 % p.neutralT1Weight = .15;
 
@@ -124,6 +140,10 @@ switch modelClass
         p.asigma        = 27;
     case 't2DecRef'
         p.aMI           = 100000;
+        p.tau_attI      = 2;
+        p.asigma        = 30;
+    case '3S'
+        p.aMI           = 250;
         p.tau_attI      = 2;
         p.asigma        = 30;
 end
@@ -163,6 +183,9 @@ switch modelClass
         p.scaling1 = 1.2; 
         p.scaling2 = 1;
     case 't2DecRef'
+        p.scaling1 = 19;
+        p.scaling2 = 16;
+    case '3S'
         p.scaling1 = 19;
         p.scaling2 = 16;
 end

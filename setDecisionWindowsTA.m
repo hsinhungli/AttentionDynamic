@@ -30,3 +30,16 @@ for iStim = 1:p.nstim
     p.decisionWindows(iStim,idx) = 1;
 end
 
+% adjust for specific models - only handles 2 stim!!
+switch p.modelClass
+    case '3S'
+        if p.soa < p.decisionWindowDur
+            % reset T1 decision window
+            p.decisionWindows(1,:) = 0;
+            % let T1 decision window end at second stim
+            decisionWindowDur = p.soa - exoCueSOA;
+            idx = round((decisionOnsets(1)/p.dt):(decisionOnsets(1)/p.dt)+decisionWindowDur/p.dt);
+            p.decisionWindows(1,idx) = 1;
+        end
+end
+

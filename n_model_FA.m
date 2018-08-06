@@ -123,34 +123,41 @@ for t = p.dt:p.dt:p.T
     
     
     %% Computing the responses of sensory layer 3 (S3)
-%     %updating noise
-%     p.d3_n(:,idx) = p.d3_n(:,idx-1) + (p.dt/p.tau_n)*...
-%         (-p.d3_n(:,idx-1) + randn(p.ntheta,p.nx)*p.d_noiseamp*sqrt(p.tau_n*2));
-%     
-%     %updating drives
-%     drive = halfExp(p.r2(:,idx),p.p3);
-%     p.d3(:,idx) = drive;
-%     
-%     % normalization pool
-%     pool = p.d3(:,idx);
-%     
-%     %Compute Suppressive Drive
-%     p.s3(:,idx) = sum(pool(:)); %normalized across orientation
-%     sigma = p.sigma3;
-%     
-%     %Normalization
-%     p.f3(:,idx) = p.d3(:,idx) ./ ...
-%         (p.s3(:,idx) + halfExp(sigma, p.p3) + halfExp(p.a3(:,idx-1)*p.wa, p.p));
-%     %p.f3(:,idx) = halfExp(p.f3(:,idx)+ p.d3_n(:,idx),1); %Add noise at the firing rate
-%     
-%     %update firing rates
-%     p.r3(:,idx) = p.r3(:,idx-1) + (p.dt/p.tau_r3)*(-p.r3(:,idx-1) + p.f3(:,idx));
-%     
-%     %update adaptation
-%     p.a3(:,idx) = p.a3(:,idx-1) + (p.dt/p.tau_a)*(-p.a3(:,idx-1) + p.r3(:,idx));
+    %updating noise
+    p.d3_n(:,idx) = p.d3_n(:,idx-1) + (p.dt/p.tau_n)*...
+        (-p.d3_n(:,idx-1) + randn(p.ntheta,p.nx)*p.d_noiseamp*sqrt(p.tau_n*2));
+    
+    %updating drives
+    drive = halfExp(p.r2(:,idx),p.p3);
+    p.d3(:,idx) = drive;
+    
+    % normalization pool
+    pool = p.d3(:,idx);
+    
+    %Compute Suppressive Drive
+    p.s3(:,idx) = sum(pool(:)); %normalized across orientation
+    sigma = p.sigma3;
+    
+    %Normalization
+    p.f3(:,idx) = p.d3(:,idx) ./ ...
+        (p.s3(:,idx) + halfExp(sigma, p.p3) + halfExp(p.a3(:,idx-1)*p.wa, p.p));
+    %p.f3(:,idx) = halfExp(p.f3(:,idx)+ p.d3_n(:,idx),1); %Add noise at the firing rate
+    
+    %update firing rates
+    p.r3(:,idx) = p.r3(:,idx-1) + (p.dt/p.tau_r3)*(-p.r3(:,idx-1) + p.f3(:,idx));
+    
+    %update adaptation
+    p.a3(:,idx) = p.a3(:,idx-1) + (p.dt/p.tau_a)*(-p.a3(:,idx-1) + p.r3(:,idx));
     
     
     %% Computing the responses of the decision layer
+    % select response from which to decode
+    switch p.modelClass
+        case '3S'
+            response = p.r3;
+        otherwise
+            response = p.r2;
+    end
     % decode just between CCW/CW for the appropriate axis
     for iStim = 1:2
         switch p.stimseq(iStim)
@@ -161,7 +168,7 @@ for t = p.dt:p.dt:p.T
 %                 rfresp(:,:,iStim) = p.rfresp(3:4,:);
                 rfresp(:,:,iStim) = p.rfrespDec(3:4,:);
         end
-        evidence = decodeEvidence(p.r2(:,idx)', rfresp(:,:,iStim)); % r2
+        evidence = decodeEvidence(response(:,idx)', rfresp(:,:,iStim)); % r2
         evidence = evidence*p.decisionWindows(iStim,idx); % only accumulate if in the decision window
         evidence(abs(evidence)<1e-3) = 0; % otherwise zero response will give a little evidence
         

@@ -16,9 +16,9 @@ end
 if ~isempty(modelClass)
     p.modelClass = modelClass;
 else
-    % in the span family: 'span', '1-att', '1-attK', 't2DecRef'
+    % in the span family: 'span', '1-att', '1-attK', 't2DecRef', '3S'
     % in the transient-span family: 'transient-span', '1-attLat'
-    p.modelClass  = 't2DecRef';
+    p.modelClass  = '3S';
 end
 p.rf              = 'rf/resp_stim4_rf12.mat'; % sensory RFs - encode stim and decode responses using saved RFs. [] for none.
 p.rfDecoding      = 'rf/resp_stim4_rf12.mat'; %'rf/resp_stim4_rf6_empirical_r2.mat';
@@ -67,19 +67,24 @@ switch p.modelClass
     case 't2DecRef'
         p.tau_r2  = 300;
         p.sigma2  = .5;
+    case '3S'
+        p.tau_r2  = 300;
+        p.sigma2  = .08;
     otherwise
         p.tau_r2  = 70;%150;  %100 %70 %120,80     %time constant filter for firing rate (ms)
         p.sigma2  = .08; %.08; %.04; %.1
 end
 
 %% Sensory layer 3
-% p.p3              = 1.5;
-% p.sigma3          = 1.2;
-% p.tau_r3          = 100;
+p.p3              = 1.5;
+p.sigma3          = .1;
+p.tau_r3          = 2;
 
 %% Attention
 switch p.modelClass
     case 't2DecRef'
+        p.tau_attI        = 2;
+    case '3S'
         p.tau_attI        = 2;
     otherwise
         p.tau_attI        = 50;  %50         %time constant involuntary attention (ms)
@@ -131,7 +136,15 @@ switch p.modelClass
         p.aIOR    = 0; % fixed 
         p.biph1   = 40; % biphasic could be replaced with a gamma (excitatory only)
         p.biph2   = 4;
-        p.asigma  = 30;        
+        p.asigma  = 30;    
+    case '3S'
+        p.aMI     = 250;
+        p.aMV     = 20;
+        p.aIE     = 1; % fixed
+        p.aIOR    = 0; % fixed 
+        p.biph1   = 40; % biphasic could be replaced with a gamma (excitatory only)
+        p.biph2   = 4;
+        p.asigma  = 30;  
     otherwise
         error('p.modelClass not recognized')
 end
@@ -203,6 +216,9 @@ switch p.modelClass
         p.decisionRefractoryPeriod = 450;
         p.decisionWindowDur = [];
         p.decisionLatency   = []; % set this outside, depends on soa
+    case '3S'
+        p.decisionWindowDur = 800;
+        p.decisionLatency = 0;
     otherwise
         p.decisionWindowDur = [];
         p.decisionLatency   = 0;
