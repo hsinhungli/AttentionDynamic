@@ -21,7 +21,7 @@ nsoa = numel(rsoa);
 
 % att conds
 condnames  =  {'no-endo','endoT1','endoT2','endoT1T2','exoT1','exoT2','exoT1T2'};
-rcond = 2:3; %2:3, 2:4;
+rcond = 2:4; %2:3, 2:4;
 ncond = numel(rcond);
 
 % seqs

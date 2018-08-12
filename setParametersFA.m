@@ -12,6 +12,15 @@ if ~exist('modelClass','var')
     modelClass = [];
 end
 
+%% Process modelClass
+modelParts = strsplit(modelClass,'_');
+modelClass = modelParts{1};
+if numel(modelParts)>1
+    if strcmp(modelParts{2},'nolimit')
+        noLimit = 1;
+    end
+end
+
 %% Model
 if ~isempty(modelClass)
     p.modelClass = modelClass;
@@ -192,6 +201,11 @@ switch p.modelClass
         p.span = 650;
         p.distributeVoluntary = 1;
 end
+% if we got an explicit nolimit input, reset distributeVoluntary
+if exist('noLimit','var') && noLimit==1
+    p.distributeVoluntary = 0;
+end
+
 p.vAttWeight1 = 1; %1
 p.vAttWeight2 = 0; %0
 p.vAttWeights = [p.vAttWeight1 p.vAttWeight2]; % [1 0]            % [high low]

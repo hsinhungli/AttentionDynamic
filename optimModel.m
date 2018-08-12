@@ -1,4 +1,4 @@
-function optimModel(dataDir, saveDir, jobID, D, modelClass)
+function optimModel(dataDir, saveDir, jobID, D, modelClass, prevFitFile)
   
 parpool('SpmdEnabled',false)
 
@@ -37,16 +37,21 @@ end
 if nargin<5
     modelClass = [];
 end
+if nargin<6
+    prevFitFile = [];
+end
 
 % store things for modelCost
 D(1).saveDir = saveDir;
 D(1).jobStr = jobStr;
 
 % load previous fit
-usePreviousFit = false;
-if usePreviousFit
-    % prevfit = load(sprintf('%s/fit_workspace_20160429T0059.mat', saveDir));
-    prevfit = load(sprintf('%s/fit_workspace_20171108_interim.mat', saveDir));
+% prevFitFile = 'fit_workspace_20171108_interim';
+if ~isempty(prevFitFile)
+    usePreviousFit = 1;
+    prevfit = load(sprintf('%s/%s.mat', saveDir, prevFitFile));
+else
+    usePreviousFit = 0;
 end
 
 %% initial grid search

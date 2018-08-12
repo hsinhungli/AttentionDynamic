@@ -7,6 +7,10 @@ if nargin<2
     modelClass = [];
 end
 
+%% process modelClass
+modelParts = strsplit(modelClass,'_');
+modelClass = modelParts{1};
+
 if isempty(modelClass)
     % 'span','transient-span','1-attLat','1-attK','t2DecRef','3S'
     modelClass = '3S';
@@ -20,29 +24,29 @@ switch modelClass
         p.tau_r2        = 2;  %80, 100            %time constant filter for firing rate (ms)
         p.sigma         = 1.86; % .5, .1         %semisaturation constant
     case 'span'
-        p.tau           = 74;%63;  %70, 20         %time constant filter for excitatory response (ms)
-        p.tau_r2        = 70;%56;  %100            %time constant filter for firing rate (ms)
-        p.sigma         = 1.7;%2.1; % .5, .1         %semisaturation constant
+        p.tau           = 75;%63;  %70, 20         %time constant filter for excitatory response (ms)
+        p.tau_r2        = 68;%56;  %100            %time constant filter for firing rate (ms)
+        p.sigma         = 1.8;%2.1; % .5, .1         %semisaturation constant
     case '1-att'
         p.tau           = 63;
         p.tau_r2        = 56;
         p.sigma         = 1.6;
     case '1-attK'
-        p.tau           = 90;
-        p.tau_r2        = 63;
-        p.sigma         = 1.4;
+        p.tau           = 88;
+        p.tau_r2        = 62;
+        p.sigma         = 1.6;
     case '1-attLat'
         p.tau           = 78;
         p.tau_r2        = 164;
         p.sigma         = 1.9;
     case 't2DecRef'
-        p.tau           = 20;
-        p.tau_r2        = 300;
-        p.sigma         = 1.7;
+        p.tau           = 16;
+        p.tau_r2        = 241;
+        p.sigma         = 1.3;
     case '3S'
-        p.tau           = 74;
-        p.tau_r2        = 300;
-        p.sigma         = 1.7;       
+        p.tau           = 80;
+        p.tau_r2        = 63;
+        p.sigma         = 2.2;       
     otherwise
         error('modelClass not found')
 end
@@ -50,12 +54,16 @@ end
 
 % sensory 2
 switch modelClass
+    case 'span'
+        p.sigma2        = .075;
     case '1-attLat'
         p.sigma2        = .035;
     case '1-attK'
-        p.sigma2        = .1;
+        p.sigma2        = .096;
     case 't2DecRef'
-        p.sigma2        = .5;
+        p.sigma2        = .74;
+    case '3S'
+        p.sigma2        = .12;
     otherwise
         p.sigma2        = .08; %.1
 end
@@ -63,7 +71,7 @@ end
 % sensory 3
 switch modelClass
     case '3S'
-        p.sigma3        = .1;
+        p.sigma3        = .073;
 end
 
 % voluntary attention
@@ -78,12 +86,12 @@ switch modelClass
         p.vAttScale2    = .78;
         p.span          = 827;
     case 'span'
-        p.tau_attV      = 50;
-        p.aMV           = 20; % 3.5,2.5
+        p.tau_attV      = 62;
+        p.aMV           = 26; % 3.5,2.5
 %         p.vAttScale2    = .21;
-        p.span          = 650;
-        p.attOnset      = -70;
-        p.attOffsett    = 60;
+        p.span          = 885;
+        p.attOnset      = -83;
+        p.attOffsett    = 61;
     case '1-att'
         p.tau_ra        = 50;
         p.aM            = 1;
@@ -91,33 +99,33 @@ switch modelClass
         p.exoDur        = 50;
         p.exoProp       = 1;
     case '1-attK'
-        p.tau_ra        = 24;
+        p.tau_ra        = 25;
         p.aM            = 30;
         p.aIOR          = .02;
-        p.span          = 1030;
-        p.attOnset      = -50;
-        p.attOffsett    = 16;
+        p.span          = 1053;
+        p.attOnset      = -51;
+        p.attOffsett    = 15;
     case '1-attLat'
 %         p.tau_ra  = 50;
         p.aM      = 100;
         p.vAttScale2    = .65;
         p.span          = 1200;
     case 't2DecRef'
-        p.tau_attV      = 50;
-        p.aMV           = 20; 
+        p.tau_attV      = 54;
+        p.aMV           = 27; 
 %         p.vAttScale2    = .21;
-        p.span          = 650;
-        p.attOnset      = -70;
-        p.attOffsett    = 60;       
+        p.span          = 713;
+        p.attOnset      = -71;
+        p.attOffsett    = 67;       
     case '3S'
-        p.tau_attV      = 50;
-        p.aMV           = 20; 
+        p.tau_attV      = 60;
+        p.aMV           = 28; 
 %         p.vAttScale2    = .21;
-        p.span          = 650;
+        p.span          = 737;
         p.attOnset      = -70;
-        p.attOffsett    = 60; 
+        p.attOffsett    = 41; 
 end
-% p.neutralT1Weight = .15;
+p.neutralT1Weight = .15;
 
 % involuntary attention
 % p.biph1         = 48;
@@ -129,23 +137,23 @@ switch modelClass
         p.aIOR          = .15; % 1 (spatial sim), 1.3 (stronger IOR), 1.12 (temporal sim)
         p.asigma        = .21;  %.3
     case 'span'
-        p.aMI           = 100;%2.5; % 5 (spatial sim), 4 (stronger IOR), 4 (temporal sim)
+        p.aMI           = 96;%2.5; % 5 (spatial sim), 4 (stronger IOR), 4 (temporal sim)
 %         p.aIE           = 0;
-        p.aIOR          = 2;%.36; % 1 (spatial sim), 1.3 (stronger IOR), 1.12 (temporal sim)
-        p.asigma        = 30;%.22;  %.3
+        p.aIOR          = .93;%.36; % 1 (spatial sim), 1.3 (stronger IOR), 1.12 (temporal sim)
+        p.asigma        = 19;%.22;  %.3
     case {'1-att','1-attLat'}
 %         p.ap            = 4;
         p.asigma        = 1.2;
     case '1-attK'
         p.asigma        = 27;
     case 't2DecRef'
-        p.aMI           = 100000;
-        p.tau_attI      = 2;
-        p.asigma        = 30;
+        p.aMI           = 1.17e5;
+        p.tau_attI      = 1.7;
+        p.asigma        = 26;
     case '3S'
-        p.aMI           = 250;
-        p.tau_attI      = 2;
-        p.asigma        = 30;
+        p.aMI           = 208;
+        p.tau_attI      = 2.2;
+        p.asigma        = 24;
 end
 % p.tau_attI      = 50;  %50         %time constant involuntary attention (ms)
 
@@ -161,7 +169,7 @@ switch modelClass
         p.decisionRefractoryPeriod = -400;
         p.singleWindowSOA   = 300; % use a single decision window for this SOA or below
     case 't2DecRef'
-        p.decisionRefractoryPeriod = 450;
+        p.decisionRefractoryPeriod = 289;
 end
 
 
@@ -171,23 +179,23 @@ switch modelClass
         p.scaling1 = 2.4; %5*10^5; %77; % 4.2, 4.5
         p.scaling2 = 1.9; %4*10^5; %60; % 3.3
     case 'span'
-        p.scaling1 = 1.9;%.31; % 4.5
-        p.scaling2 = 1.6;%.31; % 3.6
+        p.scaling1 = 1.7;%.31; % 4.5
+        p.scaling2 = 1.4;%.31; % 3.6
     case '1-att'
         p.scaling1 = .5; % 4.5
         p.scaling2 = .5; % 3.6
     case '1-attK'
-        p.scaling1 = 1.8; 
+        p.scaling1 = 1.9; 
         p.scaling2 = 1.5; 
     case '1-attLat'
         p.scaling1 = 1.2; 
         p.scaling2 = 1;
     case 't2DecRef'
         p.scaling1 = 19;
-        p.scaling2 = 16;
+        p.scaling2 = 15;
     case '3S'
-        p.scaling1 = .65;
-        p.scaling2 = .5;
+        p.scaling1 = .75;
+        p.scaling2 = .63;
 end
 % p.offset1  = 0;
 % p.offset2  = 0;
