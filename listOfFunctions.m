@@ -36,7 +36,7 @@ makeBiphasic
 makeGamma
 halfExp         % called by n_model_FA
 distance2curve  % called by decodeEvidence
-ideal_response_vector
+ideal_response_vector % makes RFs
 cascadeExp
 
 %% cluster

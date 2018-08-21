@@ -2,6 +2,14 @@ function plotFA2(condname, p)
 
 % for plotting time series from temporal attention experiments - just the
 % first feature.
+%% Inputs
+if strfind(p.modelClass,'3S')
+    plotS3 = 1;
+    nr = 7;
+else
+    plotS3 = 0;
+    nr = 6;
+end
 
 %% Figure 1
 figTitle = sprintf('%s contrast: %1.2f soa: %d seq: %d %d', condname, p.contrast, p.soa, p.stimseq);
@@ -9,7 +17,7 @@ figTitle = sprintf('%s contrast: %1.2f soa: %d seq: %d %d', condname, p.contrast
 % panel 1
 cpsFigure(.5,1.2);
 set(gcf,'Name',figTitle);
-nr = 7;
+% nr = 7;
 nc = 1;
 xlims = [0 2];
 
@@ -41,7 +49,7 @@ ylabel('AI')
 subplot(nr,nc,4)
 hold on
 plot(p.tlist/1000,p.r','color',[112 191 65]/255);
-plot(p.tlist/1000,p.rtr','color',[34 139 34]/255);
+% plot(p.tlist/1000,p.rtr','color',[34 139 34]/255);
 xlim(xlims)
 ylim([0 max(p.r(:))*1.1])
 set(gca,'XTickLabel',[])
@@ -55,24 +63,17 @@ ylim([0 max(p.r2(:))*1.1])
 set(gca,'XTickLabel',[])
 ylabel('S2')
 
-subplot(nr,nc,6)
-hold on
-plot(p.tlist/1000,p.r3','color',[110 119 143]/255);
-xlim(xlims)
-ylim([0 max(p.r3(:))*1.1])
-set(gca,'XTickLabel',[])
-ylabel('S3')
+if plotS3
+    subplot(nr,nc,6)
+    hold on
+    plot(p.tlist/1000,p.r3','color',[110 119 143]/255);
+    xlim(xlims)
+    ylim([0 max(p.r3(:))*1.1])
+    set(gca,'XTickLabel',[])
+    ylabel('S3')
+end
 
-% subplot(nr,nc,6)
-% hold on
-% plot(p.tlist/1000,p.rwm(:,:,1)','color',[110 119 143]/255);
-% plot(p.tlist/1000,p.rwm(:,:,2)','color',[110 119 143]/255);
-% xlim(xlims)
-% set(gca,'XTickLabel',[])
-% ylabel('WM')
-% set(gca,'YLim',[0 max(p.rwm(:))+.1]);
-
-subplot(nr,nc,7)
+subplot(nr,nc,nr)
 hold on
 plot(p.tlist/1000, zeros(size(p.tlist)), 'k')
 plot(p.tlist/1000,p.evidence(:,:,1)','color',[53 68 88]/255);

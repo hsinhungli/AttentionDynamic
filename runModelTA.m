@@ -1,5 +1,7 @@
 function [perfv, p, ev] = runModelTA(opt, modelClass, rsoa, rseq, rcond)
 
+% function [perfv, p, ev] = runModelTA(opt, modelClass, rsoa, rseq, rcond)
+%
 % modified from runModel.m
 % 2015-09-28 (RD)
 

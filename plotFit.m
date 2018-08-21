@@ -1,4 +1,6 @@
-function plotFit(D, fitFile)
+function fH = plotFit(D, fitFile, plotErrorBar, plotDataOnly, plotFields)
+
+% function plotFit(D, fitFile, plotErrorBar, plotDataOnly, plotField)
 
 %% inputs
 if nargin<1
@@ -15,20 +17,56 @@ fitFile = 'fit/fit_workspace_20160504T0032_job82376421.mat'; % % span
 % fitFile = 'fit/fit_workspace_20171107_interim.mat'; % transient-span
 end
 
+if nargin<3 || isempty(plotErrorBar)
+    plotErrorBar = 1;
+end
+
+if nargin<4 || isempty(plotDataOnly)
+    plotDataOnly = 0;
+end
+
+if nargin<5
+    plotFields = []; % eg. {'rtMean','rtSte','rtDataCueEff','rtData'};
+end
+    
+
 %% load a fit
 load(fitFile, 'data', 'model')
 
+%% set data to plotField if requested
+if ~isempty(plotFields)
+    meanVals = D.(plotFields{1});
+    data0 = data;
+    data = [];
+    for iT = 1:numel(meanVals)
+        data(:,:,iT) = meanVals{iT};
+    end
+    
+    steField = plotFields{2};
+    cueEffField = plotFields{3};
+    
+    if numel(plotFields)==4
+        dataVals = D.(plotFields{4});
+        for iT = 1:2
+            ce{iT} = squeeze(dataVals{iT}(1,:,:)-dataVals{iT}(2,:,:));
+        end
+        D.(cueEffField) = ce;
+    end
+else
+    steField = 'dpSte';
+    cueEffField = 'dpDataCueEff';
+end
+
 %% setup
-plotErrorBar = 1;
 xlims = [0 900];
 nSeq = numel(D);
 
 %% get error bar
 for iSeq = 1:nSeq
     for iT = 1:2
-        eb(:,:,iT,iSeq) = D(iSeq).dpSte{iT}(1:3,:);
+        eb(:,:,iT,iSeq) = D(iSeq).(steField){iT}(1:3,:);
         
-        cueEff = D(iSeq).dpDataCueEff{iT};
+        cueEff = D(iSeq).(cueEffField){iT};
         ebCueEff(:,iT,iSeq) = std(cueEff,0,2)./sqrt(D.nSubjects);
     end
 end
@@ -51,7 +89,7 @@ ylims = [0 2]; %[-.5 3]; % [0 2]
 soas = D.t1t2soa;
 plotOrder = [3 2 1];
 for iSeq = 1:nSeq
-    figure('Position',[100 100 580 550])
+    fH = figure('Position',[100 100 580 550]);
     for iT = 1:2
         subplot(3,2,[iT iT+2])
         hold on
@@ -66,7 +104,11 @@ for iSeq = 1:nSeq
                     'LineWidth',7,'Color',ebcolors(plotOrder(iV),:));
             end
         end
-        p0 = plot(soas, model(plotOrder,:,iT,iSeq)','LineWidth',3);
+        if plotDataOnly
+            p0 = plot(soas, data(plotOrder,:,iT,iSeq)','LineWidth',3);
+        else
+            p0 = plot(soas, model(plotOrder,:,iT,iSeq)','LineWidth',3);
+        end
         p2 = plot(soas, data(plotOrder,:,iT,iSeq)','o','MarkerSize',8,'LineWidth',2,'MarkerFaceColor','w');
         for i = 1:numel(p0)
             set(p0(i),'color',colors(plotOrder(i),:))
@@ -76,7 +118,7 @@ for iSeq = 1:nSeq
         ylim(ylims)
 %         xlabel('SOA')
         if iT==1
-            ylabel('\it d''')
+            ylabel('Performance (\it d'')')
         end
         title(sprintf('T%d',iT))
         set(gca,'LineWidth',1)
@@ -102,13 +144,17 @@ for iSeq = 1:nSeq
             p1 = errbar(soas, dataCueEff(:,iT,iSeq), ebCueEff(:,iT,iSeq),...
                 'LineWidth',7,'Color',[.8 .8 .8]);
         end
-        p0 = plot(soas, modelCueEff(:,iT,iSeq),'Color','k','LineWidth',3);
+        if plotDataOnly
+            p0 = plot(soas, dataCueEff(:,iT,iSeq),'Color','k','LineWidth',3);
+        else
+            p0 = plot(soas, modelCueEff(:,iT,iSeq),'Color','k','LineWidth',3);
+        end
         p2 = plot(soas, dataCueEff(:,iT,iSeq),'.','MarkerSize',30,'Color','k','MarkerFaceColor','w');
         xlim(xlims)
         ylim([-.4 .8])
         xlabel('SOA (ms)')
         if iT==1
-            ylabel('\Delta{\itd''} (valid-invalid)')
+            ylabel('Valid - invalid (\Delta{\itd''})')
         end
         set(gca,'LineWidth',1)
         set(gca,'FontSize',18)
