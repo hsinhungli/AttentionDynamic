@@ -154,7 +154,7 @@ for t = p.dt:p.dt:p.T
     % select response from which to decode
     switch p.modelClass
         case '3S'
-            response = p.r3;
+            response = p.r3; % r3
         otherwise
             response = p.r2;
     end
