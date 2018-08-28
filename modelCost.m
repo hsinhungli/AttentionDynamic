@@ -124,7 +124,11 @@ end
 if saveFit
     saveDir = D(1).saveDir;
     jobStr = D(1).jobStr;
-    modelStr = sprintf('_%s', p.modelClass);
+    if isempty(modelClass)
+        modelStr = sprintf('_%s', p.modelClass);
+    else
+        modelStr = sprintf('_%s', modelClass);
+    end
     save(sprintf('%s/fit_workspace_%s%s%s_interim', saveDir, datestr(now,'yyyymmdd'), jobStr, modelStr))
     rd_saveAllFigs([],figNames, jobStr(2:end), saveDir)
 end
