@@ -9,7 +9,7 @@ if ~exist('opt','var')
     opt = [];
 end
 if ~exist('modelClass','var')
-    modelClass = [];
+    modelClass = '';
 end
 
 %% Process modelClass
@@ -25,9 +25,9 @@ end
 if ~isempty(modelClass)
     p.modelClass = modelClass;
 else
-    % in the span family: 'span', '1-att', '1-attK', 't2DecRef', '3S'
+    % in the span family: 'span', '1-att', '1-attK', 't2DecRef', '3S', 'valo'
     % in the transient-span family: 'transient-span', '1-attLat'
-    p.modelClass  = '3S';
+    p.modelClass  = 'valo';
 end
 p.rf              = 'rf/resp_stim4_rf12.mat'; % sensory RFs - encode stim and decode responses using saved RFs. [] for none.
 p.rfDecoding      = 'rf/resp_stim4_rf12.mat'; %'rf/resp_stim4_rf6_empirical_r2.mat';
@@ -154,11 +154,26 @@ switch p.modelClass
         p.biph1   = 40; % biphasic could be replaced with a gamma (excitatory only)
         p.biph2   = 4;
         p.asigma  = 30;  
+    case 'valo'
+        p.aMI     = 0;%100;
+        p.aMV     = 20;
+        p.aIE     = 1; 
+        p.aIOR    = 0;
+        p.biph1   = 40;
+        p.biph2   = 4;
+        p.asigma  = 30;
     otherwise
         error('p.modelClass not recognized')
 end
 p.ap      = 1.5;%4
 p.aKernel = [1; -1];
+
+switch p.modelClass
+    case 'valo'
+        p.attnProp = 0.75;
+    otherwise
+        p.attnProp = 1;
+end
 
 switch p.modelClass
     case {'1-att','1-attLat'}

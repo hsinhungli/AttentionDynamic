@@ -4,7 +4,7 @@ if nargin<1
     x = [];
 end
 if nargin<2
-    modelClass = [];
+    modelClass = '';
 end
 
 %% process modelClass
@@ -12,8 +12,8 @@ modelParts = strsplit(modelClass,'_');
 modelClass = modelParts{1};
 
 if isempty(modelClass)
-    % 'span','transient-span','1-attLat','1-attK','t2DecRef','3S'
-    modelClass = '3S';
+    % 'span','transient-span','1-attLat','1-attK','t2DecRef','3S','valo'
+    modelClass = 'valo';
 end
 
 %% initial param vals
@@ -46,7 +46,11 @@ switch modelClass
     case '3S'
         p.tau           = 80;
         p.tau_r2        = 63;
-        p.sigma         = 2.2;       
+        p.sigma         = 2.2;      
+    case 'valo'
+        p.tau           = 75;
+        p.tau_r2        = 68;
+        p.sigma         = 1.8;
     otherwise
         error('modelClass not found')
 end
@@ -124,8 +128,16 @@ switch modelClass
         p.span          = 737;
         p.attOnset      = -70;
         p.attOffsett    = 41; 
+    case 'valo'
+        p.tau_attV      = 62;
+        p.aMV           = 26; 
+%         p.vAttScale2    = .21;
+        p.span          = 700;
+        p.attOnset      = -83;
+        p.attOffsett    = 61;     
+        p.attnProp      = .75;
 end
-p.neutralT1Weight = .15;
+p.neutralT1Weight = .5;
 
 % involuntary attention
 % p.biph1         = 48;
@@ -137,6 +149,7 @@ switch modelClass
         p.aIOR          = .15; % 1 (spatial sim), 1.3 (stronger IOR), 1.12 (temporal sim)
         p.asigma        = .21;  %.3
     case 'span'
+        p.tau_attI      = 50;  %50         %time constant involuntary attention (ms)
         p.aMI           = 96;%2.5; % 5 (spatial sim), 4 (stronger IOR), 4 (temporal sim)
 %         p.aIE           = 0;
         p.aIOR          = .93;%.36; % 1 (spatial sim), 1.3 (stronger IOR), 1.12 (temporal sim)
@@ -147,15 +160,18 @@ switch modelClass
     case '1-attK'
         p.asigma        = 27;
     case 't2DecRef'
-        p.aMI           = 1.17e5;
         p.tau_attI      = 1.7;
+        p.aMI           = 1.17e5;
         p.asigma        = 26;
     case '3S'
-        p.aMI           = 208;
         p.tau_attI      = 2.2;
+        p.aMI           = 208;
         p.asigma        = 24;
+    case 'valo'
+        p.tau_attI      = 2;
+        p.aMI           = 50;
+        p.asigma        = 19;
 end
-% p.tau_attI      = 50;  %50         %time constant involuntary attention (ms)
 
 % decision
 % p.sigmad = 1;
@@ -196,6 +212,9 @@ switch modelClass
     case '3S'
         p.scaling1 = .75;
         p.scaling2 = .63;
+    case 'valo'
+        p.scaling1 = 1.7;
+        p.scaling2 = 1.4;
 end
 % p.offset1  = 0;
 % p.offset2  = 0;

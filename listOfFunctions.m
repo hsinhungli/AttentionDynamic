@@ -31,6 +31,9 @@ x2opt           % converts an x vector to an opt structure, also sets initial x 
 resampleData    % calculates d-prime based on a bootstrapped sample of subject data
 analyzeBootstrap % gets CIs for parameter estimates from bootstrap fits
 
+%% analysis
+interpretParams % calculates summary metrics like amplitude, latency, and duration of attentional responses
+
 %% helper
 makeBiphasic
 makeGamma

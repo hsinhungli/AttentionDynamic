@@ -4,7 +4,7 @@ if nargin < 1
     opt = [];
 end
 if nargin < 2
-    modelClass = [];
+    modelClass = '';
 end
 
 % opt = [];

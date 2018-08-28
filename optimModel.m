@@ -4,8 +4,8 @@ parpool('SpmdEnabled',false)
 
 %% setup
 if nargin<1 || isempty(dataDir)
-    dataDir = '/Users/rachel/Documents/NYU/Projects/Temporal_Attention/Code/Expt_Scripts/Behav/data';
-%     dataDir = '/Local/Users/denison/Google Drive/NYU/Projects/Temporal_Attention/Code/Expt_Scripts/Behav/data';
+%     dataDir = '/Users/rachel/Documents/NYU/Projects/Temporal_Attention/Code/Expt_Scripts/Behav/data';
+    dataDir = '/Local/Users/denison/Google Drive/NYU/Projects/Temporal_Attention/Code/Expt_Scripts/Behav/data';
 end
 if nargin<2 || isempty(saveDir)
     saveDir = 'fit';
@@ -35,7 +35,7 @@ if nargin<4 || isempty(D)
     end
 end
 if nargin<5
-    modelClass = [];
+    modelClass = '';
 end
 if nargin<6
     prevFitFile = [];

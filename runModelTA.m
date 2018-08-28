@@ -8,7 +8,7 @@ function [perfv, p, ev] = runModelTA(opt, modelClass, rsoa, rseq, rcond)
 % clear all
 if nargin==0
     opt = [];
-    modelClass = [];
+    modelClass = '';
 end
 
 %% Set params
@@ -95,7 +95,7 @@ for icond = 1:numel(rcond)
                             if strcmp(condname, 'endoT1T2')
                                 p.vAttWeights = distributeAttention(totalAtt, 0, [], p.neutralT1Weight);
                             else
-                                p.vAttWeights = distributeAttention(totalAtt, 1, 1);
+                                p.vAttWeights = distributeAttention(totalAtt, 1, p.attnProp);
                             end
                             p.vAttWeight1 = p.vAttWeights(1);
                             p.vAttWeight2 = p.vAttWeights(2);
