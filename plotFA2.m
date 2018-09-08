@@ -13,6 +13,7 @@ end
 
 %% Figure 1
 figTitle = sprintf('%s contrast: %1.2f soa: %d seq: %d %d', condname, p.contrast, p.soa, p.stimseq);
+% figTitle = '';
 
 % panel 1
 cpsFigure(.5,1.2);

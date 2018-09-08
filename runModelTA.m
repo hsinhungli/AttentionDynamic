@@ -117,6 +117,7 @@ for icond = 1:numel(rcond)
                 % set time series
                 p = initTimeSeriesFA(p);
                 p = setStimTA(condname,p);
+%                 p = setStimAB(condname,p);
                 p = setTaskTA(condname,p);
                 p = setDecisionWindowsTA(condname,p);
 
